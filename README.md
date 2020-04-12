@@ -1,4 +1,5 @@
 # Project
 ## Novo Projeto Team Adiconado (Home Office)
 
-- [ ] Adicionar respositório ao git e sincronizar com a equipe
+- [x] Adicionar respositório ao git e sincronizar com a equipe
+- [ ] Desenvolver novo projeto base para Random Chat
