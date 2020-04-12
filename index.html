@@ -15,12 +15,27 @@
 
     <body>
         <div class="main">
-            <header class="nav">
-                <a>Random Chat</a>
-                <button>
-                <span>Login</span>
-                <span>Registro</span>
+            <header class="nav mdc-drawer shrine-drawer">
+                <div class="mdc-drawer__header">  
+                <a class="shrine-title">Random Chat</a>
+                </div>
+
+                <div class="mdc-drawer__content">
+                <nav class="mdc-list">
+                 <button class="mdc-button foo-button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">Login</span>
                 </button>
+                <button class="mdc-button foo-button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">Registro</span>
+                </button>
+                <a class="mdc-list-iten mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
+                <span class="mdc-list-item__text">INÍCIO</span>
+                </a>
+                
+                </nav>
+                </div>
             </header>
         </div>
     </body>
