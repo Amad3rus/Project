@@ -10,8 +10,7 @@
    *:after 
 {      margin: 0; 
        padding: 0; 
-       box-sizing: 
-       border-box:
+       box-sizing: border-box;
 } 
 
    body { 
@@ -61,9 +60,19 @@
     }
 
     input:checked ~ label .setinha {
-    
+      transform: rotate(360deg);
+      width:30px;
+      height:3px;
+      left:16px;
     }
-
+    input:checked ~ label .setinha::before {
+      transform: rotate(45deg);
+      left:-1px;
+    }
+    input:checked ~ label .setinha::after {
+      transform: rotate(-45deg);
+      left:-1px;
+    }
     </style>
     
     <body>
