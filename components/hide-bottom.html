@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <title>Documento</title>
+</head>
+   
+   <style>
+   *, 
+   *:before, 
+   *:after 
+{      margin: 0; 
+       padding: 0; 
+       box-sizing: 
+       border-box:
+} 
+
+   body { 
+   	    background: #000000; 
+}  .menu { 
+				 background: #fff; 
+				 border-radius: 50%; 
+				 width: 60px; 
+				 height: 60px; 
+				 position: relative; 
+				 left: 0px; 
+				 
+}  .setinha { 
+				 position: relative; 
+				 display: block; 
+				 background: #000; 
+				 width: 30px; 
+				 height: 2px; 
+				 top: 29px; 
+				 left: 15px; 
+				 transition: .5s ease-in-out;
+    }
+    
+    .setinha:before,
+    .setinha:after {
+         		 background: red;
+         		 content: '';
+         		 display: block;
+         		 width: 60%;
+         		 height: 120%;
+                 position: absolute;
+                 left: -1px;
+    }
+    .setinha:before {
+                 top: -7px;
+                 transform: rotate(-45deg);
+    
+    }
+    
+    .setinha:after {
+ 			     bottom: -7px;
+                 transform: rotate(45deg);
+    }
+    
+    input {
+    			 display: none;
+    }
+
+    input:checked ~ label .setinha {
+    
+    }
+
+    </style>
+    
+    <body>
+    
+     <input id="menu-setinha" type="checkbox"> 
+        <label for="menu-setinha"> 
+           <div class="menu"> 
+              <span class="setinha"></span> 
+           </div> 
+        </label> 
+     </body>
+    
+</html>
