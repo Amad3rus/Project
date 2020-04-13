@@ -7,6 +7,7 @@
         <!-- LINKS EXTERNOS -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
          
         <!-- LINKS INTERNOS -->
@@ -15,28 +16,40 @@
 
     <body>
         <div class="main">
-            <header class="nav mdc-drawer shrine-drawer">
-                <div class="mdc-drawer__header">  
-                <a class="shrine-title">Random Chat</a>
-                </div>
 
+            <header id="sidebar" class="nav mdc-drawer shrine-drawer">
+                <a class="shrine-title">Random Chat</a>
                 <div class="mdc-drawer__content">
-                <nav class="mdc-list">
-                 <button class="mdc-button foo-button">
-                <div class="mdc-button__ripple"></div>
-                <span class="mdc-button__label">Login</span>
-                </button>
-                <button class="mdc-button foo-button">
-                <div class="mdc-button__ripple"></div>
-                <span class="mdc-button__label">Registro</span>
-                </button>
-                <a class="mdc-list-iten mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
-                <span class="mdc-list-item__text">INÍCIO</span>
-                </a>
-                
-                </nav>
+                    <nav class="mdc-list">
+        
+                        <button class="mdc-button foo-button">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Login</span>
+                        </button>
+
+                        <button class="mdc-button foo-button">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Registro</span>
+                        </button>
+                    
+                        <button class="mdc-button foo-button mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">INÍCIO</span>
+                        </button>
+
+                        <button class="mdc-button foo-button">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Logout</span>
+                        </button>
+                    </nav>
                 </div>
             </header>
+
+            <button onclick="hideMenu()" class="mdc-button foo-button custom-button">
+                <!-- <div class="mdc-button__ripple"></div> -->
+                <!-- <span class="mdc-button__label"></span> -->
+            </button>
         </div>
     </body>
+    <script src="js/index.js"></script>
 </html>
