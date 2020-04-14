@@ -1,9 +1,10 @@
 {
     "scripts": {
         "start": "webpack-dev-server --inline --hot --content-base ./public",
-        "build":"webpack --config webpack.config.js"
+        "build": "webpack --config webpack.config.js"
     },
     "dependencies": {
+        "html-loader": "^1.1.0",
         "webpack-cli": "^3.3.11"
     },
     "devDependencies": {

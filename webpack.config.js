@@ -12,14 +12,21 @@ module.exports = {
 		publicPath:'/'
 	},
 	module: {
-		rules: [{
-		  test: /\.js$/,
-		  exclude: /node_modules/,
-		  loader: 'babel-loader',
-		  query: {
-			presets: ['es2015', 'stage-0']
-		  }
-		}]
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				loader: 'babel-loader',
+				query: {
+					presets: ['es2015', 'stage-0']
+				}
+			},
+			{
+				test:/\.html$/,
+				exclude: /node_modules/,
+				loader:'html-loader',
+			}
+		]
 	  },
 	plugins: [HTMLWebpackPluginConfig]
 }

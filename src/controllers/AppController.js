@@ -20,7 +20,7 @@ export default class AppController {
         document.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
-        console.log(this.el);
+        this.el['menuSetinha'].checked = true;
     }
 
     initEvents(){

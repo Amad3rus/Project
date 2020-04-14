@@ -51,10 +51,17 @@ body{
     flex-direction: column;
     text-align: center;
 }
+.custom-ripple{
+    transition: background 1s;
+}
+.main .nav .mdc-list .custom-ripple:active{
+    background-color: silver;
+    background-size: 100%;
+    transition: background 1s;
+}
 .main .nav .mdc-list .mdc-button__label{
     color:var(--color-orange);
 }
-
 .main .custom-button{
     position: fixed;
     bottom:0;
@@ -66,7 +73,6 @@ body{
     height:40px;
     min-width: 40px !important;
 }
-
 /* Fora do Main */
 .hide-left{
     left: -256px !important;
