@@ -74,7 +74,7 @@ export default class AppController {
                 name:'Vinícius',
                 message:'tudo bem?',
                 time: new Date().getTime()
-            }
+            },
         ]
         contacts.forEach((value, index) => {
             let li = document.createElement('li');

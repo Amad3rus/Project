@@ -25,11 +25,13 @@ body{
     font-family: 'Baloo Tamma 2', cursive;;
 }
 .main{
-    /* background-color: inherit; */
     height:100%;
     margin-left: 280px;
     display:flex;
 }
+
+
+/* SIDEBAR */
 .main .mdc-drawer{
     overflow: visible;
 }
@@ -73,11 +75,17 @@ body{
     height:40px;
     min-width: 40px !important;
 }
+/* END SIDEBAR */
+
+/* CHAT */
 .main .container-chat{
     height: 100%;
     width:100%;
     /* max-width:726px; */
 }
+/* END CHAT */
+
+/* CONTACT */
 .main .container-contact{
     height:100%;
     width:100%;
@@ -93,6 +101,8 @@ body{
     list-style: none;
     display:flex;
     flex-direction: column;
+    max-height: 485px;
+    overflow: auto;
 }
 .main .container-contact ul li{
     display:flex;
@@ -151,6 +161,10 @@ body{
     color: var(--color-orange);
     font-style: italic;
 }
+/* END CONTACT */
+
+
+/* SEARCH ALEATORY */
 .main .container-sa {
 	position: fixed;
     bottom: 20px;
@@ -168,19 +182,24 @@ body{
     background: var(--color-orange);
     cursor:pointer;
 }
-.main .container-sp {
+/* END SEARCH ALEATORY */
+
+
+ /* SEARCH PEOPLE */
+.main .container-contact .container-sp {
     background: var(--color-dark);
-	position: absolute;
-	top: 3%;
-	left: 87%;
-	transform: translate(-50%,-50%);
 	height: 40px;
     border-radius: 40px;
 	padding: 10px;
 	border: 2px solid var(--color-orange);
-    
+    margin: 13px 0;
 }
-.main .container-sp .sp-btn {
+.main .container-contact .container-sp .sp{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main .container-contact .container-sp .sp-btn {
 	color: black;
 	width: 40px;
 	height: 40px;
@@ -188,9 +207,10 @@ body{
 	background: var(--color-orange);
 	display: flex;
 	justify-content: center;
-	align-items: center;
+    align-items: center;
+    text-decoration: none;
 }
-.main .container-sp .sp-txt {
+.main .container-contact .container-sp .sp-txt {
 	border: none;
 	background: none;
 	outline: none;
@@ -202,6 +222,9 @@ body{
 	line-height: 40px;
 	width: 240px;
 }
+
+/* END SEARCH PEOPLE */
+
 /* Fora do Main */
 .hide-left{
     left: -256px !important;
@@ -223,4 +246,21 @@ body{
     .main .container-contact ul li button .text{
         width:100%;
     }
+}
+
+/* CUSTOM SCROLL DOCUMENT */
+::-webkit-scrollbar-track {
+    /* background-color: #F4F4F4; */
+    background-color: var(--color-black-dark);
+}
+::-webkit-scrollbar {
+    width: 6px;
+    /* background: #F4F4F4; */
+    background-color: var(--color-black-medium);
+}
+::-webkit-scrollbar-thumb {
+    /* background: #c4c4c4; */
+    /* background: #dad7d7; */
+    background-color: var(--color-black-light);
+    border-radius: 10px;
 }
