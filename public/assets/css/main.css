@@ -28,6 +28,7 @@ body{
     /* background-color: inherit; */
     height:100%;
     margin-left: 280px;
+    display:flex;
 }
 .main .mdc-drawer{
     overflow: visible;
@@ -73,6 +74,52 @@ body{
     height:40px;
     min-width: 40px !important;
 }
+.main .container-chat{
+    border:1px solid red;
+    height: 100%;
+    width:100%;
+    /* max-width:726px; */
+}
+.main .container-contact{
+    height:100%;
+    width:100%;
+    max-width:264px;
+    margin-left:auto;
+    color:var(--color-silver);
+    background: linear-gradient(180deg, var(--color-dark) 60%, var(--color-black) 100%);
+
+}
+.main .container-contact ul{
+    list-style: none;
+    display:flex;
+}
+.main .container-contact ul li{
+    display:flex;
+    flex-direction: row;
+    width: 100%;
+}
+.main .container-contact ul li button{
+    width:100%;
+    background: transparent;
+    border:none;
+    outline:none;
+    color:var(--color-silver);
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor:pointer;
+    padding:16px 8px;
+    transition: all 1s;
+    background-color: var(--color-dark);
+}
+.main .container-contact ul li button:active{
+    background-color: silver;
+    background-size: 100%;
+    transition: background 1s;
+}
+
+
 /* Fora do Main */
 .hide-left{
     left: -256px !important;
