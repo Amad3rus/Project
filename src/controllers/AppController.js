@@ -24,7 +24,8 @@ export default class AppController {
     }
 
     initEvents(){
-        this.el['hideMenu'].onclick = () => {
+        this.el['hideMenu'].onclick = (e) => {
+            e.preventDefault();
             if(this.config.sidebar && !this.config.el_sidebar.classList.contains(this.config.animate)){
                 this.config.el_sidebar.classList.remove(this.config.left);
                 this.config.el_sidebar.classList.add(this.config.animate);
@@ -32,6 +33,8 @@ export default class AppController {
                 this.config.el_main.style.marginLeft = '256px';
 
                 this.config.sidebar = false;
+                this.el['menuSetinha'].checked = true;
+
             }else{
                 this.config.el_sidebar.classList.remove(this.config.animate);
                 this.config.el_sidebar.classList.remove(this.config.fadeinleft);
@@ -41,8 +44,9 @@ export default class AppController {
 
                 this.config.el_sidebar.style.transition = 'left 1s';
                 this.config.el_sidebar.classList.add(this.config.left);
-
+                
                 this.config.sidebar = true;
+                this.el['menuSetinha'].checked = false;
             }
         }
     }

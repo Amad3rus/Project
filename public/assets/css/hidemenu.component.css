@@ -6,69 +6,67 @@
     width: 60px; 
     height: 35px; 
     position: relative;
-    left: 0;
+    left: 93px;
     display: block;
     margin: 20px auto;
     padding: 14px 10px;
     width: 200px;
     transition: 1s;
+    cursor:pointer;
   }
   .container .menu .setinha { 
-position: relative; 
-display: block; 
-background: #FF5722; 
-width: 30px; 
-height: 3px; 
-top: 15px; 
-left: 147px; 
-transition: 1s;
+    position: relative; 
+    display: block; 
+    background: #FF5722; 
+    width: 30px; 
+    height: 3px; 
+    top: 15px; 
+    left: 147px; 
+    transition: 1s;
 }
 .container .menu .setinha:before,
 .container .menu .setinha:after {
-background: #FF5722;
-content: '';
-display: block;
-width: 60%;
-height: 100%;
-position: absolute;
-left: 13px;
-transition: 0.5s;
+  background: #FF5722;
+  content: '';
+  display: block;
+  width: 60%;
+  height: 100%;
+  position: absolute;
+  left: 13px;
+  transition: 0.5s;
 }
 .container .menu .setinha:before {
-top: 7px;
-transform: rotate(-45deg);
-
+  top: 7px;
+  transform: rotate(-45deg);
 }
 .container .menu .setinha:after {
-bottom: 7px;
-transform: rotate(45deg);
+  bottom: 7px;
+  transform: rotate(45deg);
 }
 .container input {
-display: none;
+  display: none;
 }
 .container input:checked ~ label .menu {
-
     background: white; 
     border: 2px solid white;
     border-radius:50%; 
     width:40px; 
     height:30px; 
     position: relative; 
-    left:0;
-    transition: 1s;
+    transition: all 1s;
 }
 .container input:checked ~ label .setinha {
-transform: rotate(360deg);
-width: 30px;
-height: 3px;
-left: 5px;
-top: 12px;
+  transform: rotate(360deg);
+  width: 30px;
+  height: 3px;
+  left: 5px;
+  top: 12px;
 }
 .container input:checked ~ label .setinha:before {
-transform: rotate(45deg);
-left: -1px;
+  transform: rotate(45deg);
+  left: -1px;
 }
 .container input:checked ~ label .setinha:after {
-transform: rotate(-45deg);
-left: -1px;
+  transform: rotate(-45deg);
+  left: -1px;
 }
