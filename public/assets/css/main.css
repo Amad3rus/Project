@@ -52,13 +52,12 @@ body{
     flex-direction: column;
     text-align: center;
 }
-.custom-ripple{
-    transition: background 1s;
+.main .nav .mdc-list button{
+    transition: all 1s;
 }
-.main .nav .mdc-list .custom-ripple:active{
+.main .nav .mdc-list button:active{
     background-color: silver;
     background-size: 100%;
-    transition: background 1s;
 }
 .main .nav .mdc-list .mdc-button__label{
     color:var(--color-orange);
@@ -75,7 +74,6 @@ body{
     min-width: 40px !important;
 }
 .main .container-chat{
-    border:1px solid red;
     height: 100%;
     width:100%;
     /* max-width:726px; */
@@ -83,11 +81,13 @@ body{
 .main .container-contact{
     height:100%;
     width:100%;
-    max-width:264px;
+    max-width:350px;
     margin-left:auto;
     color:var(--color-silver);
     background: linear-gradient(180deg, var(--color-dark) 60%, var(--color-black) 100%);
-
+}
+.main .container-contact .contact{
+    padding:0;
 }
 .main .container-contact ul{
     list-style: none;
@@ -98,7 +98,7 @@ body{
     display:flex;
     flex-direction: row;
     width: 100%;
-    border-bottom:1px solid var(--color-red);
+    border-bottom:1px solid #e22a5360;
 }
 .main .container-contact ul li button{
     width:100%;
@@ -107,33 +107,49 @@ body{
     outline:none;
     color:var(--color-silver);
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     cursor:pointer;
-    padding:16px 8px;
     transition: all 1s;
     background-color: var(--color-dark);
+    padding:8px;
+}
+.main .container-contact ul li button:hover{
+    background:#b6b6b620;
 }
 .main .container-contact ul li button:active{
     background-color: silver;
     background-size: 100%;
-    transition: background 1s;
+    transition: all 1s;
 }
 .main .container-contact ul li button .img{
     display:flex;
-    align-items: center;
-    justify-content: flex-start;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    height:50px;
     width:100%;
+    max-width: 50px;
+    background:var(--color-silver);
+    border-radius: 50%;
+    margin-right: 10px;
 }
 .main .container-contact ul li button .img i{
-    font-size:30px;
+    font-size:35px;
+    color:var(--color-dark);
 }
 .main .container-contact ul li button .text{
     display:flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     width:100%;
+    flex-direction: column;
+}
+.main .container-contact ul li button .text .name{
+    font-size:11.5px;
+    color: var(--color-orange);
+    font-style: italic;
 }
 .main .container-sa {
 	position: fixed;
@@ -150,8 +166,27 @@ body{
     justify-content: center;
     align-items: center;
     background: var(--color-orange);
+    cursor:pointer;
 }
 /* Fora do Main */
 .hide-left{
     left: -256px !important;
+}
+
+/* MEDIA QUERIES */
+@media (max-width:600px){
+    .main .container-chat{
+        display:none;
+    }
+    .main .container-contact{
+        width:100%;
+        margin: 0;
+        max-width: 100%;
+    }
+    .main .container-contact ul li button .img{
+        margin-right: 10px;
+    }
+    .main .container-contact ul li button .text{
+        width:100%;
+    }
 }
