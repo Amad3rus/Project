@@ -1,12 +1,15 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 		template: './public/index.html'
 	});
 
 module.exports = {
-	entry: './src/main.js',
+	entry: './src/app.js',
 	output: {
-		filename: './public/assets/js/bundle.js'
+		filename: 'bundle.js',
+		path: path.resolve(__dirname, '/dist'),
+		publicPath:'/'
 	},
 	module: {
 		rules: [{

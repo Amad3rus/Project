@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@500&display=swap');
+@import '../css/hidemenu.component.css';
+
 /* Reset */
 *{
     margin:0;

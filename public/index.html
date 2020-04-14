@@ -11,6 +11,7 @@
         <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
          
         <!-- LINKS INTERNOS -->
+        <!-- <link rel="stylesheet" href="/assets/css/hidemenu.component.css"> -->
         <link rel="stylesheet" href="/assets/css/main.css">
     </head>
 
@@ -19,6 +20,21 @@
 
             <header id="sidebar" class="nav mdc-drawer shrine-drawer">
                 <a class="shrine-title">Random Chat</a>
+                
+                <!-- <div id="hideMenu" class="container">
+                    <input type="hidden" id="menu-setinha" type="checkbox"> 
+                    <label for="menu-setinha"> 
+                        <div class="menu"> 
+                            <span class="setinha"></span> 
+                        </div> 
+                    </label> 
+                </div> -->
+
+                <button id="hide-menu" class="mdc-button foo-button custom-button">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label"></span>
+                </button>
+                
                 <div class="mdc-drawer__content">
                     <nav class="mdc-list">
         
@@ -45,12 +61,12 @@
                 </div>
             </header>
 
-            <button onclick="hideMenu()" class="mdc-button foo-button custom-button">
-                <!-- <div class="mdc-button__ripple"></div> -->
-                <!-- <span class="mdc-button__label"></span> -->
-            </button>
+            <!-- <button id="hide-menu" class="mdc-button foo-button custom-button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label"></span>
+            </button> -->
         </div>
     </body>
     
-    <script src="/assets/js/index.js"></script>
+    <script src="bundle.js"></script>
 </html>
