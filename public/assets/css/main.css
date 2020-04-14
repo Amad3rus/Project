@@ -168,6 +168,40 @@ body{
     background: var(--color-orange);
     cursor:pointer;
 }
+.main .container-sp {
+    background: var(--color-dark);
+	position: absolute;
+	top: 3%;
+	left: 87%;
+	transform: translate(-50%,-50%);
+	height: 40px;
+    border-radius: 40px;
+	padding: 10px;
+	border: 2px solid var(--color-orange);
+    
+}
+.main .container-sp .sp-btn {
+	color: black;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--color-orange);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.main .container-sp .sp-txt {
+	border: none;
+	background: none;
+	outline: none;
+	float: left;
+	padding: 0;
+	color: white;
+	font-size: 16px;
+	transition: 0.4s;
+	line-height: 40px;
+	width: 240px;
+}
 /* Fora do Main */
 .hide-left{
     left: -256px !important;
