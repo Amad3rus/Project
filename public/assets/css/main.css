@@ -222,8 +222,54 @@ body{
 	line-height: 40px;
 	width: 240px;
 }
-
 /* END SEARCH PEOPLE */
+
+/* CHAT BALLON */
+
+.main .container-cb {
+	width: 120px;
+	height: 80px;
+	background: var(--color-orange);
+	position: absolute;
+	border-radius: 10px;
+	top: 50%;
+	left: 34%;
+	position: absolute;
+	transform: translate(-50%,-50%)
+}
+.main .container-cb:before {
+	content: "";
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: 0px solid transparent;
+	border-right: 60px solid var(--color-orange);
+	border-bottom: 60px solid transparent;
+	margin: 0px 0 0 -16px;
+}
+/* END CHAT BALLON */
+
+.main .container-cb2 {
+	width: 120px;
+	height: 80px;
+	background: grey;
+	position: absolute;
+	border-radius: 10px;
+	top: 57%;
+	left: 56%;
+	position: absolute;
+	transform: translate(-50%,-50%)
+}
+.main .container-cb2:before {
+	content: "";
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: 0px solid transparent;
+	border-left: 60px solid grey;
+	border-bottom: 50px solid transparent;
+	margin: 0px 0 0 80px;
+}
 
 /* Fora do Main */
 .hide-left{
