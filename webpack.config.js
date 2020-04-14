@@ -4,7 +4,7 @@ var HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 	});
 
 module.exports = {
-	entry: './src/main.js',
+	entry: './public/assets/js/index.js',
 	output: {
 		filename: './public/assets/js/bundle.js'
 	},
