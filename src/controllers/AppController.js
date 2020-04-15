@@ -5,6 +5,7 @@ export default class AppController {
         this.fetchIds();
         this.initEvents();
         this.fetchContacts();
+        this.small = false;
         this.config = {
             animate:'animated',
             fadeinleft:'fadeInLeft',
@@ -13,6 +14,8 @@ export default class AppController {
             sidebar:false,
             el_main: this.el['app']
         }
+
+        console.log(this.small);
     }
 
     fetchIds(){
@@ -21,38 +24,31 @@ export default class AppController {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
         this.el['menuSetinha'].checked = true;
-
         console.log(this.el);
     }
 
     initEvents(){
+        this.hideMenuOnclick();
+        this.onRizeWindow();
+    }
+    hideMenuOnclick(){
         this.el['hideMenu'].onclick = (e) => {
             e.preventDefault();
             if(this.config.sidebar && !this.config.el_sidebar.classList.contains(this.config.animate)){
-                this.config.el_sidebar.classList.remove(this.config.left);
                 this.config.el_sidebar.classList.add(this.config.animate);
                 this.config.el_sidebar.classList.add(this.config.fadeinleft);
-                this.config.el_main.style.marginLeft = '256px';
-
+                this.config.el_sidebar.style.width = '100%';
                 this.config.sidebar = false;
                 this.el['menuSetinha'].checked = true;
-
             }else{
                 this.config.el_sidebar.classList.remove(this.config.animate);
                 this.config.el_sidebar.classList.remove(this.config.fadeinleft);
-                
-                this.config.el_main.style.marginLeft = 0;
-                this.config.el_main.style.transition = 'margin-left 1s';
-
-                this.config.el_sidebar.style.transition = 'left 1s';
-                this.config.el_sidebar.classList.add(this.config.left);
-                
+                this.config.el_sidebar.style.width = 0;
                 this.config.sidebar = true;
                 this.el['menuSetinha'].checked = false;
             }
         }
     }
-
     fetchContacts(){
         const contacts = [
             {
@@ -74,7 +70,7 @@ export default class AppController {
                 name:'Vinícius',
                 message:'tudo bem?',
                 time: new Date().getTime()
-            }
+            },
         ]
         contacts.forEach((value, index) => {
             let li = document.createElement('li');
@@ -92,6 +88,24 @@ export default class AppController {
                 </button>
             `
             this.el['listContact'].appendChild(li);
+        });
+    }
+    onRizeWindow(){
+        window.addEventListener('resize', (e) => {
+            if(e.target.innerWidth <= 1024){
+                this.config.el_sidebar.classList.remove(this.config.animate);
+                this.config.el_sidebar.classList.remove(this.config.fadeinleft);
+                this.config.el_sidebar.style.width = 0;
+                this.config.sidebar = true;
+                this.el['menuSetinha'].checked = false;
+            }else{
+                this.config.el_sidebar.classList.remove(this.config.left);
+                this.config.el_sidebar.classList.add(this.config.animate);
+                this.config.el_sidebar.classList.add(this.config.fadeinleft);
+                this.config.el_sidebar.style.width = '100%';
+                this.config.sidebar = false;
+                this.el['menuSetinha'].checked = true;
+            }
         });
     }
 }

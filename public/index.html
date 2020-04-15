@@ -21,24 +21,38 @@
 
             <!-- OPEN HEADER SIDEBAR -->
             <header id="sidebar" class="nav mdc-drawer shrine-drawer">
-                <a class="shrine-title">Random Chat</a>
                 <div class="mdc-drawer__content">
                     <nav class="mdc-list">
-        
+                        <div class="status-header">
+                            <i class="lart material-icons">person</i>
+                            <span>Random Chat</span>
+                        </div>
                         <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">Login</span>
+                            <span class="mdc-button__label">
+                                <i class="small material-icons">input</i>
+                                <span>Login</span>
+                            </span>
                         </button>
 
                         <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">Registro</span>
+                            <span class="mdc-button__label">
+                                <i class="small material-icons">person_add</i>
+                                <span>registro</span>
+                            </span>
                         </button>
                     
                         <button class="mdc-button foo-button custom-ripple mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
-                            <span class="mdc-button__label">INÍCIO</span>
+                            <span class="mdc-button__label">
+                                <i class="small material-icons">home</i>
+                                <span>início</span>
+                            </span>
                         </button>
 
                         <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">Logout</span>
+                            <span class="mdc-button__label">
+                                <i class="small material-icons">input</i>
+                                <span>logout</span>
+                            </span>
                         </button>
                     </nav>
                 </div>
@@ -50,42 +64,136 @@
                         </div> 
                     </label> 
                 </div>
+                <div class="footer"></div>
             </header>
             <!-- CLOSE HEADER SIDEBAR -->
 
-
             <!-- OPEN CONTAINER CHAT -->
-                <!-- <div class="container-chat">
-                
-                    code....
-                </div> -->
+                <div id="container-chat" class="container-chat">
+                    <div class="box">
+                        <div class="status"></div>
+                        <div class="chat">
+
+                            <div class="message">
+                                <div class="container-cb">
+                                    <div class="cb">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium, labore! Porro labore molestiae dicta aperiam quis deserunt! Omnis aliquam repellat, nam, quos rerum eligendi at et, commodi deserunt accusantium repudiandae.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="message">
+                                <div class="container-cb2">
+                                    <div class="cb2">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur voluptas expedita laborum in quae nesciunt tempora debitis sint nihil minima maiores dicta itaque corrupti a, ab dolore provident fugit inventore.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="message">
+                                <div class="container-cb">
+                                    <div class="cb">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum ium repudiandae.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="message">
+                                <div class="container-cb2">
+                                    <div class="cb2">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum ium repudiandae.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="message">
+                                <div class="container-cb">
+                                    <div class="cb">
+                                        <span>Nome</span>
+                                        <span>Lore.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="message">
+                                <div class="container-cb2">
+                                    <div class="cb2">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum ium repudiandae.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="message">
+                                <div class="container-cb">
+                                    <div class="cb">
+                                        <span>Nome</span>
+                                        <span>Lorem ipsum ium repudiandae.</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="message">
+                                <div class="container-cb2">
+                                    <div class="cb2">
+                                        <span>Nome</span>
+                                        <span>Lorem i</span>
+                                        <span>Time</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            controles
+                        </div>
+                    </div>
+                </div>
             <!-- CLOSE CONTAINER CHAT -->
 
             <!-- OPEN DIV CONTAINER CONTACT -->
             <div class="container-contact">
+                <div class="status">
+                    <div class="container-sp">
+                        <div class="sp">
+                            <input class="sp-txt" type="text" name="" placeholder="Procurar">
+                            <a class="sp-btn" href="#">
+                                <i class="small material-icons">search</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+               
                 <div class="contact">
                     <ul id="list-contact"></ul>
                 </div>
+                
+                <div class="footer"></div>
             </div>
             <!-- CLOSE DIV CONTAINER CONTACT -->
 
             <!-- OPEN BUTTON SEARCH -->
-			<div class="container-sa">
-			  <div class="sa">
-				<button class="btn">
-				  <i class="large material-icons">search</i>
-				</button>
-			  </div>
+            <div class="container-sa">
+            <div class="sa">
+                <button class="btn">
+                <i class="large material-icons">search</i>
+                </button>
+            </div>
             </div>
             <!-- CLOSE BUTTON SEARCH -->
-			<div class="container-sp">
-			  <div class="sp">
-			  <input class="sp-txt" type="text" name="" placeholder="Procurar">
-			  <a class="sp-btn" href="#">
-			  <i class="small material-icons">search</i>
-			  </a>
-		    </div>
-          </div>
+
+        </div>
         <!-- CLOSE DIV MAIN -->
     </body>
 </html>
