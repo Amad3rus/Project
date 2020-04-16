@@ -14,8 +14,6 @@ export default class AppController {
             sidebar:false,
             el_main: this.el['app']
         }
-
-        console.log(this.small);
     }
 
     fetchIds(){

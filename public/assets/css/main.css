@@ -49,7 +49,9 @@ body{
     height:100%;
     background: linear-gradient(180deg, var(--color-dark) 60%, var(--color-black) 100%);
 }
-.main .nav .status-header{
+.main .nav .status-header,
+.main .container-chat .box .status,
+.main .container-contact .status{
     color:var(--color-white);
     text-align: center;
     font-size:30px;
@@ -57,6 +59,31 @@ body{
     background:var(--background-header);
     height:60px;
     line-height:60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main .nav .status-header span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.main .nav .status-header .perfil-img,
+.main .container-chat .box .status .container-status .perfil-img{
+    height:40px;
+    width:40px;
+    border-radius:50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:var(--color-white);
+}
+.main .nav .status-header .perfil-img span,
+.main .container-chat .box .status .container-status .perfil-img span{
+    color: var(--color-dark);
 }
 .main .nav .container{
     position:absolute; 
@@ -116,22 +143,103 @@ body{
     flex-direction: column;
     justify-content: space-between;
 }
-.main .container-chat .box .status{
+/* .main .container-chat .box .status{
     height:60px;
     background:var(--background-header);
+} */
+.main .container-chat .box .status .container-status{
+    height:100%;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    width:100%;
+}
+.main .container-chat .box .status .container-status .perfil{
+    width:45%;
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+}
+.main .container-chat .box .status .container-status .perfil .perfil-img{
+    margin:0 15px;
+}
+.main .container-chat .box .status .container-status .perfil .perfil-img span i{
+    line-height: 60px;
+}
+.main .container-chat .box .status .container-status .perfil .info{
+    width:65%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.main .container-chat .box .status .container-status .perfil .info span{
+    font-size:12px;
+    line-height: 20px;
 }
 .main .container-chat .box .chat{
     color:white;
     height:100%;
-    max-height: 80%;
+    max-height: 75%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding:0px 60px;
+    padding:0 60px 20px 60px;
 }
 .main .container-chat .box .controls{
     width:100%;
     height: 60px;
     background: var(--color-black);
+}
+.main .container-chat .box .controls .controls-container{
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background:var(--color-dark);
+    border-radius: 32px;
+    margin: 0 auto;
+    width:84%;
+}
+.main .container-chat .box .controls .controls-container .form-group{
+    width:70%;
+}
+.main .container-chat .box .controls .controls-container .form-group input{
+    height:50px;
+    background:inherit;
+    border:none;
+    width:100%;
+    color: var(--color-white);
+    font-size:14px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+}
+.main .container-chat .box .controls .controls-container .form-group input:focus{
+    outline:none;
+    border:none;
+}
+.main .container-chat .box .controls .controls-container .icons-container{
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width:20%;
+    max-width:95px;
+}
+.main .container-chat .box .controls .controls-container .icons-container span{
+    width:40px;
+    height:40px;
+    background:var(--color-silver);
+    border-radius:50%;
+    display:inline-block;
+    text-align: center;
+    cursor:pointer;
+    border:none;
+}
+.main .container-chat .box .controls .controls-container .icons-container span:active{
+    background:var(--color-white);
+}
+.main .container-chat .box .controls .controls-container .icons-container span i{
+    line-height: 40px;
+    width:24px;
 }
 
 /* CHAT BALLON */
@@ -218,13 +326,13 @@ body{
     justify-content: space-between;
     max-width: 300px;
 }
-.main .container-contact .status{
+/* .main .container-contact .status{
     height:60px;
     background:var(--background-header);
     display:flex;
     justify-content: center;
     align-items: center;
-}
+} */
 .main .container-contact .contact{
     padding:0;
     height: 80%;

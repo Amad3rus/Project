@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "webpack-dev-server --inline --hot --content-base ./public",
+        "start": "webpack-dev-server --inline --hot --content-base --mode development ./public",
         "build": "webpack --config webpack.config.js"
     },
     "dependencies": {

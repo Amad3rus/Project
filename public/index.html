@@ -24,7 +24,9 @@
                 <div class="mdc-drawer__content">
                     <nav class="mdc-list">
                         <div class="status-header">
-                            <i class="lart material-icons">person</i>
+                            <div class="perfil-img">
+                                <span class="perfil"><i class="lart material-icons">person</i></span>
+                            </div>
                             <span>Random Chat</span>
                         </div>
                         <button class="mdc-button foo-button custom-ripple">
@@ -64,15 +66,27 @@
                         </div> 
                     </label> 
                 </div>
-                <div class="footer"></div>
+                <div id="header-footer" class="footer"></div>
             </header>
             <!-- CLOSE HEADER SIDEBAR -->
 
             <!-- OPEN CONTAINER CHAT -->
                 <div id="container-chat" class="container-chat">
-                    <div class="box">
-                        <div class="status"></div>
-                        <div class="chat">
+                    <div id="chat-box" class="box">
+                        <div id="chat-status-bar" class="status">
+                            <div class="container-status">
+                                <div class="perfil">
+                                    <div class="perfil-img">
+                                        <span><i class="small material-icons">person</i></span>
+                                    </div>
+                                    <div class="info">
+                                        <span class="nome">Nome</span>
+                                        <span class="time">último acesso em 20/03/2020</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="chat" class="chat">
 
                             <div class="message">
                                 <div class="container-cb">
@@ -155,15 +169,25 @@
                             </div>
                         </div>
 
-                        <div class="controls">
-                            controles
+                        <div id="controls-chat" class="controls">
+                            <div class="controls-container">
+                                
+                                <div id="form-group" class="form-group">
+                                    <input type="text" placeholder="Digite aqui">
+                                </div>
+
+                                <div id="icons-container" class="icons-container">
+                                    <span><i class="small material-icons">send</i></span>
+                                    <span><i class="small material-icons">micro</i></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             <!-- CLOSE CONTAINER CHAT -->
 
             <!-- OPEN DIV CONTAINER CONTACT -->
-            <div class="container-contact">
+            <div id="container-contact" class="container-contact">
                 <div class="status">
                     <div class="container-sp">
                         <div class="sp">
@@ -187,7 +211,7 @@
             <div class="container-sa">
             <div class="sa">
                 <button class="btn">
-                <i class="large material-icons">search</i>
+                    <i class="large material-icons">search</i>
                 </button>
             </div>
             </div>
