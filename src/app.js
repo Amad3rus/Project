@@ -1,2 +1,2 @@
-import AppControler from './controllers/AppController';
+import AppControler from './controllers/appcontroller';
 window.app = new AppControler();
