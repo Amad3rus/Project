@@ -24,38 +24,76 @@
                 <div class="mdc-drawer__content">
                     <nav class="mdc-list">
                         <div class="status-header">
-                            <div class="perfil-img">
+                            <div id="sidebar-profile" class="perfil-img">
                                 <span class="perfil"><i class="lart material-icons">person</i></span>
                             </div>
-                            <span>Random Chat</span>
+                            <span style="font-size:20px;">Random Chat</span>
+                            <span id="header-messages" style="cursor:pointer"><i class="small material-icons">chat</i></span>
                         </div>
-                        <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">
-                                <i class="small material-icons">input</i>
-                                <span>Login</span>
-                            </span>
-                        </button>
+                        <div style="display:none;" class="panel-profile" id="panel-profile">
+                            <div class="status-header">
+                                <button id="close-panel-profile" class="close-profile">
+                                    <span><i class="small material-icons">chevron_left</i></span>
+                                </button>
+                                <span style="font-size:20px;">Perfil</span>
+                            </div>
 
-                        <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">
-                                <i class="small material-icons">person_add</i>
-                                <span>registro</span>
-                            </span>
-                        </button>
-                    
-                        <button class="mdc-button foo-button custom-ripple mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
-                            <span class="mdc-button__label">
-                                <i class="small material-icons">home</i>
-                                <span>início</span>
-                            </span>
-                        </button>
+                           <div class="profile">
+                                <div id="profile-img" class="profile-img">
+                                    <input style="display:none;" type="file" id="profile-input-photo">
+                                    <span id="profile-set-photo" class="perfil"><i class="lart material-icons">person</i></span>
+                                </div>
+                                <div id="container-menu" class="container-menu">
+                                    <div class="set-name">
+                                        <!-- <input id="edit-name" type="text" placeholder="Edite seu nome"> -->
+                                        <div style="max-height: 80px; overflow-y: auto;" id="edit-name" class="input-edit-name" contenteditable="true">Edite seu nome</div>
+                                        <span id="edit-name-enter"><i class="small material-icons">send</i></span>
+                                    </div>
+                                    <!-- <button class="mdc-button foo-button custom-ripple">
+                                        <span class="mdc-button__label">
+                                            <i class="small material-icons">input</i>
+                                            <span>Login</span>
+                                        </span>
+                                    </button>
+        
+                                    <button class="mdc-button foo-button custom-ripple">
+                                        <span class="mdc-button__label">
+                                            <i class="small material-icons">person_add</i>
+                                            <span>registro</span>
+                                        </span>
+                                    </button>
+                                
+                                    <button class="mdc-button foo-button custom-ripple mdc-list-iten--activate" aria-selected="true" tab-index="0" href="#">
+                                        <span class="mdc-button__label">
+                                            <i class="small material-icons">home</i>
+                                            <span>início</span>
+                                        </span>
+                                    </button>
+        
+                                    <button class="mdc-button foo-button custom-ripple">
+                                        <span class="mdc-button__label">
+                                            <i class="small material-icons">input</i>
+                                            <span>logout</span>
+                                        </span>
+                                    </button> -->
+                                </div>
+                           </div>
+                        </div>
 
-                        <button class="mdc-button foo-button custom-ripple">
-                            <span class="mdc-button__label">
-                                <i class="small material-icons">input</i>
-                                <span>logout</span>
-                            </span>
-                        </button>
+                        <div style="display:none;" class="panel-contacts" id="panel-contacts">
+                            <div class="status-header">
+                                <button id="close-panel-contacts" class="close-contacts">
+                                    <span><i class="small material-icons">chevron_left</i></span>
+                                </button>
+                            </div>
+                            <form id="profile-add-contact" class="add-contact">
+                                <input name="email" type="text" placeholder="E-mail do contato">
+                                <button type="submit">adicionar</button>
+                            </form>
+                            <div class="contact">
+                                <ul id="contacts-profile"></ul>
+                            </div>
+                         </div>
                     </nav>
                 </div>
                 <div id="hide-menu" class="container">
@@ -73,7 +111,12 @@
             <!-- OPEN CONTAINER CHAT -->
                 <div id="container-chat" class="container-chat">
                     <div id="chat-box" class="box">
-                        <div id="chat-status-bar" class="status">
+
+                        <div id="chat-home" class="chat">
+                            <div id="no-contact-selected"></div>
+                        </div>
+
+                        <div style="display:none;" id="chat-status-bar" class="status">
                             <div class="container-status">
                                 <div class="perfil">
                                     <div class="perfil-img">
@@ -84,102 +127,56 @@
                                         <span class="time">último acesso em 20/03/2020</span>
                                     </div>
                                 </div>
+
+                                <div class="status-attachments">
+                                    <button id="status-search"><i class="small material-icons">search</i></button>
+                                    <button id="status-attach-file"><i class="small material-icons">attach_file</i></button>
+                                    <button id="status-settings"><i class="small material-icons">more_vert</i></button>
+
+                                    <div style="display:none" id="status-open-attach-file" class="status-open-attach-file">
+                                        <span id="status-btn-attach-camera"><i class="small material-icons">local_see</i></span>
+                                        <span id="status-btn-attach-image"><i class="small material-icons">image</i></span>
+                                        <span id="status-btn-attach-file"><i class="small material-icons">insert_drive_file</i></span>
+                                        <span id="status-btn-attach-contact"><i class="small material-icons">person</i></span>
+
+                                        <input multiple type="file" name="images" id="status-input-image" style="display:none;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div id="chat" class="chat">
-                            <!-- <div class="message">
-                                <div class="container-cb">
-                                    <div class="cb">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium, labore! Porro labore molestiae dicta aperiam quis deserunt! Omnis aliquam repellat, nam, quos rerum eligendi at et, commodi deserunt accusantium repudiandae.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="message">
-                                <div class="container-cb2">
-                                    <div class="cb2">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur voluptas expedita laborum in quae nesciunt tempora debitis sint nihil minima maiores dicta itaque corrupti a, ab dolore provident fugit inventore.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
-                           
-                            <div class="message">
-                                <div class="container-cb">
-                                    <div class="cb">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum ium repudiandae.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div style="display:none; padding: 0 35px 20px 35px" id="chat" class="chat"></div>
 
-                            <div class="message">
-                                <div class="container-cb2">
-                                    <div class="cb2">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum ium repudiandae.</span>
-                                        <span>Time</span>
-                                    </div>
+                        <div style="display:none;" id="take-photo" class="chat">
+                            <span id="close-panel-camera" class="btn-default"><i class="small material-icons">close</i></span>
+                            <div class="container-photo">
+                                <span id="status-photo-take-photo" class='btn-default'><i class="small material-icons">local_see</i></span>
+                            </div>
+                        </div>
+
+                        <div style="display:none;" id="preview-panel-file" class="preview-panel-file">
+                            <span id="close-panel-file" class="btn-default"><i class="small material-icons">close</i></span>
+                            <div class="container-file">
+                                <div class="preview-content">
+                                    <span>Preview</span>
+                                </div>
+                                <div class="preview-footer">
+                                    <div class="preview-footer-input" contenteditable="true">comentário</div>
+                                    <span id="status-send-file" class="btn-default"><i style="margin-left:5px" class="small material-icons">send</i></span>
                                 </div>
                             </div>
-
-                            <div class="message">
-                                <div class="container-cb">
-                                    <div class="cb">
-                                        <span>Nome</span>
-                                        <span>Lore.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="message">
-                                <div class="container-cb2">
-                                    <div class="cb2">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum ium repudiandae.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="message">
-                                <div class="container-cb">
-                                    <div class="cb">
-                                        <span>Nome</span>
-                                        <span>Lorem ipsum ium repudiandae.</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="message">
-                                <div class="container-cb2">
-                                    <div class="cb2">
-                                        <span>Nome</span>
-                                        <span>Lorem i</span>
-                                        <span>Time</span>
-                                    </div>
-                                </div>
-                            </div> -->
-                            <div id="no-contact-selected"></div>
                         </div>
 
                         <div id="controls-chat" class="controls">
                             <div class="controls-container">
                                 
                                 <div id="form-group" class="form-group">
-                                    <input type="text" placeholder="Digite aqui">
+                                    <input id="input-text" type="text" placeholder="Digite aqui">
                                 </div>
 
                                 <div id="icons-container" class="icons-container">
-                                    <span><i class="small material-icons">send</i></span>
-                                    <span><i class="small material-icons">micro</i></span>
+                                    <span id="btn-send" ><i class="small material-icons">send</i></span>
+                                    <span id="btn-micro"><i class="small material-icons">micro</i></span>
                                 </div>
                             </div>
                         </div>
@@ -220,5 +217,20 @@
 
         </div>
         <!-- CLOSE DIV MAIN -->
+
+
+        <!-- DIALOG ATTACHMENT CONTACT -->
+        <div style="display:none;" id="dialog" class="dialog-attach-contact">
+            <div class="container-contact">
+                <div class="header-contact">
+                    <span id="dialog-close" class="btn-default"><i class="small material-icons">close</i></span>
+                </div>
+                <ul id="dialog-content-contact" class="content-contact"></ul>
+                <div class="footer-contact">
+                    <span>Actions</span>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>
