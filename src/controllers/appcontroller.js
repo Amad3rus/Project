@@ -3,6 +3,7 @@ import Messages from '../services/messages';
 import Contacts from '../services/contacts';
 import User from '../services/user';
 import { Wordlist } from '../utils/wordlist';
+import { Emojis } from '../utils/emoji';
 
 export default class AppController {
     constructor(){
@@ -13,6 +14,8 @@ export default class AppController {
         this.query;
         this.small = false;
         this.user;
+        this.mergeContact = {};
+        this.virtualList = [];
         this.config = {
             animate:'animated',
             fadeinleft:'fadeInLeft',
@@ -31,7 +34,7 @@ export default class AppController {
         document.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
-        this.el['menuSetinha'].checked = true;
+        // this.el['menuSetinha'].checked = true;
         console.log(this.el);
     }
     setDefaultEvents(){
@@ -86,7 +89,7 @@ export default class AppController {
         }
     }
     initEvents(){
-        this.eventHideMenuOnclick();
+        // this.eventHideMenuOnclick();
         this.eventRizeWindow();
         this.eventHideProfile();
         this.eventShowProfile();
@@ -102,16 +105,29 @@ export default class AppController {
         this.eventStatusAttachFile();
         this.eventStatusAttachContact();
         this.eventTakePicture();
-        this.buttonCloseDialog();   
+        this.closeBtnDialog();
+        
+       
     }
 
     // set events
     eventButtonSendMessage(){
+        const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);
+        
+        filter.forEach((value, index) => {
+            this.el['emojiPanel'].innerHTML += `<span class="emojis" id="emoji-${index}">${value}</span>`;
+        });
+
         this.el['btnSend'].hide();
+        
         this.el['inputText'].onkeyup = e => {
             this.el['btnMicro'].hide();
             this.el['btnSend'].show();
 
+            if(e.key == 'Enter'){
+                this.el['btnSend'].click();
+                this.el['inputText'].value = '';
+            }
             if(e.target.value == ''){
                 this.el['btnSend'].hide();
                 this.el['btnMicro'].show();
@@ -121,7 +137,63 @@ export default class AppController {
             if(e.target.value == ''){
                 this.el['btnSend'].hide();
                 this.el['btnMicro'].show();
+                this.el['audioRecord'].hide();
             }
+        });
+
+        this.el['btnMicro'].on('click', e => {
+            this.el['audioRecord'].css({display:'flex'});
+            this.el['btnMicro'].hide();
+            this.el['inputText'].disabled = true;
+            this.el['inputText'].placeholder = 'Gravando...';
+            this.el['controlsContainer'].css({background:'var(--color-silver)'});
+            this.el['formGroup'].css({width:'55%'});
+            this.el['iconsContainer'].css({maxWidth:'180px', justifyContent:'center'});
+            this.eventStartRecordingMicroTime()
+        });
+        
+        this.el['btnCloseAudioRecord'].on('click', e => {
+           this.closeRecordingMicro(); 
+        });
+
+        this.el['btnSendAudioRecord'].on('click', e => {
+           this.closeRecordingMicro(); 
+        });
+
+        this.el['btnSend'].on('click', e => {
+            console.log(this.el['inputText'].value);
+            this.el['inputText'].value = '';
+        });
+
+        this.el['emojiOpen'].on('click', e => {
+            this.el['emojiPanel'].show();
+            this.el['emojiClose'].show();
+            this.el['emojiOpen'].hide();
+            setTimeout(() => {
+                this.el['emojiPanel'].css({height:'250px'});
+              
+            },300);
+        });
+        this.el['emojiClose'].on('click', e => {
+            this.el['emojiPanel'].css({height:0});
+            setTimeout(() => {
+                this.el['emojiPanel'].hide();
+                this.el['emojiClose'].hide();
+                this.el['emojiOpen'].show();
+            }, 300);
+        });
+
+        this.el['emojiPanel'].querySelectorAll('.emojis').forEach((value, index) => {
+            value.on('click', e => {
+                this.el['inputText'].value += value.innerHTML;
+                if(this.el['inputText'].value){
+                    this.el['btnMicro'].hide();
+                    this.el['btnSend'].show();
+                }else{
+                    this.el['btnMicro'].show();
+                    this.el['btnSend'].hide();
+                }
+            });
         });
     }
     eventHideProfile(){
@@ -183,14 +255,14 @@ export default class AppController {
                 this.el['sidebar'].removeClass(this.config.fadeinleft);
                 this.el['sidebar'].style.width = 0;
                 this.config.sidebar = true;
-                this.el['menuSetinha'].checked = false;
+                // this.el['menuSetinha'].checked = false;
             }else{
                 this.el['sidebar'].removeClass(this.config.left);
                 this.el['sidebar'].addClass(this.config.animate);
                 this.el['sidebar'].addClass(this.config.fadeinleft);
                 this.el['sidebar'].style.width = '100%';
                 this.config.sidebar = false;
-                this.el['menuSetinha'].checked = true;
+                // this.el['menuSetinha'].checked = true;
             }
         });
     }
@@ -318,7 +390,8 @@ export default class AppController {
             this.el['containerChat'].css({background:this.backgroundDoodles});
             this.el['dialog'].css({display:'flex'});
             setTimeout(() => {
-                this.el['dialog'].css({transform: 'scale(1)'})
+                this.el['dialog'].css({transform: 'scale(1)'});
+                this.el['dialogBtnSendContact'].disabled = true;
             }, 300)
         });
     }
@@ -340,6 +413,34 @@ export default class AppController {
             console.log('take a picture');
         });
     }
+    eventAttachContactToInsert(contact, el){
+        this.el['dialogFooterContact'].innerHTML = '';
+        let checkbox = el.querySelector('input');
+
+        if(checkbox.checked){
+            this.mergeContact[`contact${contact.id}`] = contact;
+            this.virtualList = this.virtualList.concat(this.mergeContact[`contact${contact.id}`]);
+        }else{
+            const index = this.virtualList.findIndex(i => i.id == contact.id);
+            if(index >= 0) this.virtualList.splice(index, 1);
+        }
+        
+        this.virtualList.forEach((value, index) => {
+            this.el['dialogFooterContact'].innerHTML += (this.virtualList.length > 1) ? `<span>${value.name},&nbsp;&nbsp;</span>` : `<span>${value.name}</span>`;
+        });
+
+        if(this.virtualList.length > 0) this.el['dialogBtnSendContact'].disabled = false;
+        else this.el['dialogBtnSendContact'].disabled = true;
+
+        this.el['dialogBtnSendContact'].on('click', e => this.prepareDataToAttachContact(this.virtualList));
+    }
+    eventStartRecordingMicroTime(){
+        let start = Date.now();
+        this.recordMicroInterval = setInterval(() => {
+            this.el['audioRecordTimer'].innerHTML = Format.toTime((Date.now() - start));
+        },100);
+    }
+   
 
     // fetch some data
     fetchContacts(){
@@ -377,9 +478,9 @@ export default class AppController {
                         <div class="message">
                             <div class="container-cb2">
                                 <div class="cb2">
-                                    <span>${msg.name}</span>
+                                    <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                                     <span>${msg.message}</span>
-                                    <span class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                                    <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
                                 </div>
                             </div>
                         </div>
@@ -387,9 +488,9 @@ export default class AppController {
                         <div class="message">
                             <div class="container-cb">
                                 <div class="cb">
-                                    <span>${msg.name}</span>
+                                    <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
                                     <span>${msg.message}</span>
-                                    <span class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                                    <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
                                 </div>
                             </div>
                         </div>
@@ -463,20 +564,26 @@ export default class AppController {
             li.innerHTML += `
                 <input id="checkbox-attach-contact-index${index}" type="checkbox">
                 <label for="checkbox-attach-contact-index${index}">
-                    <div class="img">
-                        <i class="large material-icons">person</i>
+                    <div style="margin-left:16px;" class="img">
+                        <span class="btn-default" style="background: rgba(51,51,51,1)" ><i class="large material-icons">person</i></span>
                     </div>
                     <div class="text">
                         <span class="name">${value.name}</span>
-                        <span class="message">${value.message}</span>
-                        <span class="time">${Format.formatHourToBrazilian(value.time)}</span>
+                        <!-- <span class="message">${value.message}</span> -->
+                        <!-- <span class="time">${Format.formatHourToBrazilian(value.time)}</span> -->
                     </div>
                 </label>
             `
-            // li.onclick = e => this.eventOpenChat(value);
+            li.onchange = e => this.eventAttachContactToInsert(value, li);
             this.el['dialogContentContact'].appendChild(li);
         });
     }
+
+    prepareDataToAttachContact(contact){
+        console.log(contact);
+    }
+
+    // close events
     closeAllPanelLeft(){
         this.el['panelProfile'].removeClass('open-panel');
         this.el['panelContacts'].removeClass('open-panel');
@@ -500,7 +607,7 @@ export default class AppController {
         this.el['previewPanelFile'].hide();
         this.el['statusAttachFile'].disabled = false;
     }
-    buttonCloseDialog(){
+    closeBtnDialog(){
         this.el['dialogClose'].on('click', e => {
             this.el['dialog'].css({transform:'scale(0)'});
             setTimeout(() => {
@@ -515,5 +622,15 @@ export default class AppController {
                 },300);
             }
         }
+    }
+    closeRecordingMicro(){
+        this.el['audioRecord'].hide();
+        this.el['btnMicro'].show();
+        this.el['inputText'].placeholder = 'Digite aqui';
+        this.el['controlsContainer'].css({background:'var(--color-dark)'});
+        this.el['formGroup'].css({width:'60%'});
+        this.el['iconsContainer'].css({maxWidth:'95px', justifyContent:'flex-end'});
+        this.el['inputText'].disabled = false;
+        clearInterval(this.recordMicroInterval);
     }
 }

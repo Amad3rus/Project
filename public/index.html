@@ -47,7 +47,7 @@
                                     <div class="set-name">
                                         <!-- <input id="edit-name" type="text" placeholder="Edite seu nome"> -->
                                         <div style="max-height: 80px; overflow-y: auto;" id="edit-name" class="input-edit-name" contenteditable="true">Edite seu nome</div>
-                                        <span id="edit-name-enter"><i class="small material-icons">send</i></span>
+                                        <span style="background:transparent" id="edit-name-enter"><i class="small material-icons">check</i></span>
                                     </div>
                                     <!-- <button class="mdc-button foo-button custom-ripple">
                                         <span class="mdc-button__label">
@@ -96,14 +96,14 @@
                          </div>
                     </nav>
                 </div>
-                <div id="hide-menu" class="container">
+                <!-- <div id="hide-menu" class="container">
                     <input id="menu-setinha" type="checkbox"> 
                     <label for="menu-setinha"> 
                         <div class="menu"> 
                             <span class="setinha"></span> 
                         </div> 
                     </label> 
-                </div>
+                </div> -->
                 <div id="header-footer" class="footer"></div>
             </header>
             <!-- CLOSE HEADER SIDEBAR -->
@@ -168,16 +168,40 @@
                         </div>
 
                         <div id="controls-chat" class="controls">
-                            <div class="controls-container">
-                                
+                            <div id="controls-container" class="controls-container">
+
+                                <div class="emojis-container">
+                                    <button style="background:none;" class="btn-default emojis" id="emoji-open">
+                                        <span style="font-size:25px; color:var(--color-light)">&#128515;</span>
+                                    </button>
+                                    <button style="background:none; display:none;" class="btn-default emojis" id="emoji-close">
+                                        <span style="font-size:25px; color:var(--color-light)">&times;</span>
+                                    </button>
+                                </div>
+
                                 <div id="form-group" class="form-group">
                                     <input id="input-text" type="text" placeholder="Digite aqui">
+                                    <!-- <div id="input-text" contenteditable="true">
+                                        <span>Digite aqui</span>
+                                    </div> -->
                                 </div>
 
                                 <div id="icons-container" class="icons-container">
-                                    <span id="btn-send" ><i class="small material-icons">send</i></span>
-                                    <span id="btn-micro"><i class="small material-icons">micro</i></span>
+                                    <div id="audio-record" style="display:none;" class="audio-record">
+                                        <button class="btn-default btn-record-close" id="btn-close-audio-record"><i class="small material-icons">close</i></button>
+                                        <time style="color:var(--color-white)">
+                                            <span class="recording"></span>
+                                            &nbsp;
+                                            &nbsp;
+                                            <span id="audio-record-timer" class="time"></span>
+                                        </time>
+                                        <button class="btn-default btn-record-send" id="btn-send-audio-record"><i class="small material-icons">check</i></button>
+                                    </div>
+                                    <button class="btn-default" id="btn-send"><i style="margin-left: 5px;" class="small material-icons">send</i></button>
+                                    <button class="btn-default" id="btn-micro"><i class="small material-icons">mic</i></button>
                                 </div>
+
+                                <div style="display:none;" class="emoji-panel" id="emoji-panel"></div>
                             </div>
                         </div>
                     </div>
@@ -225,12 +249,18 @@
                 <div class="header-contact">
                     <span id="dialog-close" class="btn-default"><i class="small material-icons">close</i></span>
                 </div>
+
                 <ul id="dialog-content-contact" class="content-contact"></ul>
+                
                 <div class="footer-contact">
-                    <span>Actions</span>
+                    <span id="dialog-footer-contact"></span>
                 </div>
+                
+                <button id="dialog-btn-send-contact" class="btn-default">
+                    <i style="margin-left:5px;" class="small material-icons">send</i>
+                </button>
+
             </div>
         </div>
-
     </body>
 </html>
