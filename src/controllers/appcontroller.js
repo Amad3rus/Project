@@ -106,33 +106,44 @@ export default class AppController {
         this.eventStatusAttachContact();
         this.eventTakePicture();
         this.closeBtnDialog();
-        
-       
     }
 
     // set events
     eventButtonSendMessage(){
         const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);
-        
+
         filter.forEach((value, index) => {
-            this.el['emojiPanel'].innerHTML += `<span class="emojis" id="emoji-${index}">${value}</span>`;
+            this.el['emojiPanel'].innerHTML += `<span class="emojis" data-unicode="${value}" data-emoji="${index}" id="emoji-${index}">${value}</span>`;
         });
 
         this.el['btnSend'].hide();
-        
-        this.el['inputText'].onkeyup = e => {
-            this.el['btnMicro'].hide();
-            this.el['btnSend'].show();
+        this.el['inputText'].focus();
+        // this.el['inputText'].setAttribute('placeholder','Digite uma mensagem');
 
-            if(e.key == 'Enter'){
-                this.el['btnSend'].click();
-                this.el['inputText'].value = '';
-            }
+        this.el['inputText'].on('keydown', e => {
             if(e.target.value == ''){
+                if(e.key == 'Enter' || e.key == 'Alt' || e.key == 'Backspace' || e.key == 'Control' || e.key == 'CapsLock' || e.key == 'Tab'){
+                    e.preventDefault();
+                }else{
+                    // this.el['inputText'].setAttribute('placeholder','');
+                    this.el['btnSend'].show();
+                    this.el['btnMicro'].hide();
+                }
+            }else if(e.key == 'Enter'){
+                e.preventDefault();
+            }
+        });
+        this.el['inputText'].on('keyup', e => {
+            if(e.target.value != ''){
+                if(e.key == 'Enter'){
+                    this.el['btnSend'].click();
+                }
+            }else{
+                // this.el['inputText'].setAttribute('placeholder','Digite uma mensagem');
                 this.el['btnSend'].hide();
                 this.el['btnMicro'].show();
             }
-        };
+        });
         this.el['inputText'].on('focusout', e => {
             if(e.target.value == ''){
                 this.el['btnSend'].hide();
@@ -141,28 +152,39 @@ export default class AppController {
             }
         });
 
+        this.el['inputText'].on('focus', e => {
+            // this.el['emojiClose'].click();
+        });
+
         this.el['btnMicro'].on('click', e => {
             this.el['audioRecord'].css({display:'flex'});
             this.el['btnMicro'].hide();
+            // this.el['inputText'].setAttribute('contenteditable', false);
+            // this.el['inputText'].setAttribute('placeholder', 'Gravando...');
             this.el['inputText'].disabled = true;
             this.el['inputText'].placeholder = 'Gravando...';
             this.el['controlsContainer'].css({background:'var(--color-silver)'});
             this.el['formGroup'].css({width:'55%'});
             this.el['iconsContainer'].css({maxWidth:'180px', justifyContent:'center'});
+            this.el['emojiOpen'].disabled = true;
             this.eventStartRecordingMicroTime()
         });
-        
+
         this.el['btnCloseAudioRecord'].on('click', e => {
-           this.closeRecordingMicro(); 
+           this.closeRecordingMicro();
         });
 
         this.el['btnSendAudioRecord'].on('click', e => {
-           this.closeRecordingMicro(); 
+           this.closeRecordingMicro();
         });
 
         this.el['btnSend'].on('click', e => {
             console.log(this.el['inputText'].value);
             this.el['inputText'].value = '';
+            this.el['inputText'].setAttribute('placeholder','Digite uma mensagem');
+            this.el['emojiClose'].click();
+            this.el['btnSend'].hide();
+            this.el['btnMicro'].show();
         });
 
         this.el['emojiOpen'].on('click', e => {
@@ -171,7 +193,6 @@ export default class AppController {
             this.el['emojiOpen'].hide();
             setTimeout(() => {
                 this.el['emojiPanel'].css({height:'250px'});
-              
             },300);
         });
         this.el['emojiClose'].on('click', e => {
@@ -183,18 +204,25 @@ export default class AppController {
             }, 300);
         });
 
-        this.el['emojiPanel'].querySelectorAll('.emojis').forEach((value, index) => {
-            value.on('click', e => {
-                this.el['inputText'].value += value.innerHTML;
-                if(this.el['inputText'].value){
-                    this.el['btnMicro'].hide();
-                    this.el['btnSend'].show();
-                }else{
-                    this.el['btnMicro'].show();
-                    this.el['btnSend'].hide();
-                }
-            });
+        this.el['emojiPanel'].querySelectorAll('.emojis')
+            .forEach((value, index) => {
+                value.on('click', e => {
+                    if(this.el['inputText'].value == '' || this.el['inputText'].value){
+                        this.el['btnMicro'].hide();
+                        this.el['btnSend'].show();
+                    }else{
+                        this.el['btnMicro'].show();
+                        this.el['btnSend'].hide();
+                    }
+
+                    // só funciona se for input
+                    this.el['inputText'].setRangeText(value.innerHTML, this.el['inputText'].selectionStart, this.el['inputText'].selectionEnd, "end");
+                    this.el['inputText'].focus();
+                    this.el['inputText'].dispatchEvent(new Event('keydown'));
+                });
         });
+        // forçar um evento a um elemento
+        // elemento.dispatchEvent(new Event(nome_do_evento));
     }
     eventHideProfile(){
         this.el['closePanelProfile'].on('click', e => {
@@ -424,7 +452,7 @@ export default class AppController {
             const index = this.virtualList.findIndex(i => i.id == contact.id);
             if(index >= 0) this.virtualList.splice(index, 1);
         }
-        
+
         this.virtualList.forEach((value, index) => {
             this.el['dialogFooterContact'].innerHTML += (this.virtualList.length > 1) ? `<span>${value.name},&nbsp;&nbsp;</span>` : `<span>${value.name}</span>`;
         });
@@ -440,7 +468,7 @@ export default class AppController {
             this.el['audioRecordTimer'].innerHTML = Format.toTime((Date.now() - start));
         },100);
     }
-   
+
 
     // fetch some data
     fetchContacts(){
@@ -484,7 +512,7 @@ export default class AppController {
                                 </div>
                             </div>
                         </div>
-                
+
                         <div class="message">
                             <div class="container-cb">
                                 <div class="cb">
@@ -587,7 +615,7 @@ export default class AppController {
     closeAllPanelLeft(){
         this.el['panelProfile'].removeClass('open-panel');
         this.el['panelContacts'].removeClass('open-panel');
-        
+
         setTimeout(() => {
             this.el['panelProfile'].hide();
             this.el['panelContacts'].hide();
@@ -626,11 +654,14 @@ export default class AppController {
     closeRecordingMicro(){
         this.el['audioRecord'].hide();
         this.el['btnMicro'].show();
-        this.el['inputText'].placeholder = 'Digite aqui';
         this.el['controlsContainer'].css({background:'var(--color-dark)'});
         this.el['formGroup'].css({width:'60%'});
         this.el['iconsContainer'].css({maxWidth:'95px', justifyContent:'flex-end'});
+        // this.el['inputText'].setAttribute('contenteditable', true);
+        // this.el['inputText'].setAttribute('placeholder', 'Digite uma mensagem');
+        this.el['inputText'].placeholder = 'Digite uma mensagem';
         this.el['inputText'].disabled = false;
+        this.el['emojiOpen'].disabled = false;
         clearInterval(this.recordMicroInterval);
     }
 }
