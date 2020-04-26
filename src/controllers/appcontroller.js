@@ -4,6 +4,9 @@ import Contacts from '../services/contacts';
 import User from '../services/user';
 import { Wordlist } from '../utils/wordlist';
 import { Emojis } from '../utils/emoji';
+import CameraController from './cameracontroller';
+import DocumentPreviewController from './documentcontroller';
+import Snackbar from './snackbarcontroller';
 
 export default class AppController {
     constructor(){
@@ -36,6 +39,16 @@ export default class AppController {
         });
         // this.el['menuSetinha'].checked = true;
         console.log(this.el);
+
+        const snackbarConfig = {
+            snackbar: this.el['notificationContainerSnackbar'],
+            notification: this.el['notification'],
+            status:this.el['status'],
+            icon: this.el['icon'],
+            text: this.el['snackbarText']
+        }
+        this.snackbarService = new Snackbar(snackbarConfig);
+
     }
     setDefaultEvents(){
         Element.prototype.show = function(){
@@ -106,6 +119,7 @@ export default class AppController {
         this.eventStatusAttachContact();
         this.eventTakePicture();
         this.closeBtnDialog();
+        this.eventRetakePicture();
     }
 
     // set events
@@ -295,9 +309,9 @@ export default class AppController {
         });
     }
     eventOpenChat(contact){
+        this.closeAllMainPanel();
+        this.showPanelDefault();
         this.el['chatStatusBar'].show();
-        this.el['chat'].show();
-        this.el['containerChat'].css({background:this.backgroundDoodles});
         this.el['chatHome'].hide();
     }
     eventOpenAttachments(){
@@ -378,35 +392,103 @@ export default class AppController {
     eventStatusAttachCamera(){
         this.el['statusBtnAttachCamera'].on('click', e => {
             this.closeAllMainPanel();
+            this.el['imageCamera'].hide();
+            this.el['statusPhotoTakeSend'].hide();
             this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
             this.el['takePhoto'].show();
             this.el['controlsChat'].show();
+            this.el['videoCamera'].css({
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                width:'100%',
+            });
             this.el['statusAttachFile'].disabled = true;
+            this.cameraCtrl = new CameraController(this.el['videoCamera']);
 
         });
         this.el['closePanelCamera'].on('click', e => {
             this.closeAllMainPanel();
-            this.el['chat'].show();
-            this.el['containerChat'].css({background:this.backgroundDoodles});
-            this.el['controlsChat'].show();
+            this.showPanelDefault();
+            // this.el['chat'].show();
+            // this.el['containerChat'].css({background:this.backgroundDoodles});
+            // this.el['controlsChat'].show();
+            this.cameraCtrl.stopRecording();
         });
 
     }
     eventStatusAttachFile(){
         this.el['statusBtnAttachFile'].on('click', e => {
             this.closeAllMainPanel();
-            this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
-            this.el['previewPanelFile'].show();
-            this.el['controlsChat'].hide();
-            this.el['statusAttachFile'].disabled = true;
-
+            this.el['statusInputFile'].click();
         });
         this.el['closePanelFile'].on('click', e => {
             this.closeAllMainPanel();
-            this.el['chat'].show();
-            this.el['containerChat'].css({background:this.backgroundDoodles});
-            this.el['controlsChat'].show();
+            this.showPanelDefault();
+
+            while(this.el['iconFile'].firstChild){
+                this.el['iconFile'].removeChild(this.el['iconFile'].lastChild);
+            }
+            this.snackbarService.callNotification('online', 'cancelado', '&check;');
         });
+
+        this.el['statusInputFile'].on('change', e => {
+            if(this.el['statusInputFile'].files.length > 0){
+                this.files = this.el['statusInputFile'].files;
+
+                this.docPreviewCtrl = new DocumentPreviewController(this.files);
+
+                this.docPreviewCtrl.fetchPreviewFile()
+                    .then(data => {
+                        this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
+                        this.el['previewPanelFile'].show();
+                        this.el['controlsChat'].hide();
+                        this.el['statusAttachFile'].disabled = true;
+                        
+                        setTimeout(() => {
+                            data.forEach((file, index) => {
+                                let div = document.createElement('div');
+                                switch(file.info.type){
+                                    case 'image/png':
+                                    case 'image/jpg':
+                                    case 'image/jpeg':
+                                    case 'image/gif':
+                                        div.innerHTML += returnHTML(file, 'insert_drive_file');
+                                        break;
+                                    case 'application/pdf':
+                                        div.innerHTML += `
+                                            <span style="color:var(--color-white);">
+                                                <i class="close small material-icons">close</i>
+                                                <img src="/assets/icons/icon-pdf.svg">
+                                                ${Format.formatNameFromImage(file.info.type)}
+                                            </span>
+                                        `;
+                                        break;
+                                }
+                                div.onclick = e => this.eventDeleteFileFromPreview(this.files, file.info, div);
+                                this.el['iconFile'].appendChild(div);
+                            });
+                            
+                            this.snackbarService.callNotification('online', `(${data.length}) - documento(s) inserido`, '&check;');
+                        },300);
+                    })
+                    .catch(e => {
+                        this.snackbarService.callNotification('offline', 'Error documento não inserido', '&times;');
+                        console.error(e);
+                        this.closeAllMainPanel();
+                        this.showPanelDefault();
+                    });
+            }
+        });
+        function returnHTML(file, icon){
+            return `
+                <span style="color:var(--color-white);">
+                    <i class="close small material-icons">close</i>
+                    <i style="font-size:40px" class="large material-icons">${icon}</i>
+                    ${Format.formatNameFromImage(file.info.type)}
+                </span>
+            `;
+        }
         this.el['statusSendFile'].on('click', e => {
             console.log('send file');
         });
@@ -418,6 +500,7 @@ export default class AppController {
             this.el['containerChat'].css({background:this.backgroundDoodles});
             this.el['dialog'].css({display:'flex'});
             setTimeout(() => {
+
                 this.el['dialog'].css({transform: 'scale(1)'});
                 this.el['dialogBtnSendContact'].disabled = true;
             }, 300)
@@ -425,20 +508,72 @@ export default class AppController {
     }
     eventStatusAttachImage(){
         this.el['statusBtnAttachImage'].on('click', e => {
-            this.el['statusInputImage'].click();
+            this.closeAllMainPanel();
+            this.el['statusInput'].click();
         });
 
-        this.el['statusInputImage'].on('change', e => {
-            console.log(this.el['statusInputImage'].files);
+        this.el['statusInput'].on('change', e => {
+            if(this.el['statusInput'].files.length == 1){
+                let file = this.el['statusInput'].files[0];
+                this.docPreviewCtrl = new DocumentPreviewController(file);
 
-            [...this.el['statusInputImage'].files].forEach((file, index) => {
-                console.log(file);
-            });
+                this.docPreviewCtrl.fetchPreviewFile()
+                    .then(data => {
+                        this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
+                        this.el['previewPanelFile'].show();
+                        this.el['controlsChat'].hide();
+                        this.el['statusAttachFile'].disabled = true;
+                        this.el['containerDocumentPreview'].css({width:'100%', objectFit:'container'});
+                        this.el['containerDocumentPreview'].src = data.src;
+                        this.el['namePhoto'].innerHTML = data.info.name;
+                        this.snackbarService.callNotification('online', 'Documento foi inserido', '&check;');
+                    })
+                    .catch(e => {
+                        this.snackbarService.callNotification('offline', 'Error documento não inserido', '&times;');
+                        console.error(e);
+                        this.closeAllMainPanel();
+                        this.showPanelDefault();
+                    });
+            }else{
+                [...this.el['statusInput'].files].forEach((file, index) => {
+                    console.log(file);
+                });
+            }
         });
+
     }
     eventTakePicture(){
         this.el['statusPhotoTakePhoto'].on('click', e => {
-            console.log('take a picture');
+            this.el['imageCamera'].src = this.cameraCtrl.takePicture();
+            this.el['videoCamera'].hide();
+            this.el['imageCamera'].css({
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                width:'100%',
+            });
+            this.el['statusPhotoTakePhoto'].hide();
+            this.el['statusPhotoTakeSend'].css({display:'flex'});
+        });
+
+        this.el['statusPhotoTakeSend'].on('click', e => {
+            console.log(this.el['imageCamera'].src);
+            this.closeAllMainPanel();
+            this.showPanelDefault();
+            this.el['statusPhotoTakePhoto'].css({display:'flex'});
+        });
+    }
+    eventRetakePicture(){
+        this.el['retakePicture'].on('click', e => {
+            this.el['imageCamera'].hide();
+            this.el['videoCamera'].css({
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                width:'100%'
+            });
+            this.el['statusPhotoTakePhoto'].css({display:'flex'});
+            this.el['statusPhotoTakeSend'].hide();
         });
     }
     eventAttachContactToInsert(contact, el){
@@ -468,7 +603,19 @@ export default class AppController {
             this.el['audioRecordTimer'].innerHTML = Format.toTime((Date.now() - start));
         },100);
     }
-
+    eventDeleteFileFromPreview(files, file, div){
+        [...this.files].forEach((value, index) => {
+            if(value.name == file.name){
+                this.el['iconFile'].removeChild(div);
+                if(this.el['iconFile'].childElementCount == 0) this.snackbarService.callNotification('online', 'Documento foi removido', '&check;');
+                else this.snackbarService.callNotification('online', `(${this.el['iconFile'].childElementCount}) Documentos foi removido`, '&check;');
+            }
+        });
+        if(this.el['iconFile'].childElementCount == 0){
+            this.closeAllMainPanel();
+            this.showPanelDefault();
+        }
+    }
 
     // fetch some data
     fetchContacts(){
@@ -542,6 +689,8 @@ export default class AppController {
             .then(u => {
                 this.user = u;
                 this.fetchMessages(this.user);
+                this.el['profileName'].innerHTML = u.name;
+                this.el['profileName'].setAttribute('title', u.name);
             })
             .catch(e => console.error(e));
     }
@@ -610,7 +759,12 @@ export default class AppController {
     prepareDataToAttachContact(contact){
         console.log(contact);
     }
-
+    // show
+    showPanelDefault(){
+        this.el['chat'].show();
+        this.el['containerChat'].css({background:this.backgroundDoodles});
+        this.el['controlsChat'].show();
+    }
     // close events
     closeAllPanelLeft(){
         this.el['panelProfile'].removeClass('open-panel');
@@ -633,6 +787,8 @@ export default class AppController {
         this.el['chat'].hide();
         this.el['takePhoto'].hide();
         this.el['previewPanelFile'].hide();
+        this.el['imageCamera'].hide();
+        this.el['statusPhotoTakeSend'].hide();
         this.el['statusAttachFile'].disabled = false;
     }
     closeBtnDialog(){
