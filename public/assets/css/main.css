@@ -5,7 +5,7 @@
 @import '../css/dialog.css';
 @import '../css/profile-card.css';
 @import '../css/snackbar.css';
-
+@import '../css/carousel.css';
 
 .main{
     width:100%;
@@ -673,8 +673,7 @@
     max-width: 300px;
 }
 
-.main .container-contact .contact,
-.main .nav .mdc-list .panel-contacts .contact{
+.main .container-contact .contact{
     padding:0;
     height: 80%;
 }

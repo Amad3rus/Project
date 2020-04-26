@@ -7,6 +7,7 @@ import { Emojis } from '../utils/emoji';
 import CameraController from './cameracontroller';
 import DocumentPreviewController from './documentcontroller';
 import Snackbar from './snackbarcontroller';
+import CarouselController from './carouselcontroller';
 
 export default class AppController {
     constructor(){
@@ -48,7 +49,6 @@ export default class AppController {
             text: this.el['snackbarText']
         }
         this.snackbarService = new Snackbar(snackbarConfig);
-
     }
     setDefaultEvents(){
         Element.prototype.show = function(){
@@ -427,7 +427,7 @@ export default class AppController {
             this.showPanelDefault();
 
             while(this.el['iconFile'].firstChild){
-                this.el['iconFile'].removeChild(this.el['iconFile'].lastChild);
+                this.el['iconFile'].removeChild(this.el['iconFile'].firstChild);
             }
             this.snackbarService.callNotification('online', 'cancelado', '&check;');
         });
@@ -444,7 +444,7 @@ export default class AppController {
                         this.el['previewPanelFile'].show();
                         this.el['controlsChat'].hide();
                         this.el['statusAttachFile'].disabled = true;
-                        
+                        this.el['iconFile'].show();
                         setTimeout(() => {
                             data.forEach((file, index) => {
                                 let div = document.createElement('div');
@@ -513,20 +513,44 @@ export default class AppController {
         });
 
         this.el['statusInput'].on('change', e => {
-            if(this.el['statusInput'].files.length == 1){
-                let file = this.el['statusInput'].files[0];
-                this.docPreviewCtrl = new DocumentPreviewController(file);
+            if(this.el['statusInput'].files.length > 0){
+                this.fileImages = this.el['statusInput'].files;
+
+                this.docPreviewCtrl = new DocumentPreviewController(this.fileImages);
 
                 this.docPreviewCtrl.fetchPreviewFile()
                     .then(data => {
                         this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
                         this.el['previewPanelFile'].show();
                         this.el['controlsChat'].hide();
+                        this.el['iconFile'].hide();
                         this.el['statusAttachFile'].disabled = true;
-                        this.el['containerDocumentPreview'].css({width:'100%', objectFit:'container'});
-                        this.el['containerDocumentPreview'].src = data.src;
-                        this.el['namePhoto'].innerHTML = data.info.name;
-                        this.snackbarService.callNotification('online', 'Documento foi inserido', '&check;');
+
+                        setTimeout(() => {
+                            this.el['containerDocumentPreview'].show();
+
+                            data.forEach((value,index) => {
+                                let div = document.createElement('div');
+                                div.addClass('slides', 'fade');
+                                div.dataset.images = value.info.name;
+                                div.innerHTML += `
+                                    <span id="close-slide" class="close-slide"><i class="small material-icons">close</i></span>
+                                    <img src="${value.src}">
+                                    <div class="caption">${value.info.name}</div>
+                                `;
+                               
+                                this.el['containerDocumentPreview'].appendChild(div);
+                                this.snackbarService.callNotification('online', `(${data.length}) - documento foi inserido`, '&check;');
+                            });
+
+                            const config = {
+                                carousel: this.el['carousel'],
+                                control:true
+                            }
+                            this.carouselCtrl = new CarouselController(config);
+                            
+                            
+                        },300);
                     })
                     .catch(e => {
                         this.snackbarService.callNotification('offline', 'Error documento não inserido', '&times;');
@@ -535,12 +559,20 @@ export default class AppController {
                         this.showPanelDefault();
                     });
             }else{
-                [...this.el['statusInput'].files].forEach((file, index) => {
-                    console.log(file);
-                });
+                this.snackbarService.callNotification('online', 'Nenhuma arquivo carregado', '&times;');
             }
         });
 
+        this.el['containerDocumentPreview'].addEventListener('imageDelete', e => {
+            if(!e.target.querySelector('.slides')){
+                this.closeAllMainPanel();
+                this.showPanelDefault();
+                e.target.querySelector('.next').remove();
+                e.target.querySelector('.prev').remove();
+            }else{
+                this.snackbarService.callNotification('online', `(${e.target.childElementCount - 2}) - documento foi excluído`, '&check;');
+            }
+        });
     }
     eventTakePicture(){
         this.el['statusPhotoTakePhoto'].on('click', e => {
@@ -789,6 +821,8 @@ export default class AppController {
         this.el['previewPanelFile'].hide();
         this.el['imageCamera'].hide();
         this.el['statusPhotoTakeSend'].hide();
+        this.el['iconFile'].hide();
+        this.el['containerDocumentPreview'].hide();
         this.el['statusAttachFile'].disabled = false;
     }
     closeBtnDialog(){

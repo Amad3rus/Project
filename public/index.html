@@ -4,13 +4,15 @@
         <title>Random Chat</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <!-- LINKS EXTERNOS -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+        
         <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
-         
+
         <!-- LINKS INTERNOS -->
         <!-- <link rel="stylesheet" href="/assets/css/hidemenu.component.css"> -->
         <link rel="stylesheet" href="/assets/css/main.css">
@@ -212,8 +214,13 @@
                             <span id="close-panel-file" class="btn-default"><i class="small material-icons">close</i></span>
                             <div class="container-file">
                                 <div class="preview-content">
-                                    <img id="container-document-preview">
-                                    <div class="icon-files" id="icon-file"></div>
+                                    <div id="carousel" class="carousel">
+                                        <div id="container-document-preview" class="carousel-container">
+                                            <!-- <a class="prev" id="prev-slide">&#10094;</a>
+                                            <a class="next" id="next-slide">&#10095;</a> -->
+                                        </div>
+                                    </div>
+                                    <div style="display:none;" class="icon-files" id="icon-file"></div>
                                 </div>
 
                                 <span class="name-photo" id="name-photo"></span>
@@ -258,120 +265,7 @@
                                     <button class="btn-default" id="btn-micro"><i class="small material-icons">mic</i></button>
                                 </div>
 
-                                <div style="display:none;" class="emoji-panel" id="emoji-panel" tabindex="-1">
-                                    <!-- <span class="b59 emojik wa" tabindex="-1" data-unicode="😀" data-emoji-index="0" style="background-position: 0px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😃" data-emoji-index="1" style="background-position: -105px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😄" data-emoji-index="2" style="background-position: -140px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😁" data-emoji-index="3" style="background-position: -35px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😆" data-emoji-index="4" style="background-position: -35px -70px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😅" data-emoji-index="5" style="background-position: 0px -70px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😂" data-emoji-index="6" style="background-position: -70px -35px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤣" data-emoji-index="7" style="background-position: -70px -35px;"></span>
-                                    <span class="b90 emojik wa" tabindex="-1" data-unicode="☺" data-emoji-index="8" style="background-position: -140px -70px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😊" data-emoji-index="9" style="background-position: 0px -105px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😇" data-emoji-index="10" style="background-position: -70px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="🙂" data-emoji-index="11" style="background-position: 0px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="🙃" data-emoji-index="12" style="background-position: -35px -140px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😉" data-emoji-index="13" style="background-position: -140px -70px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😌" data-emoji-index="14" style="background-position: -70px -105px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😍" data-emoji-index="15" style="background-position: -105px -105px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😘" data-emoji-index="16" style="background-position: -140px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😗" data-emoji-index="17" style="background-position: -105px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😙" data-emoji-index="18" style="background-position: 0px -35px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😚" data-emoji-index="19" style="background-position: -35px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😋" data-emoji-index="20" style="background-position: -35px -105px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😛" data-emoji-index="21" style="background-position: -70px -35px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😝" data-emoji-index="22" style="background-position: -140px -35px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😜" data-emoji-index="23" style="background-position: -105px -35px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤪" data-emoji-index="24" style="background-position: 0px 0px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤨" data-emoji-index="25" style="background-position: -105px -140px;"></span>
-                                    <span class="b81 emojik wa" tabindex="-1" data-unicode="🧐" data-emoji-index="26" style="background-position: 0px 0px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤓" data-emoji-index="27" style="background-position: -70px 0px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😎" data-emoji-index="28" style="background-position: -140px -105px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤩" data-emoji-index="29" style="background-position: -140px -140px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😏" data-emoji-index="30" style="background-position: 0px -140px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😒" data-emoji-index="31" style="background-position: -105px -140px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😞" data-emoji-index="32" style="background-position: 0px -70px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😔" data-emoji-index="33" style="background-position: 0px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😟" data-emoji-index="34" style="background-position: -35px -70px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😕" data-emoji-index="35" style="background-position: -35px 0px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="🙁" data-emoji-index="36" style="background-position: -140px -105px;"></span>
-                                    <span class="b90 emojik wa" tabindex="-1" data-unicode="☹" data-emoji-index="37" style="background-position: -105px -70px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😣" data-emoji-index="38" style="background-position: 0px -105px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😖" data-emoji-index="39" style="background-position: -70px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😫" data-emoji-index="40" style="background-position: -70px -140px;"></span>
-                                    <span class="b87 emojik wa" tabindex="-1" data-unicode="😩" data-emoji-index="41" style="background-position: -35px -35px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😢" data-emoji-index="42" style="background-position: -140px -70px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😭" data-emoji-index="43" style="background-position: -140px -140px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😤" data-emoji-index="44" style="background-position: -35px -105px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😠" data-emoji-index="45" style="background-position: -70px -70px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😡" data-emoji-index="46" style="background-position: -105px -70px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤬" data-emoji-index="47" style="background-position: -70px 0px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤯" data-emoji-index="48" style="background-position: 0px -35px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😳" data-emoji-index="49" style="background-position: 0px -35px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😱" data-emoji-index="50" style="background-position: -105px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😨" data-emoji-index="51" style="background-position: 0px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😰" data-emoji-index="52" style="background-position: -70px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😥" data-emoji-index="53" style="background-position: -70px -105px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😓" data-emoji-index="54" style="background-position: -140px -140px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤗" data-emoji-index="55" style="background-position: -35px -35px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤔" data-emoji-index="56" style="background-position: -105px 0px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤭" data-emoji-index="57" style="background-position: -105px 0px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤫" data-emoji-index="58" style="background-position: -35px 0px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤥" data-emoji-index="59" style="background-position: -140px -35px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😶" data-emoji-index="60" style="background-position: -105px -35px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😐" data-emoji-index="61" style="background-position: -35px -140px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😑" data-emoji-index="62" style="background-position: -70px -140px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😬" data-emoji-index="63" style="background-position: -105px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="🙄" data-emoji-index="64" style="background-position: -70px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😯" data-emoji-index="65" style="background-position: -35px 0px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😦" data-emoji-index="66" style="background-position: -105px -105px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😧" data-emoji-index="67" style="background-position: -140px -105px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😮" data-emoji-index="68" style="background-position: 0px 0px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😲" data-emoji-index="69" style="background-position: -140px 0px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😴" data-emoji-index="70" style="background-position: -35px -35px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤤" data-emoji-index="71" style="background-position: -105px -35px;"></span>
-                                    <span class="b60 emojik wa" tabindex="-1" data-unicode="😪" data-emoji-index="72" style="background-position: -35px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😵" data-emoji-index="73" style="background-position: -70px -35px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤐" data-emoji-index="74" style="background-position: 0px 0px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤢" data-emoji-index="75" style="background-position: -35px -35px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤮" data-emoji-index="76" style="background-position: -140px 0px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤧" data-emoji-index="77" style="background-position: -70px -140px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😷" data-emoji-index="78" style="background-position: -140px -35px;"></span>
-                                    <span class="b87 emojik wa" tabindex="-1" data-unicode="🤒" data-emoji-index="79" style="background-position: 0px -105px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤕" data-emoji-index="80" style="background-position: -140px 0px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤑" data-emoji-index="81" style="background-position: -35px 0px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤠" data-emoji-index="82" style="background-position: -140px 0px;"></span>
-                                    <span class="b59 emojik wa" tabindex="-1" data-unicode="😈" data-emoji-index="83" style="background-position: -105px -70px;"></span>
-                                    <span class="b45 emojik wa" tabindex="-1" data-unicode="👿" data-emoji-index="84" style="background-position: 0px -35px;"></span>
-                                    <span class="b44 emojik wa" tabindex="-1" data-unicode="👹" data-emoji-index="85" style="background-position: -140px -105px;"></span>
-                                    <span class="b44 emojik wa" tabindex="-1" data-unicode="👺" data-emoji-index="86" style="background-position: 0px -140px;"></span>
-                                    <span class="b73 emojik wa" tabindex="-1" data-unicode="🤡" data-emoji-index="87" style="background-position: 0px -35px;"></span>
-                                    <span class="b48 emojik wa" tabindex="-1" data-unicode="💩" data-emoji-index="88" style="background-position: -70px -140px;"></span>
-                                    <span class="b44 emojik wa" tabindex="-1" data-unicode="👻" data-emoji-index="89" style="background-position: -35px -140px;"></span>
-                                    <span class="b45 emojik wa" tabindex="-1" data-unicode="💀" data-emoji-index="90" style="background-position: -35px -35px;"></span>
-                                    <span class="b90 emojik wa" tabindex="-1" data-unicode="☠" data-emoji-index="91" style="background-position: 0px -35px;"></span>
-                                    <span class="b45 emojik wa" tabindex="-1" data-unicode="👽" data-emoji-index="92" style="background-position: -105px 0px;"></span>
-                                    <span class="b45 emojik wa" tabindex="-1" data-unicode="👾" data-emoji-index="93" style="background-position: -140px 0px;"></span>
-                                    <span class="b71 emojik wa" tabindex="-1" data-unicode="🤖" data-emoji-index="94" style="background-position: 0px -35px;"></span>
-                                    <span class="b17 emojik wa" tabindex="-1" data-unicode="🎃" data-emoji-index="95" style="background-position: -105px 0px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😺" data-emoji-index="96" style="background-position: -70px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😸" data-emoji-index="97" style="background-position: 0px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😹" data-emoji-index="98" style="background-position: -35px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😻" data-emoji-index="99" style="background-position: -105px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😼" data-emoji-index="100" style="background-position: -140px -70px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😽" data-emoji-index="101" style="background-position: 0px -105px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="🙀" data-emoji-index="102" style="background-position: -105px -105px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😿" data-emoji-index="103" style="background-position: -70px -105px;"></span>
-                                    <span class="b61 emojik wa" tabindex="-1" data-unicode="😾" data-emoji-index="104" style="background-position: -35px -105px;"></span>
-                                    <span class="b74 emojik wa" tabindex="-1" data-unicode="🤲" data-emoji-index="105" style="background-position: -105px -140px;"></span>
-                                    <span class="b30 emojik wa" tabindex="-1" data-unicode="👐" data-emoji-index="106" style="background-position: -35px -35px;"></span>
-                                    <span class="b64 emojik wa" tabindex="-1" data-unicode="🙌" data-emoji-index="107" style="background-position: -140px 0px;"></span>
-                                    <span class="b30 emojik wa" tabindex="-1" data-unicode="👏" data-emoji-index="108" style="background-position: 0px 0px;"></span>
-                                    <span class="b72 emojik wa" tabindex="-1" data-unicode="🤝" data-emoji-index="109" style="background-position: -35px -105px;"></span>
-                                    <span class="b29 emojik wa" tabindex="-1" data-unicode="👍" data-emoji-index="110" style="background-position: -105px -70px;"></span>
-                                    <span class="b29 emojik wa" tabindex="-1" data-unicode="👎" data-emoji-index="111" style="background-position: -140px -105px;"></span> -->
-                                </div>
+                                <div style="display:none;" class="emoji-panel" id="emoji-panel" tabindex="-1"></div>
                             </div>
                         </div>
                     </div>
@@ -411,7 +305,6 @@
 
         </div>
         <!-- CLOSE DIV MAIN -->
-
 
         <!-- DIALOG ATTACHMENT CONTACT -->
         <div style="display:none;" id="dialog" class="dialog-attach-contact">

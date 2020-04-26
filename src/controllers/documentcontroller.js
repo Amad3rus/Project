@@ -7,9 +7,6 @@ export default class DocumentPreviewController{
         return new Promise((resolve, reject) => {
             const files = [];
             [...this.files].forEach((file, index) => {
-                
-                console.log(file.type);
-
                 switch(file.type){
                     case 'image/png':
                     case 'image/jpg':
