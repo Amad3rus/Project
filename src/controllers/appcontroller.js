@@ -120,6 +120,8 @@ export default class AppController {
         this.eventTakePicture();
         this.closeBtnDialog();
         this.eventRetakePicture();
+        this.closePanelDocumentPreview();
+
     }
 
     // set events
@@ -317,11 +319,14 @@ export default class AppController {
     eventOpenAttachments(){
         this.el['statusAttachFile'].on('click', e => {
             e.stopPropagation();
+            
             this.el['statusOpenAttachFile'].css({display:'flex'});
+            
             setTimeout(() => {
                 this.el['statusOpenAttachFile'].css({height:'230px'});
                 this.el['statusAttachFile'].addClass('active');
             },300);
+            
             // usando bind() para manter o escopo default que neste caso é o this
             document.addEventListener('click', this.closeMenuAttach.bind(this));
         });
@@ -329,8 +334,10 @@ export default class AppController {
     loadingContact(contact){
         const arr = [];
         arr.push(contact);
+        
         arr.forEach((value, index) => {
             let li = document.createElement('li');
+            
             li.id = 'list-' + index;
             li.innerHTML += `
                 <button type="button">
@@ -343,7 +350,8 @@ export default class AppController {
                         <span class="time">${Format.formatHourToBrazilian(value.time)}</span>
                     </div>
                 </button>
-            `
+            `;
+            
             // li.onclick = e => this.eventOpenChat(value);
             this.el['listContact'].appendChild(li);
         });
@@ -352,6 +360,7 @@ export default class AppController {
         this.el['editName'].on('focus', e => {
             e.target.innerHTML = '';
         });
+        
         this.el['editName'].on('keypress', e => {
             if(e.target.innerHTML.length < 30){
             }else{
@@ -362,6 +371,7 @@ export default class AppController {
                 this.el['editNameEnter'].click();
             }
         });
+        
         this.el['editNameEnter'].on('click', e => {
             let permission = true;
             let anonimous = '';
@@ -392,6 +402,7 @@ export default class AppController {
     eventStatusAttachCamera(){
         this.el['statusBtnAttachCamera'].on('click', e => {
             this.closeAllMainPanel();
+            
             this.el['imageCamera'].hide();
             this.el['statusPhotoTakeSend'].hide();
             this.el['containerChat'].css({background:'rgba(43,44,45,1)'});
@@ -407,12 +418,10 @@ export default class AppController {
             this.cameraCtrl = new CameraController(this.el['videoCamera']);
 
         });
+        
         this.el['closePanelCamera'].on('click', e => {
             this.closeAllMainPanel();
             this.showPanelDefault();
-            // this.el['chat'].show();
-            // this.el['containerChat'].css({background:this.backgroundDoodles});
-            // this.el['controlsChat'].show();
             this.cameraCtrl.stopRecording();
         });
 
@@ -421,15 +430,6 @@ export default class AppController {
         this.el['statusBtnAttachFile'].on('click', e => {
             this.closeAllMainPanel();
             this.el['statusInputFile'].click();
-        });
-        this.el['closePanelFile'].on('click', e => {
-            this.closeAllMainPanel();
-            this.showPanelDefault();
-
-            while(this.el['iconFile'].firstChild){
-                this.el['iconFile'].removeChild(this.el['iconFile'].firstChild);
-            }
-            this.snackbarService.callNotification('online', 'cancelado', '&check;');
         });
 
         this.el['statusInputFile'].on('change', e => {
@@ -445,9 +445,11 @@ export default class AppController {
                         this.el['controlsChat'].hide();
                         this.el['statusAttachFile'].disabled = true;
                         this.el['iconFile'].show();
+                        
                         setTimeout(() => {
                             data.forEach((file, index) => {
                                 let div = document.createElement('div');
+                                
                                 switch(file.info.type){
                                     case 'image/png':
                                     case 'image/jpg':
@@ -480,6 +482,7 @@ export default class AppController {
                     });
             }
         });
+        
         function returnHTML(file, icon){
             return `
                 <span style="color:var(--color-white);">
@@ -489,6 +492,7 @@ export default class AppController {
                 </span>
             `;
         }
+        
         this.el['statusSendFile'].on('click', e => {
             console.log('send file');
         });
@@ -512,8 +516,12 @@ export default class AppController {
             this.el['statusInput'].click();
         });
 
+        this.el['addMoreImages'].on('click', e => {
+            this.el['statusInput'].click();
+        });
+        
         this.el['statusInput'].on('change', e => {
-            if(this.el['statusInput'].files.length > 0){
+            if(this.el['statusInput'].files.length > 0 && this.el['statusInput'].files.length < 6){
                 this.fileImages = this.el['statusInput'].files;
 
                 this.docPreviewCtrl = new DocumentPreviewController(this.fileImages);
@@ -528,28 +536,33 @@ export default class AppController {
 
                         setTimeout(() => {
                             this.el['containerDocumentPreview'].show();
+                            this.lengthTotal = data.length;
 
-                            data.forEach((value,index) => {
+                            data.forEach(value => {
                                 let div = document.createElement('div');
                                 div.addClass('slides', 'fade');
-                                div.dataset.images = value.info.name;
                                 div.innerHTML += `
-                                    <span id="close-slide" class="close-slide"><i class="small material-icons">close</i></span>
+                                    <span id="show-total" class="slide-length">1/${this.el['containerDocumentPreview'].childElementCount + 1}</span>
+                                    <span id="close-slide" class="close-slide"><i data-images="${value.info.name}" class="small material-icons">close</i></span>
                                     <img src="${value.src}">
-                                    <div class="caption">${value.info.name}</div>
+                                    <!-- <div class="caption">${value.info.name}</div> -->
                                 `;
-                               
-                                this.el['containerDocumentPreview'].appendChild(div);
+                                
+                                this.el['containerDocumentPreview'].prepend(div);
+                                
+                                this.el['previewImageSlide'].innerHTML += `
+                                    <span data-images="${value.info.name}">${Format.abrevName(value.info.name)}</span>
+                                `;
                                 this.snackbarService.callNotification('online', `(${data.length}) - documento foi inserido`, '&check;');
                             });
 
                             const config = {
-                                carousel: this.el['carousel'],
-                                control:true
+                                carousel:this.el['carousel'],
+                                control:(this.el['containerDocumentPreview'].childElementCount > 1) ? true : false,
+                                dots: true
                             }
                             this.carouselCtrl = new CarouselController(config);
-                            
-                            
+
                         },300);
                     })
                     .catch(e => {
@@ -559,20 +572,26 @@ export default class AppController {
                         this.showPanelDefault();
                     });
             }else{
-                this.snackbarService.callNotification('online', 'Nenhuma arquivo carregado', '&times;');
+                this.snackbarService.callNotification('online', '5 imagens por vez', '&times;');
             }
         });
 
         this.el['containerDocumentPreview'].addEventListener('imageDelete', e => {
             if(!e.target.querySelector('.slides')){
                 this.closeAllMainPanel();
+                // if(e.target.querySelector('.next')) e.target.querySelector('.next').remove();
+                // if(e.target.querySelector('.prev')) e.target.querySelector('.prev').remove();
+                // if(e.target.querySelector('.dots')) e.target.querySelector('.dots').remove();
+
+                if(this.el['carousel'].querySelector('.next')) this.el['carousel'].querySelector('.next').remove();
+                if(this.el['carousel'].querySelector('.prev')) this.el['carousel'].querySelector('.prev').remove();
+                if(this.el['carousel'].querySelector('.dots')) this.el['carousel'].querySelector('.dots').remove();
                 this.showPanelDefault();
-                e.target.querySelector('.next').remove();
-                e.target.querySelector('.prev').remove();
+
             }else{
-                this.snackbarService.callNotification('online', `(${e.target.childElementCount - 2}) - documento foi excluído`, '&check;');
+                this.snackbarService.callNotification('online', `(${e.target.childElementCount}) - documento foi excluído`, '&check;');
             }
-        });
+        }); 
     }
     eventTakePicture(){
         this.el['statusPhotoTakePhoto'].on('click', e => {
@@ -589,7 +608,6 @@ export default class AppController {
         });
 
         this.el['statusPhotoTakeSend'].on('click', e => {
-            console.log(this.el['imageCamera'].src);
             this.closeAllMainPanel();
             this.showPanelDefault();
             this.el['statusPhotoTakePhoto'].css({display:'flex'});
@@ -662,12 +680,14 @@ export default class AppController {
     fetchMessages(value){
         this.el['containerChat'].css({background: 'rgba(43,44,45,1)'});
         this.closeAllMainPanel();
+        
         this.el['chatHome'].css({
             display:'flex',
             flexDirection:'column',
             justifyContent:'center',
             alignItems:'center'
         });
+        
         this.el['noContactSelected'].innerHTML = `
             <div class="no-contact-selected">
                 <div class="container">
@@ -677,6 +697,7 @@ export default class AppController {
                 </div>
             </div>
         `;
+        
         this.messagesService.fetchMessages(value)
             .then((messages) => {
                 messages.forEach((msg, index) => {
@@ -806,6 +827,28 @@ export default class AppController {
             this.el['panelProfile'].hide();
             this.el['panelContacts'].hide();
         }, 300)
+    }
+    closePanelDocumentPreview(){
+        this.el['closePanelFile'].on('click', e => {
+            this.closeAllMainPanel();
+            this.showPanelDefault();
+
+            while(this.el['iconFile'].firstChild){
+                this.el['iconFile'].removeChild(this.el['iconFile'].firstChild);
+            }
+            while(this.el['containerDocumentPreview'].firstChild){
+                this.el['containerDocumentPreview'].removeChild(this.el['containerDocumentPreview'].firstChild);
+            }
+            while(this.el['previewImageSlide'].firstChild){
+                this.el['previewImageSlide'].removeChild(this.el['previewImageSlide'].firstChild);
+            }
+            
+            if(this.el['carousel'].querySelector('.next')) this.el['carousel'].querySelector('.next').remove();
+            if(this.el['carousel'].querySelector('.prev')) this.el['carousel'].querySelector('.prev').remove();
+            if(this.el['carousel'].querySelector('.dots')) this.el['carousel'].querySelector('.dots').remove();
+            
+            this.snackbarService.callNotification('online', 'cancelado', '&check;');
+        });
     }
     closeMenuAttach(e){
         this.el['statusOpenAttachFile'].css({height:0});

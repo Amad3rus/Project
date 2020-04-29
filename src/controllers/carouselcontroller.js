@@ -6,26 +6,39 @@ export default class CarouselController {
         this.imageDelete = new Event('imageDelete');
         this.carousel = config.carousel;
         this.control = config.control;
+        this.dots = config.dots;
+
         this.imagesCount = 0;
-        this.carouseContainer = this.carousel.querySelector('#container-document-preview');
+        this.carouseContainer = this.carousel.querySelector('.carousel-container');
         this.slideIndex = 1;
         
-        if(this.control) this.createControl();
-        this.deleteImages();
+        if(this.control && !this.carousel.querySelector('.next')) this.createControl();
+        if(this.dots && !this.carousel.querySelector('.dots')) this.createDots();
 
         this.showSlides(this.slideIndex);
+        
+        this.carousel.querySelectorAll('.close-slide')
+            .forEach(close => {
+                close.on('click', e => {
+                    this.deleteImages(e.target.dataset.images);
+                });
+        });
     }
 
     showSlides(n){
         const slides = this.carousel.querySelectorAll('.slides');
-
+        const dots = this.carousel.querySelectorAll('.dot');
         if(n > slides.length) this.slideIndex = 1;
         if(n < 1) this.slideIndex = slides.length;
 
         for(let i = 0; i < slides.length; i++){
             slides[i].hide();
         }
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
         if(slides.length >= 1) slides[this.slideIndex - 1].show();
+        if(dots.length >= 1) dots[this.slideIndex - 1].className += " active";
     }
 
     createControl(){
@@ -48,19 +61,39 @@ export default class CarouselController {
             this.showSlides(this.slideIndex -= 1);
         });
     }
+    createDots(){
+        const dots = document.createElement('div');
 
-    deleteImages(){
+        dots.addClass('dots');
+        this.carousel.querySelectorAll('.slides')
+            .forEach(() => {
+                let dot = document.createElement('div');
+
+                dot.addClass('dot');
+                dots.appendChild(dot);
+            });
+        this.carouseContainer.appendChild(dots);
+    }
+    deleteImages(id){
      this.carousel.querySelectorAll('.slides')
         .forEach((value, index) => {
-            value.on('click', e => {
-                if(value.childElementCount > 0){
-                    value.remove();
-                    this.showSlides(this.slideIndex += 1);
-                    this.carousel.querySelector('#container-document-preview').dispatchEvent(this.imageDelete);
-                }else{
-                    console.log('Bingo - não há mais images');
-                }
+            value.querySelectorAll('.close-slide i')
+                .forEach(slide => {
+                    if(slide.dataset.images == id){
+                        if(value.childElementCount > 0){
+                            value.remove();
+                            this.showSlides(this.slideIndex += 1);
+                            this.carousel.querySelector('#container-document-preview').dispatchEvent(this.imageDelete);           
+                        }
+                    }
+                
             });
+        });
+        document.querySelectorAll('#preview-image-slide span')
+            .forEach(span => {
+                if(span.dataset.images == id){
+                    span.remove();
+                }
         });
     }
 }
