@@ -1,35 +1,47 @@
+import Format from '../utils/format';
+import Messages from './messages';
+
 export default class Contacts {
     constructor(){
-       
-    }
-
-    fetchContacts(){
-        const contacts = [
+        this.messages = new Messages();
+        this.contacts = [
             {
                 name:'Kakashi',
-                message:'olá',
+                messages:[],
                 time: new Date().getTime(),
-                id:'1',
+                id:Format.createUid()
             },
             {
                 name:'Maria',
-                message:'já estou aqui',
+                messages:[],
                 time: new Date().getTime(),
-                id:'2',
+                id:Format.createUid()
             },
             {
                 name:'João',
-                message:'Não foi?',
+                messages:[],
                 time: new Date().getTime(),
-                id:'3',
+                id:Format.createUid()
             },
             {
                 name:'Vinícius',
-                message:'tudo bem?',
+                messages:[],
                 time: new Date().getTime(),
-                id:'4',
+                id:Format.createUid()
             },
         ]
-        return Promise.resolve(contacts);
+    }
+
+    fetchContacts(){
+        this.contacts.forEach(c => {
+            this.messages.messages.forEach(m => c.messages.push(m));
+        });
+        
+        if(localStorage.getItem('contacts'))
+            return Promise.resolve(JSON.parse(localStorage.getItem('contacts')));
+        else {
+            localStorage.setItem('contacts', JSON.stringify(this.contacts));
+            return Promise.resolve(this.contacts);
+        }
     }
 }

@@ -31,11 +31,31 @@ export default class Format {
         else return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
     static formatNameFromImage(filetype){
-        return filetype.split('/')[1];
+        return filetype.split('/')[1].toUpperCase();
     }
     static abrevName(string){
         const result = (string.match(/ d./i)) ? string.match(/ d./i)[0] : ' ';
         const novaString = String.raw`${string}`.replace(result, ' ').split(/[_. ,@$^*/\\-]/).filter(char => char != '');
         return (novaString[0][0] + novaString[1][0]).toUpperCase();
+    }
+    static formatBytes(b){
+        const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB','YB'];
+
+        let l = 0;
+        let n = parseInt(b, 10) || 0;
+
+        while(n >= 1024 && ++l){
+            n = n / 1024;
+        }
+        return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+    }
+    static createUid(){
+        let timestamp = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => {
+            let r = (timestamp + Math.random() * 16) %16 | 0;
+            timestamp = Math.floor(timestamp/16);
+            return (char === 'x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
     }
 }

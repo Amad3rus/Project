@@ -1,31 +1,50 @@
+import Format from '../utils/format';
+import Contacts from './contacts';
+
 export default class User {
     constructor(){
-
-    }
-    fetchUser(user){
-        const users = [
+        this.contacts = new Contacts();
+        this.users = [
             {
                 name:'kakashi',
-                email:'kakashi.ksura7@gmail.com',
-                id:'1'
+                contacts:[],
+                email:'kakashi.kisura7@gmail.com',
+                id: Format.createUid()
             },
             {
                 name:'maria',
+                contacts:[],
                 email:'maria.maria7@gmail.com',
-                id:'2'
+                id:Format.createUid()
             },
             {
                 name:'joao',
+                contacts:[],
                 email:'joao.joa7@gmail.com',
-                id:'3'
+                id:Format.createUid()
             },
             {
                 name:'vinicius',
+                contacts:[],
                 email:'vinicius.vinicius7@gmail.com',
-                id:'4'
+                id:Format.createUid()
             }
         ]
-        const u = users.filter(u => u.id == user.id)[0];
-        return Promise.resolve(u);
+    }
+
+    async fetchUser(user){
+        const contacts = await this.contacts.fetchContacts();
+        this.users.forEach(u => {
+            contacts.forEach(c => u.contacts.push(c));
+        });
+
+       if(localStorage.getItem('users')){
+           const users = JSON.parse(localStorage.getItem('users'));
+            return Promise.resolve(users.filter(u => u.email == user.email)[0]);
+       }else{
+           localStorage.setItem('users', JSON.stringify(this.users));
+           const users =  this.users;
+           return Promise.resolve(users.filter(u => u.email == user.email)[0]);
+       }
     }
 }

@@ -14,17 +14,17 @@ export default class CarouselController {
         
         if(this.control && !this.carousel.querySelector('.next')) this.createControl();
         if(this.dots && !this.carousel.querySelector('.dots')) this.createDots();
+        else this.updateDots();
 
         this.showSlides(this.slideIndex);
-        
+
         this.carousel.querySelectorAll('.close-slide')
             .forEach(close => {
                 close.on('click', e => {
                     this.deleteImages(e.target.dataset.images);
                 });
-        });
+            });
     }
-
     showSlides(n){
         const slides = this.carousel.querySelectorAll('.slides');
         const dots = this.carousel.querySelectorAll('.dot');
@@ -48,30 +48,43 @@ export default class CarouselController {
         this.next.addClass('next');
         this.prev.addClass('prev');
 
-        this.prev.innerHTML = '&#10094;';
-        this.next.innerHTML = '&#10095;';
+        this.prev.innerHTML = '&#10095;';
+        this.next.innerHTML = '&#10094;';
 
         this.carouseContainer.appendChild(this.next);
         this.carouseContainer.appendChild(this.prev);
 
+        // ordem foi alterada next recebe menos (-) e prev recebe mais (+)
         this.next.on('click', e => {
-            this.showSlides(this.slideIndex += 1);
-        });
-        this.prev.on('click', e => {
             this.showSlides(this.slideIndex -= 1);
         });
+        this.prev.on('click', e => {
+            this.showSlides(this.slideIndex += 1);
+        });
     }
+    
     createDots(){
         const dots = document.createElement('div');
-
         dots.addClass('dots');
-        this.carousel.querySelectorAll('.slides')
-            .forEach(() => {
-                let dot = document.createElement('div');
 
-                dot.addClass('dot');
-                dots.appendChild(dot);
-            });
+        for(let i = 0; i < document.querySelector('#container-document-preview').children.length; i++){
+            let dot = document.createElement('div').addClass('dot');
+            dots.appendChild(dot);
+        }
+        this.carouseContainer.appendChild(dots);
+    }
+    
+    updateDots(){
+        const dots = document.querySelector('.dots');
+        while(dots.firstChild){
+            dots.removeChild(dots.firstChild);
+        }
+        dots.addClass('dots');
+
+        for(let i = 0; i < document.querySelector('#container-document-preview').children.length; i++){
+            let dot = document.createElement('div').addClass('dot');
+            dots.appendChild(dot);
+        }
         this.carouseContainer.appendChild(dots);
     }
     deleteImages(id){
@@ -94,6 +107,11 @@ export default class CarouselController {
                 if(span.dataset.images == id){
                     span.remove();
                 }
-        });
+            });
+        
+        this.carousel.querySelectorAll('.dot')
+            .forEach(dot => {
+                if(dot.hasClass('active')) dot.remove();
+            });
     }
 }
