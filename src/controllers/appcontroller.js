@@ -191,6 +191,10 @@ export default class AppController {
             this.eventStartRecordingMicroTime();
 
             this.audioCtrl = new AudioController(this.snackbarConfig);
+
+            this.audioCtrl.on('play', audio => {
+                console.log('recebi o evento play', audio);
+            });
         });
 
         this.el['btnCloseAudioRecord'].on('click', e => {
@@ -320,6 +324,7 @@ export default class AppController {
         });
     }
     eventOpenChat(contact){
+        this.el['statusContactName'].innerHTML = contact.name;
         this.fetchMessages(contact);
 
         this.removeAllChildElement();

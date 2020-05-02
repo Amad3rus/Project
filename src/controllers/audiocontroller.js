@@ -1,18 +1,20 @@
 import Snackbar from "./snackbarcontroller";
+import CreateEvent from "../utils/createEvents";
 
-export default class AudioController {
+export default class AudioController extends CreateEvent{
     constructor(snackbarConfig){
-        this.audio = new Audio();
-        this.streaming;
+        super();
         this.snackbarService = new Snackbar(snackbarConfig);
+        this.activeAudio();
     }
 
     async activeAudio(){
         try{
-            const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-            this.streaming = stream;
-            this.audio.srcObject = new MediaStream(stream);
-            this.audio.play();
+            this.streaming = await navigator.mediaDevices.getUserMedia({audio:true});
+            let audio = new Audio();
+            audio.srcObject = new MediaStream(this.streaming);
+            audio.play();
+            this.trigger('play', audio);
         }catch(e){
             console.error(e);
             this.snackbarService.callNotification('offline', 'Não foi possível gravar seu audio', '&times;');
