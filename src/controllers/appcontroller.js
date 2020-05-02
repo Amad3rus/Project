@@ -192,18 +192,19 @@ export default class AppController {
 
             this.audioCtrl = new AudioController(this.snackbarConfig);
 
-            this.audioCtrl.on('play', audio => {
-                console.log('recebi o evento play', audio);
+            this.audioCtrl.on('ready', audio => {
+                console.log('recebi o evento play');
+                this.audioCtrl.startAudioRecorder();
             });
         });
 
         this.el['btnCloseAudioRecord'].on('click', e => {
-            this.audioCtrl.stopAudio();
+            this.audioCtrl.stopAudioRecorder();
             this.closeRecordingMicro();
         });
 
         this.el['btnSendAudioRecord'].on('click', e => {
-            this.audioCtrl.stopAudio();
+            this.audioCtrl.stopAudioRecorder();
             this.closeRecordingMicro();
         });
 
