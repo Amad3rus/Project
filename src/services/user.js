@@ -1,8 +1,11 @@
 import Format from '../utils/format';
 import Contacts from './contacts';
+import Firebase from '../services/firebase';
+import Model from './model';
 
-export default class User {
-    constructor(){
+export default class User extends Model{
+    constructor(email){
+        super();
         this.contacts = new Contacts();
         this.users = [
             {
@@ -30,7 +33,16 @@ export default class User {
                 id:Format.createUid()
             }
         ]
+
+        if(email) this.getByEmail(email);
     }
+    get name(){return this.data.name};
+    get email(){return this.data.email};
+    get photo(){return this.data.photo};
+
+    set name(name){this.data.name = name};
+    set email(email){this.data.email = email};
+    set photo(photo){this.data.photo = photo};
 
     async fetchUser(user){
         const contacts = await this.contacts.fetchContacts();
@@ -46,5 +58,30 @@ export default class User {
            const users =  this.users;
            return Promise.resolve(users.filter(u => u.email == user.email)[0]);
        }
+    }
+
+    static getRef(){
+        return Firebase.database().collection('/users');
+    }
+
+    static findByEmail(email){
+        return User.getRef().doc(email);
+    }
+
+    getByEmail(email){
+        return new Promise((resolve, reject) => {
+            User.findByEmail(email)
+                .onSnapshot(doc => {
+                    this.fromJson(doc.data());
+                    resolve(doc);
+            });
+        });
+    }
+    async save(){
+        try{
+            return await User.findByEmail(this.email).set(this.toJson());
+        }catch(e){
+            console.error(e);
+        }
     }
 }

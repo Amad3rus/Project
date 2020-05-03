@@ -17,7 +17,6 @@ export default class AppController {
     constructor(){
         this.messagesService = new Messages();
         this.contactsService = new Contacts();
-        this.authService = new User();
         this.validations = new Validation();
         this.render = new RenderView();
         this.fbService = new Firebase();
@@ -29,6 +28,7 @@ export default class AppController {
         this.mergeContact = {};
         this.virtualList = [];
         this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left',sidebar:false};
+        this.isLogged = false;
 
         this.initAuth();
         this.setDefaultEvents();
@@ -40,30 +40,51 @@ export default class AppController {
     async initAuth(){
         try{
             this.auth = await this.fbService.initAuth();
-            this.fetchMessages();
+            this.userService = new User(this.auth.user.email);
+            this.isLogged = true;
+            this.setUserOnDatabase();
             this.setProfile();
-            this.snackbarService.callNotification('online', `Seja Bem vindo(a) ${this.auth.user['displayName']}`, '&check;');
+            this.fetchMessages();
         }catch(e){
             console.error(e);
             this.validations.setThrowError('003', 'tentando fazer login', 'app controller');
             this.snackbarService.callNotification('offline', `${e}`, '&times;');
         }
     }
+    async setUserOnDatabase(){
+        // await userRef.set({ name:this.auth.user.displayName, email:this.auth.user.email, photo:this.auth.user.photoURL });
+        this.userService.name = this.auth.user.displayName;
+        this.userService.email = this.auth.user.email;
+        this.userService.photo = this.auth.user.photoURL;
+        
+        await this.userService.save();
+        
+        this.el['app'].css({display:'flex'});
+        this.snackbarService.callNotification('online', `Seja Bem vindo(a) ${this.auth.user['displayName']}`, '&check;');
+    }
     setProfile(){
-        this.el['noPhotoUrl'].hide();
-        this.el['noStatusHeaderProfile'].hide();
-        this.el['profileSetPhoto'].hide();
-        this.el['profileConfigImage'].css({display:'inline-block'});
-        this.el['profileConfigImage'].src = this.auth.user['photoURL'];
-        this.el['photoUrl'].show();
-        this.el['photoUrl'].src = this.auth.user['photoURL'];
-        this.el['statusHeaderProfile'].show();
-        this.el['statusHeaderProfile'].src = this.auth.user['photoURL'];
-        this.el['editName'].innerHTML = this.auth.user['displayName'];
-        this.el['profileName'].innerHTML = this.auth.user['displayName'];
-        this.el['profileName'].setAttribute('title', this.auth.user['displayName']);
-        this.el['logout'].show();
-        this.el['logout'].on('click', e => localStorage.removeItem('user'));
+        this.userService.on('datachange', e => {
+            document.querySelector('title').innerHTML = e.name + ' Random chat';
+            this.el['noPhotoUrl'].hide();
+            this.el['noStatusHeaderProfile'].hide();
+            this.el['profileSetPhoto'].hide();
+
+            this.el['profileConfigImage'].css({display:'inline-block'});
+            this.el['profileConfigImage'].src = e.photo;
+
+            this.el['photoUrl'].show();
+            this.el['photoUrl'].src = e.photo;
+
+            this.el['statusHeaderProfile'].show();
+            this.el['statusHeaderProfile'].src = e.photo;
+
+            this.el['editName'].innerHTML = e.name;
+            this.el['profileName'].innerHTML = e.name;
+            this.el['profileName'].setAttribute('title', e.name);
+            
+            this.el['logout'].show();
+            this.el['logout'].on('click', e => localStorage.removeItem('user'));
+        });
     }
     fetchIds(){
         this.el = {};
@@ -402,17 +423,26 @@ export default class AppController {
             }
         });
         
-        this.el['editNameEnter'].on('click', e => {
+        this.el['editNameEnter'].on('click', async e => {
+            this.el['editNameEnter'].disabled = true;
             let permission = true;
             let anonimous = '';
+            
             Wordlist.forEach(l => {
                if(l.toLocaleLowerCase() == this.el['editName'].innerHTML.toLocaleLowerCase()){
                     permission = false;
                     anonimous = 'Anonimous';
                }
             });
-            if(!permission) console.log(anonimous);
-            this.el['editName'].innerHTML = '';
+
+            if(!permission){
+                this.el['editNameEnter'].disabled = false;
+                this.snackbarService.callNotification('offline', `nome ${this.el['editName'].innerHTML} inválido`, '&times;');
+            }else{
+                this.userService.name = this.el['editName'].innerHTML;
+                await this.userService.save();
+                this.el['editNameEnter'].disabled = false;
+            }
         });
     }
     eventProfileSetPhoto(){
