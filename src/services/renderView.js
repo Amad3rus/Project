@@ -41,18 +41,17 @@ export default class RenderView {
         `;
     }
 
-    renderListContact(user){
-        let m = (user.messages.length > 1) ? user.messages[user.messages.length - 1].message : '';
-        
+    renderListContact(contact){
         return `
             <button type="button">
                 <div class="img">
-                    <i class="large material-icons">person</i>
+                    <i class="contact-image large material-icons">person</i>
+                    <img src="${contact.photo}"/>
                 </div>
                 <div class="text">
-                    <span class="name">${user.name}</span>
-                    <span class="message">${m}</span>
-                    <span class="time">${Format.formatHourToBrazilian(user.time)}</span>
+                    <span class="name">${contact.name}</span>
+                    <span class="message">${contact.lastMessage}</span>
+                    <span class="time">${Format.formatHourToBrazilian(contact.time)}</span>
                 </div>
             </button>
         `;

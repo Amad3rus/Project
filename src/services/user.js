@@ -67,7 +67,9 @@ export default class User extends Model{
     static findByEmail(email){
         return User.getRef().doc(email);
     }
-
+    static getRefContacts(email){
+        return User.getRef().doc(email).collection('contacts');
+    }
     getByEmail(email){
         return new Promise((resolve, reject) => {
             User.findByEmail(email)
@@ -83,5 +85,23 @@ export default class User extends Model{
         }catch(e){
             console.error(e);
         }
+    }
+    async addContact(contact){
+        return await User.getRefContacts(this.email).doc(btoa(contact.email)).set(contact.toJson());
+    }
+    getContacts(){
+        return new Promise((resolve, reject) => {
+            User.getRefContacts(this.email).onSnapshot(docs => {
+                const contacts = [];
+
+                docs.forEach(doc => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    contacts.push(data);
+                });
+                this.trigger('contactschange', docs);
+                resolve(contacts);
+            });
+        });
     }
 }

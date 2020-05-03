@@ -34,7 +34,6 @@ export default class AppController {
         this.setDefaultEvents();
         this.fetchIds();
         this.initEvents();
-        this.fetchContacts();
     }
     // init default
     async initAuth(){
@@ -44,6 +43,7 @@ export default class AppController {
             this.isLogged = true;
             this.setUserOnDatabase();
             this.setProfile();
+            this.fetchContacts();
             this.fetchMessages();
         }catch(e){
             console.error(e);
@@ -58,7 +58,6 @@ export default class AppController {
         this.userService.photo = this.auth.user.photoURL;
         
         await this.userService.save();
-        
         this.el['app'].css({display:'flex'});
         this.snackbarService.callNotification('online', `Seja Bem vindo(a) ${this.auth.user['displayName']}`, '&check;');
     }
@@ -454,9 +453,21 @@ export default class AppController {
         // dir(ELEMENTO HTML) - saber qual classe o elemento herda
         this.el['profileAddContact'].on('submit', e => {
             e.preventDefault();
-            // const formAddContact = new FormData(this.el['profileAddContact']);
+            const formAddContact = new FormData(this.el['profileAddContact']);
             // console.log(formAddContact.get('email'));
-            console.log(this.el['profileAddContact'].toJSON());
+            // console.log(this.el['profileAddContact'].toJSON());
+            const contact = new User(formAddContact.get('email'));
+
+            contact.on('datachange', async e => {
+                if(e.name){
+                    await this.userService.addContact(contact);
+                    console.info('novo contato adicionado.');
+                    this.snackbarService.callNotification('online', 'novo contato adicionado.', '&check;');
+                    this.closeAllPanelLeft();
+                }else{
+                    this.snackbarService.callNotification('offline', 'usuário não encontrado', '&times;');
+                }
+            });
         });
     }
     eventStatusAttachCamera(){
@@ -684,10 +695,12 @@ export default class AppController {
     // fetch some data
     async fetchContacts(){
         try{
-            const contacts = await this.contactsService.fetchContacts();
-            this.fetchContactToConversation(contacts);
-            this.fetchContactToStorage(contacts);
-            this.fetchContactFromAttachment(contacts);
+            this.userService.on('contactschange', docs => {
+                this.fetchContactToConversation(docs);
+                this.fetchContactToStorage(docs);
+                this.fetchContactFromAttachment(docs);
+            });
+            await this.userService.getContacts();
         }catch(e){
             console.error(e)
         }
@@ -731,29 +744,38 @@ export default class AppController {
         }
     }
     fetchContactToConversation(contacts){
+        this.el['listContact'].innerHTML = '';
+
         contacts.forEach((value, index) => {
+            let contact = value.data();
             let li = document.createElement('li');
-            li.id = 'list-' + index;
-            li.innerHTML += this.render.renderListContact(value);
-            li.onclick = e => this.eventOpenChat(value);
+            li.innerHTML += this.render.renderListContact(contact);
+            li.querySelectorAll('button .contact-image').forEach(contact => contact.hide());
+            li.onclick = e => this.eventOpenChat(contact);
             this.el['listContact'].appendChild(li);
         });
     }
     fetchContactToStorage(contacts){
+        this.el['contactsProfile'].innerHTML = '';
+        
         contacts.forEach((value, index) => {
+            let contact = value.data();
             let li = document.createElement('li');
-            li.id = 'list-' + index;
-            li.innerHTML += this.render.renderListContact(value);
-            li.onclick = e => this.eventOpenChat(value);
+            li.innerHTML += this.render.renderListContact(contact);
+            li.querySelectorAll('button .contact-image').forEach(contact => contact.hide());
+            li.onclick = e => this.eventOpenChat(contact);
             this.el['contactsProfile'].appendChild(li);
         });
     }
     fetchContactFromAttachment(contacts){
+        this.el['dialogContentContact'].innerHTML = '';
+
         contacts.forEach((value, index) => {
+            let contact = value.data();
             let li = document.createElement('li');
-            li.id = 'list-' + index;
-            li.innerHTML += this.render.renderContactFromAttach(value, index);
-            li.onchange = e => this.eventAttachContactToInsert(value, li);
+            li.innerHTML += this.render.renderContactFromAttach(contact, index);
+            li.querySelectorAll('button .contact-image').forEach(contact => contact.hide());
+            li.onchange = e => this.eventAttachContactToInsert(contact, li);
             this.el['dialogContentContact'].appendChild(li);
         });
     }
