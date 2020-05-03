@@ -57,17 +57,18 @@ export default class RenderView {
         `;
     }
 
-    renderContactFromAttach(value, index){
+    renderContactFromAttach(contact, index){
         return `
             <input id="checkbox-attach-contact-index${index}" type="checkbox">
             <label for="checkbox-attach-contact-index${index}">
                 <div style="margin-left:16px;" class="img">
                     <span class="btn-default" style="background: rgba(51,51,51,1)" ><i class="large material-icons">person</i></span>
+                    <img src="${contact.photo}" />
                 </div>
                 <div class="text">
-                    <span class="name">${value.name}</span>
-                    <!-- <span class="message">${value.message}</span> -->
-                    <!-- <span class="time">${Format.formatHourToBrazilian(value.time)}</span> -->
+                    <span class="name">${contact.name}</span>
+                    <!-- <span class="message">${contact.message}</span> -->
+                    <!-- <span class="time">${Format.formatHourToBrazilian(contact.time)}</span> -->
                 </div>
             </label>
         `;

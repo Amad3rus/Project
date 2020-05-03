@@ -79,10 +79,13 @@
 }
 .dialog-attach-contact .container-contact .content-contact li label .img{
     width:20%;
+    display:flex;
 }
-.dialog-attach-contact .container-contact .content-contact li label .img span{
+.dialog-attach-contact .container-contact .content-contact li label .img span,
+.dialog-attach-contact .container-contact .content-contact li label .img img{
     width:60px;
     height:60px;
+    border-radius: 50%;
 }
 .dialog-attach-contact .container-contact .content-contact li label .img span i{
     font-size:40px;

@@ -85,6 +85,12 @@ export default class AppController {
             this.el['logout'].on('click', e => localStorage.removeItem('user'));
         });
     }
+    setUpdateContact(contact){
+        this.el['statusContactName'].innerHTML = contact.name;
+        this.el['noStatusProfileImage'].hide();
+        this.el['statusProfileImage'].show();
+        this.el['statusProfileImage'].src = contact.photo;
+    }
     fetchIds(){
         this.el = {};
         document.querySelectorAll('[id]').forEach(element => {
@@ -369,8 +375,8 @@ export default class AppController {
         });
     }
     eventOpenChat(contact){
-        this.el['statusContactName'].innerHTML = contact.name;
-        this.fetchMessages(contact);
+        this.setUpdateContact(contact);
+        // this.fetchMessages(contact);
 
         this.removeAllChildElement();
         this.closeAllMainPanel();
@@ -774,7 +780,7 @@ export default class AppController {
             let contact = value.data();
             let li = document.createElement('li');
             li.innerHTML += this.render.renderContactFromAttach(contact, index);
-            li.querySelectorAll('button .contact-image').forEach(contact => contact.hide());
+            li.querySelectorAll('label .btn-default').forEach(contact => contact.hide());
             li.onchange = e => this.eventAttachContactToInsert(contact, li);
             this.el['dialogContentContact'].appendChild(li);
         });

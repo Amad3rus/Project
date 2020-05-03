@@ -53,7 +53,8 @@
 }
 .main .nav .status-header .perfil-img,
 .main .nav .status-header .perfil-img img,
-.main .container-chat .box .status .container-status .perfil-img{
+.main .container-chat .box .status .container-status .perfil-img,
+.main .container-chat .box .status .container-status .perfil-img img{
     height:40px;
     width:40px;
     border-radius:50%;
