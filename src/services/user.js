@@ -40,7 +40,7 @@ export default class User {
 
        if(localStorage.getItem('users')){
            const users = JSON.parse(localStorage.getItem('users'));
-            return Promise.resolve(users.filter(u => u.email == user.email)[0]);
+            return Promise.resolve(users.filter(u => u.email == user.user.email)[0]);
        }else{
            localStorage.setItem('users', JSON.stringify(this.users));
            const users =  this.users;

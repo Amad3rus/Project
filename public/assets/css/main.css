@@ -52,6 +52,7 @@
     text-overflow: ellipsis;
 }
 .main .nav .status-header .perfil-img,
+.main .nav .status-header .perfil-img img,
 .main .container-chat .box .status .container-status .perfil-img{
     height:40px;
     width:40px;
@@ -60,6 +61,7 @@
     justify-content: center;
     align-items: center;
     background:var(--color-silver);
+    cursor:pointer;
 }
 .main .nav .status-header .perfil-img span,
 .main .container-chat .box .status .container-status .perfil-img span{
@@ -127,7 +129,8 @@
     color:var(--color-white);
     margin-left: 5px;
 }
-.main .nav .mdc-list .panel-profile .profile .profile-img span{
+.main .nav .mdc-list .panel-profile .profile .profile-img span,
+.main .nav .mdc-list .panel-profile .profile .profile-img img{
     background:var(--color-silver);
     display:inline-block;
     width:100%;

@@ -28,7 +28,8 @@
                     <nav class="mdc-list">
                         <div class="status-header">
                             <div id="sidebar-profile" class="perfil-img">
-                                <span class="perfil"><i class="lart material-icons">person</i></span>
+                                <span id="no-status-header-profile" class="perfil"><i class="lart material-icons">person</i></span>
+                                <img style="display:none;" id="status-header-profile">
                             </div>
                             <span style="font-size:20px;">Random Chat</span>
                             <span id="header-messages" style="cursor:pointer"><i class="small material-icons">chat</i></span>
@@ -46,6 +47,7 @@
                                 <div id="profile-img" class="profile-img">
                                     <input style="display:none;" type="file" id="profile-input-photo">
                                     <span id="profile-set-photo" class="perfil"><i class="lart material-icons">person</i></span>
+                                    <img style="display:none;" id="profile-config-image">
                                 </div>
                                 <div id="container-menu" class="container-menu">
                                     <div class="set-name">
@@ -53,6 +55,14 @@
                                         <div style="max-height: 80px; overflow-y: auto;" id="edit-name" class="input-edit-name" contenteditable="true">Edite seu nome</div>
                                         <span style="background:transparent" id="edit-name-enter"><i class="small material-icons">check</i></span>
                                     </div>
+                                    
+                                    <button style="display:none;" id="logout" class="mdc-button foo-button custom-ripple">
+                                        <span class="mdc-button__label">
+                                            <i class="small material-icons">input</i>
+                                            <span>logout</span>
+                                        </span>
+                                    </button>
+                                    
                                     <!-- <button class="mdc-button foo-button custom-ripple">
                                         <span class="mdc-button__label">
                                             <i class="small material-icons">input</i>
@@ -112,7 +122,8 @@
 
                                 <div class="pic">
                                     <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRBIYarDOkmhhw6z8voXxgFhcvxMry0cVKItnq4WcRYC22yXEQE&usqp=CAU" alt=""> -->
-                                    <span><i class="small material-icons">person</i></span>
+                                    <span id="no-photo-url"><i class="small material-icons">person</i></span>
+                                    <img style="display:none;" id="photo-url">
                                 </div>
 
                                 <div id="profile-name" class="name"></div>

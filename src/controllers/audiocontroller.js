@@ -1,5 +1,6 @@
 import Snackbar from "./snackbarcontroller";
 import CreateEvent from "../utils/createEvents";
+import Format from "../utils/format";
 
 export default class AudioController extends CreateEvent{
     constructor(snackbarConfig){
@@ -42,12 +43,14 @@ export default class AudioController extends CreateEvent{
                 this.audioListening(file);
             });
             this.recording.start();
+            this.startTimer();
         }
     }
     stopAudioRecorder(){
         if(this.available()){
             this.recording.stop();
             this.stopAudio();
+            this.stopTimer();
         }
     }
     available(){
@@ -59,5 +62,15 @@ export default class AudioController extends CreateEvent{
             audio.play();
         }
         this.reader.readAsDataURL(audio);
+    }
+    startTimer(){
+        let start = Date.now();
+        this.recordMicroInterval = setInterval(() => {
+            // this.el['audioRecordTimer'].innerHTML = Format.toTime((Date.now() - start));
+            this.trigger('startTimer', (Date.now() - start) )
+        },100);
+    }
+    stopTimer(){
+        clearInterval(this.recordMicroInterval);
     }
 }   
