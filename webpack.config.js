@@ -24,7 +24,8 @@ module.exports = {
 				"exclude": /node_modules/,
 				"loader": 'babel-loader',
 				"query": {
-					"presets": ['es2015', 'stage-0']
+					"presets": ['es2015', 'stage-0'],
+					"plugins": ['transform-custom-element-classes', 'transform-es2015-classes']
 				}
 			},
 			{
@@ -33,6 +34,33 @@ module.exports = {
 				"loader":'html-loader',
 			}
 		]
-	  },
-	"plugins": [HTMLWebpackPluginConfig]
+	},
+	"devServer":{
+		"compress":true,
+		"port":9000,
+		"historyApiFallback": {
+			"rewrites": [
+			  { "from": /^\/$/, to: 'landing.html' },
+			//   { "from": /^\/subpage/, to: 'index.html' },
+			  { "from": /./, to: '404.html' }
+			]
+		},
+		// "before": function(app, server, compile){
+			
+		// 	app.get('/routes', function(req, res){
+		// 		res.json({"status":'está funcionando.'});
+		// 	});
+
+		// 	app.get('/', function(req, res){
+		// 		res.json({"status":'está funcionando.'});
+		// 	});
+
+		// 	app.use(function(req, res, next){
+		// 		res.status(404).send({"message":'404 page not found'});
+		// 	});
+		// },
+	},
+	"plugins": [
+		HTMLWebpackPluginConfig
+	]
 }

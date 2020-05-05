@@ -1,20 +1,36 @@
+import { ReaderDom } from '../app';
 import Format from '../utils/format';
 import Messages from '../services/messages';
 import Contacts from '../services/contacts';
+
 import User from '../services/user';
 import { Wordlist } from '../utils/wordlist';
 import { Emojis } from '../utils/emoji';
 import CameraController from './cameracontroller';
+
 import DocumentPreviewController from './documentcontroller';
 import Snackbar from './snackbarcontroller';
 import CarouselController from './carouselcontroller';
 import Validation from '../services/validations';
+
 import RenderView from '../services/renderView';
 import AudioController from './audiocontroller';
 import Firebase from '../services/firebase';
+import AppComponent from '../components/app.component.html';
 
-export default class AppController {
+import HeaderComponent from '../components/header.component.html';
+import ContactsComponent from '../components/contacts.component.html';
+import ChatComponent from '../components/chat.component.html';
+import ButtonRandomSearchComponent from '../components/button-random-search.component.html';
+
+export default class AppController{
     constructor(){
+        document.querySelector('#root').appendChild(ReaderDom.appendComponent(AppComponent));
+        document.querySelector('#sidebar').appendChild(ReaderDom.appendComponent(HeaderComponent));
+        document.querySelector('#container-contact').appendChild(ReaderDom.appendComponent(ContactsComponent));
+        document.querySelector('#container-chat').appendChild(ReaderDom.appendComponent(ChatComponent));
+        // document.querySelector('#button-random-search').appendChild(ReaderDom.appendComponent(ButtonRandomSearchComponent));
+        
         this.messagesService = new Messages();
         this.contactsService = new Contacts();
         this.validations = new Validation();
@@ -30,8 +46,8 @@ export default class AppController {
         this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left',sidebar:false};
         this.isLogged = false;
 
-        this.initAuth();
         this.setDefaultEvents();
+        this.initAuth();
         this.fetchIds();
         this.initEvents();
     }
@@ -51,8 +67,8 @@ export default class AppController {
             this.snackbarService.callNotification('offline', `${e}`, '&times;');
         }
     }
+    
     async setUserOnDatabase(){
-        // await userRef.set({ name:this.auth.user.displayName, email:this.auth.user.email, photo:this.auth.user.photoURL });
         this.userService.name = this.auth.user.displayName;
         this.userService.email = this.auth.user.email;
         this.userService.photo = this.auth.user.photoURL;
@@ -61,6 +77,7 @@ export default class AppController {
         this.el['app'].css({display:'flex'});
         this.snackbarService.callNotification('online', `Seja Bem vindo(a) ${this.auth.user['displayName']}`, '&check;');
     }
+    
     setProfile(){
         this.userService.on('datachange', e => {
             document.querySelector('title').innerHTML = e.name + ' Random chat';
@@ -85,12 +102,14 @@ export default class AppController {
             this.el['logout'].on('click', e => localStorage.removeItem('user'));
         });
     }
+    
     setUpdateContact(contact){
         this.el['statusContactName'].innerHTML = contact.name;
         this.el['noStatusProfileImage'].hide();
         this.el['statusProfileImage'].show();
         this.el['statusProfileImage'].src = contact.photo;
     }
+    
     fetchIds(){
         this.el = {};
         document.querySelectorAll('[id]').forEach(element => {
@@ -108,6 +127,7 @@ export default class AppController {
         }
         this.snackbarService = new Snackbar(this.snackbarConfig);
     }
+    
     setDefaultEvents(){
         Element.prototype.show = function(){
             this.style.display = 'block';
@@ -159,6 +179,7 @@ export default class AppController {
             return json;
         }
     }
+    
     initEvents(){
         this.eventRizeWindow();
         this.eventHideProfile();
@@ -304,6 +325,7 @@ export default class AppController {
         // forçar um evento a um elemento
         // elemento.dispatchEvent(new Event(nome_do_evento));
     }
+    
     eventHideProfile(){
         this.el['closePanelProfile'].on('click', e => {
             this.el['panelProfile'].removeClass('open-panel');
@@ -312,6 +334,7 @@ export default class AppController {
             }, 300);
         });
     }
+    
     eventShowProfile(){
         this.el['sidebarProfile'].onclick = e =>{
             this.el['panelProfile'].show();
@@ -320,6 +343,7 @@ export default class AppController {
             },300);
         };
     }
+    
     eventHidePanelContacts(){
         this.el['closePanelContacts'].on('click', e => {
             this.el['panelContacts'].removeClass('open-panel');
@@ -328,6 +352,7 @@ export default class AppController {
             }, 300);
         });
     }
+    
     eventShowPanelContacts(){
         this.el['headerMessages'].on('click', e => {
             this.el['panelContacts'].show();
@@ -336,6 +361,7 @@ export default class AppController {
             },300);
         });
     }
+    
     eventHideMenuOnclick(){
         this.el['hideMenu'].onclick = e => {
             e.preventDefault();
@@ -355,6 +381,7 @@ export default class AppController {
             }
         }
     }
+    
     eventRizeWindow(){
         window.addEventListener('resize', (e) => {
             if(e.target.innerWidth <= 1024){
@@ -374,6 +401,7 @@ export default class AppController {
             }
         });
     }
+    
     eventOpenChat(contact){
         this.setUpdateContact(contact);
         // this.fetchMessages(contact);
@@ -385,6 +413,7 @@ export default class AppController {
         this.el['chatHome'].hide();
 
     }
+    
     eventOpenAttachments(){
         this.el['statusAttachFile'].on('click', e => {
             e.stopPropagation();
@@ -400,6 +429,7 @@ export default class AppController {
             document.addEventListener('click', this.closeMenuAttach.bind(this));
         });
     }
+    
     loadingContact(contact){
         const arr = [];
         arr.push(contact);
@@ -412,6 +442,7 @@ export default class AppController {
             this.el['listContact'].appendChild(li);
         });
     }
+    
     eventEditName(){
         this.el['editName'].on('focus', e => {
             e.target.innerHTML = '';
@@ -450,11 +481,13 @@ export default class AppController {
             }
         });
     }
+    
     eventProfileSetPhoto(){
         this.el['profileSetPhoto'].on('click', setPhoto => {
             this.el['profileInputPhoto'].click();
         });
     }
+    
     eventProfileAddContact(){
         // dir(ELEMENTO HTML) - saber qual classe o elemento herda
         this.el['profileAddContact'].on('submit', e => {
@@ -476,6 +509,7 @@ export default class AppController {
             });
         });
     }
+    
     eventStatusAttachCamera(){
         this.el['statusBtnAttachCamera'].on('click', e => {
             this.closeAllMainPanel();
@@ -503,6 +537,7 @@ export default class AppController {
         });
 
     }
+    
     eventStatusAttachFile(){
         this.el['statusBtnAttachFile'].on('click', e => {
             this.closeAllMainPanel();
@@ -526,6 +561,7 @@ export default class AppController {
             console.log('send file');
         });
     }
+    
     eventStatusAttachContact(){
         this.el['statusBtnAttachContact'].on('click', e => {
             this.closeAllMainPanel();
@@ -538,6 +574,7 @@ export default class AppController {
             }, 300)
         });
     }
+    
     renderPreviews(data){
         const self = this;
       
@@ -603,6 +640,7 @@ export default class AppController {
             }
         }); 
     }
+    
     loadingFiles(){
         this.el['statusInput'].on('change', async e => {
             this.response = this.validations.validationsFiles(this.el['statusInput'].files);
@@ -630,6 +668,7 @@ export default class AppController {
             }
         });
     }
+    
     eventTakePicture(){
         this.el['statusPhotoTakePhoto'].on('click', e => {
             this.el['imageCamera'].src = this.cameraCtrl.takePicture();
@@ -650,6 +689,7 @@ export default class AppController {
             this.el['statusPhotoTakePhoto'].css({display:'flex'});
         });
     }
+    
     eventRetakePicture(){
         this.el['retakePicture'].on('click', e => {
             this.el['imageCamera'].hide();
@@ -663,6 +703,7 @@ export default class AppController {
             this.el['statusPhotoTakeSend'].hide();
         });
     }
+    
     eventAttachContactToInsert(contact, el){
         this.el['dialogFooterContact'].innerHTML = '';
         let checkbox = el.querySelector('input');
@@ -684,6 +725,7 @@ export default class AppController {
 
         this.el['dialogBtnSendContact'].on('click', e => this.prepareDataToAttachContact(this.virtualList));
     }
+    
     eventDeleteFileFromPreview(files, file, div){
         [...this.files].forEach((value, index) => {
             if(value.name == file.name){
@@ -724,15 +766,9 @@ export default class AppController {
         });
         
         this.el['noContactSelected'].innerHTML = this.render.noContactSelected();
-        
-        if(contact){
-            contact['messages'].forEach((msg, index) => {
-                let div = document.createElement('div');
-                div.innerHTML = this.render.messageTextReceive(msg);
-                this.el['chat'].appendChild(div);
-            });
-        }
+        this.el['chat'].appendChild(this.messagesService.getViewElement())
     }
+    
     async fetchUser(user){
         // dados serão vindo após login
         // const user = { "name":'Kakashi', "email":'kakashi.kisura7@gmail.com', "token":'token-kakashi-kakashi.kisura7@gmail.com'};
@@ -749,6 +785,7 @@ export default class AppController {
             this.snackbarService.callNotification('offline', `${e}`, '&times;');
         }
     }
+    
     fetchContactToConversation(contacts){
         this.el['listContact'].innerHTML = '';
 
@@ -761,6 +798,7 @@ export default class AppController {
             this.el['listContact'].appendChild(li);
         });
     }
+    
     fetchContactToStorage(contacts){
         this.el['contactsProfile'].innerHTML = '';
         
@@ -773,6 +811,7 @@ export default class AppController {
             this.el['contactsProfile'].appendChild(li);
         });
     }
+    
     fetchContactFromAttachment(contacts){
         this.el['dialogContentContact'].innerHTML = '';
 
@@ -789,6 +828,7 @@ export default class AppController {
     prepareDataToAttachContact(contact){
         console.log(contact);
     }
+    
     // show
     showPanelDefault(){
         this.el['chat'].show();
@@ -806,6 +846,7 @@ export default class AppController {
             this.el['panelContacts'].hide();
         }, 300)
     }
+    
     closePanelDocumentPreview(){
         this.el['closePanelFile'].on('click', e => {
             this.closeAllMainPanel();
@@ -814,6 +855,7 @@ export default class AppController {
             this.snackbarService.callNotification('online', 'cancelado', '&check;');
         });
     }
+    
     removeAllChildElement(){
         while(this.el['iconFile'].firstChild){
             this.el['iconFile'].removeChild(this.el['iconFile'].firstChild);
@@ -829,6 +871,7 @@ export default class AppController {
         if(this.el['carousel'].querySelector('.prev')) this.el['carousel'].querySelector('.prev').remove();
         if(this.el['carousel'].querySelector('.dots')) this.el['carousel'].querySelector('.dots').remove();
     }
+    
     closeMenuAttach(e){
         this.el['statusOpenAttachFile'].css({height:0});
         setTimeout(() => {
@@ -837,6 +880,7 @@ export default class AppController {
         },300);
         document.removeEventListener('click', this.closeMenuAttach);
     }
+    
     closeAllMainPanel(){
         this.el['chat'].hide();
         this.el['takePhoto'].hide();
@@ -847,6 +891,7 @@ export default class AppController {
         this.el['containerDocumentPreview'].hide();
         this.el['statusAttachFile'].disabled = false;
     }
+    
     closeBtnDialog(){
         this.el['dialogClose'].on('click', e => {
             this.el['dialog'].css({transform:'scale(0)'});
@@ -863,6 +908,7 @@ export default class AppController {
             }
         }
     }
+    
     closeRecordingMicro(){
         this.el['audioRecord'].hide();
         this.el['btnMicro'].show();

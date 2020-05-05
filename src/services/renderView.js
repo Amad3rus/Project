@@ -2,10 +2,135 @@ import Format from "../utils/format";
 
 export default class RenderView {
     constructor(){
-
     }
 
-    messageTextReceive(msg){
+    static messageText(msg){
+        return `
+            <div class="message">
+                <div class="container-cb2">
+                    <div class="cb2">
+                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="container-cb">
+                    <div class="cb">
+                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    static messageAudio(msg){
+        return `
+            <div class="message">
+                <div class="container-cb2">
+                    <div class="cb2">
+                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="container-cb">
+                    <div class="cb">
+                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    static messageVideo(msg){
+        return `
+            <div class="message">
+                <div class="container-cb2">
+                    <div class="cb2">
+                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="container-cb">
+                    <div class="cb">
+                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    static messageDocument(msg){
+        return `
+            <div class="message">
+                <div class="container-cb2">
+                    <div class="cb2">
+                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="container-cb">
+                    <div class="cb">
+                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
+                        <span>${msg.message}</span>
+                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    static messageContact(msg){
+        return `
+            <div class="message">
+                <div class="container-cb2">
+                    <div class="cb2">
+                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
+                        <span class="card-contact send">
+                            <i class="large material-icons">contact_phone</i>
+                            <span>send</span>
+                        </span>
+                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="container-cb">
+                    <div class="cb">
+                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
+                        <span class="card-contact receive">
+                            <span>receive</span>
+                            <i class="large material-icons">contact_phone</i>
+                        </span>
+                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    static messageImage(msg){
         return `
             <div class="message">
                 <div class="container-cb2">
