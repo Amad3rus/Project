@@ -1,7 +1,9 @@
 import Format from "../utils/format";
+import CreateEvent from "../utils/createEvents";
 
-export default class RenderView {
+export default class RenderView extends CreateEvent{
     constructor(){
+        super();
     }
 
     static messageText(msg){
