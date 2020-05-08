@@ -37,6 +37,45 @@ body{
     background:var(--color-black);
     font-family: 'Baloo Tamma 2', cursive;
 }
+/* GLOBAL */
+.open-panel{
+    left:0 !important;
+}
+.hide-panel{
+    left:-100% !important; 
+}
+.open-attachments{
+    display:flex;
+    height:230px;
+}
+.open-panel-emoji{
+    height:250px !important;
+}
+.active{
+    background: var(--color-black) !important;
+}
+.btn-default{
+    height:40px;
+    width:40px;
+    background:var(--color-orange);
+    border-radius:50%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    cursor:pointer;
+    color:var(--color-white);
+    outline: none;
+    border:none;
+}
+.btn-default:active{
+    background: var(--color-orange-light);
+}
+.btn-default:disabled{
+    color: var(--color-white);
+    background: var(--color-light);
+    cursor:not-allowed;
+}
+
 @media screen and (max-width:600px){
 }
 @media screen and (min-width:601px) and (max-width:768px){
