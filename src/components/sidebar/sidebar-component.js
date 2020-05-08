@@ -35,15 +35,15 @@ export default class Sidebar extends HTMLElement{
     eventRizeWindow(){
         window.addEventListener('resize', (e) => {
             if(e.target.innerWidth <= 1024){
-                this.el['sidebar'].removeClass(this.config.animate);
-                this.el['sidebar'].removeClass(this.config.fadeinleft);
-                this.el['sidebar'].style.width = 0;
+                this.removeClass(this.config.animate);
+                this.removeClass(this.config.fadeinleft);
+                this.style.width = 0;
                 this.config.sidebar = true;
             }else{
-                this.el['sidebar'].removeClass(this.config.left);
-                this.el['sidebar'].addClass(this.config.animate);
-                this.el['sidebar'].addClass(this.config.fadeinleft);
-                this.el['sidebar'].style.width = '100%';
+                this.removeClass(this.config.left);
+                this.addClass(this.config.animate);
+                this.addClass(this.config.fadeinleft);
+                this.style.width = '100%';
                 this.config.sidebar = false;
             }
         });
