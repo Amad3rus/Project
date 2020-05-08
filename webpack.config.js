@@ -20,7 +20,7 @@ module.exports = {
 	"module": {
 		"rules": [
 			{
-				"test": /\.js$/,
+				"test": /\.js$/i,
 				"exclude": /node_modules/,
 				"loader": 'babel-loader',
 				"query": {
@@ -29,9 +29,13 @@ module.exports = {
 				}
 			},
 			{
-				"test":/\.html$/,
+				"test":/\.html$/i,
 				"exclude": /node_modules/,
 				"loader":'html-loader',
+			},
+			{
+				"test": /\.css$/i,
+				"use":['style-loader', 'css-loader']
 			}
 		]
 	},

@@ -13,7 +13,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb2">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -23,7 +28,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb">
                         <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -37,7 +47,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb2">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -47,7 +62,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb">
                         <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -61,7 +81,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb2">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -71,7 +96,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb">
                         <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -85,7 +115,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb2">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -95,7 +130,12 @@ export default class RenderView extends CreateEvent{
                     <div class="cb">
                         <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -112,7 +152,12 @@ export default class RenderView extends CreateEvent{
                             <i class="large material-icons">contact_phone</i>
                             <span>send</span>
                         </span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -125,7 +170,12 @@ export default class RenderView extends CreateEvent{
                             <span>receive</span>
                             <i class="large material-icons">contact_phone</i>
                         </span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -138,8 +188,18 @@ export default class RenderView extends CreateEvent{
                 <div class="container-cb2">
                     <div class="cb2">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
-                        <span>${msg.message}</span>
-                        <span style="color: var(--color-light);" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <figure class="image">
+                            <img src="https://i0.wp.com/www.deviante.com.br/wp-content/uploads/2020/02/19.-Processos-de-software.jpg?fit=1800%2C850">
+                            <div class=refresh>
+                                <span class="btn-download-image-from-contact"><i class="small material-icons">refresh</i></span>
+                            </div>
+                        </figure>
+                        <time style="color: var(--color-light); display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -148,8 +208,18 @@ export default class RenderView extends CreateEvent{
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
-                        <span>${msg.message}</span>
-                        <span style="color: var(--color-white); font-weight:100;" class="time">${Format.formatHourToBrazilian(msg.time)}</span>
+                        <figure class="image">
+                            <img src="https://i0.wp.com/www.deviante.com.br/wp-content/uploads/2020/02/19.-Processos-de-software.jpg?fit=1800%2C850">
+                            <div class="refresh">
+                                <span class="btn-download-image-from-contact"><i class="small material-icons">refresh</i></span>
+                            </div>
+                        </figure>
+                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
+                            ${Format.formatHourToBrazilian(msg.time)}
+                            &nbsp;
+                            <i style="font-size:15px" class="tiny material-icons">done_all</i>
+                            <i style="font-size:15px" class="tiny material-icons">done</i>
+                        </time>
                     </div>
                 </div>
             </div>
@@ -178,7 +248,12 @@ export default class RenderView extends CreateEvent{
                 <div class="text">
                     <span class="name">${contact.name}</span>
                     <span class="message">${contact.lastMessage}</span>
-                    <span class="time">${Format.formatHourToBrazilian(contact.time)}</span>
+                    <time class="time" style="display:flex; justify-content:flex-end; width:100%; font-size:11px; align-items:center">
+                        <i style="font-size:12px" class="tiny material-icons">done_all</i>
+                        <i style="font-size:12px" class="tiny material-icons">done</i>
+                        &nbsp;
+                        ${Format.formatHourToBrazilian(contact.time)}
+                    </time>
                 </div>
             </button>
         `;
@@ -195,7 +270,7 @@ export default class RenderView extends CreateEvent{
                 <div class="text">
                     <span class="name">${contact.name}</span>
                     <!-- <span class="message">${contact.message}</span> -->
-                    <!-- <span class="time">${Format.formatHourToBrazilian(contact.time)}</span> -->
+                    <!-- <time class="time">${Format.formatHourToBrazilian(contact.time)}</time> -->
                 </div>
             </label>
         `;

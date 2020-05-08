@@ -3,7 +3,6 @@ import ChatComponent from './chat-component.html';
 import AudioService from '../../services/audio-service';
 import Format from '../../utils/format';
 import { Emojis } from '../../utils/emoji';
-import SnackbarService from '../../services/snackbar-service';
 import CameraService from '../../services/camera-service';
 import CarouselService from '../../services/carousel-service';
 import DocumentService from '../../services/document-service';
@@ -75,7 +74,7 @@ export default class Chat extends HTMLElement{
             alignItems:'center'
         });
         this.el['noContactSelected'].innerHTML = this.rs.noContactSelected();
-        this.el['chat'].appendChild(this.ms.getViewElement())
+        this.el['chat'].appendChild(this.ms.getViewElement());
     }
     eventButtonSendMessage(){
         const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);

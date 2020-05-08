@@ -45,7 +45,7 @@ export default class Messages extends Model{
                 id:Format.createUid()
             }
         ]
-        this.type = 'contact';
+        this.type = 'image';
 
         this.content = {
             message:'oi',
@@ -88,12 +88,14 @@ export default class Messages extends Model{
                 break;
             case 'audio':
                 div.innerHTML = RenderView.messageAudio(this.content);
+
                 break;
             case 'video':
                 div.innerHTML = RenderView.messageVideo(this.content);
                 break;
             case 'image':
                 div.innerHTML = RenderView.messageImage(this.content);
+                div.querySelectorAll('.btn-download-image-from-contact').forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.content, btn));
                 break;
             case 'document':
                 div.innerHTML = RenderView.messageDocument(this.content);
@@ -106,5 +108,10 @@ export default class Messages extends Model{
     
     extractInfoFromContact(contact){
         console.log(contact);
+    }
+    downloadImageFromContact(content, element){
+        console.log(element);
+        element.addClass('active');
+        setTimeout(() => {element.removeClass('active')}, 5000);
     }
 }
