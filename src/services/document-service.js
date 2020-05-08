@@ -12,15 +12,17 @@ export default class DocumentService{
     fetchPreviewFile(){
         return new Promise((resolve, reject) => {
             const files = [];
-            const reader = new FileReader();
+            // const reader = new FileReader();
 
             [...this.files].forEach((file, index) => {
+                var reader = new FileReader();
+
                 switch(file.type){
                     case 'image/png':
                     case 'image/jpg':
                     case 'image/jpeg':
                     case 'image/gif':
-                        reader.onload = e => files.push({src:reader.result, info:file, id:Format.createUid()});
+                        reader.onload = e => files.push({"src":reader.result, "info":file, "id":Format.createUid()});
                         reader.onerror = e => {reject(e)};
                         reader.readAsDataURL(file);
                         break;
@@ -65,7 +67,6 @@ export default class DocumentService{
                         reject()
                 }
             });
-
             resolve(files);
         });
     }

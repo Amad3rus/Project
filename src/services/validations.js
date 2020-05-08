@@ -17,6 +17,7 @@ export default class Validation {
 
         if(files.length > 0 && files.length < 10){
             let total = 0;
+            
             [...files].forEach(file => {
                 total += file.size;
             });
@@ -34,12 +35,14 @@ export default class Validation {
         }
         return this.isValid;
     }
+    
     updateIsValid(valid, text, code, result){
         this.isValid['valid'] = valid;
         this.isValid['description'] = text;
         this.isValid['code'] = code;
         this.isValid['result'] = result;   
     }
+    
     setThrowError(code, message, source){
         Errors.throwErrors({code, message, source, id:Format.createUid()});
     }

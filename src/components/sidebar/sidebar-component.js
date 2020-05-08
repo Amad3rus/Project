@@ -18,6 +18,8 @@ export default class Sidebar extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
         
+        this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left',sidebar:false};
+        
         this.initEvents();
     }
 
@@ -28,8 +30,24 @@ export default class Sidebar extends HTMLElement{
         this.eventProfileAddContact();
         this.closeAllPanelLeft();
         this.setProfile();
+        this.eventRizeWindow();
     }
-    
+    eventRizeWindow(){
+        window.addEventListener('resize', (e) => {
+            if(e.target.innerWidth <= 1024){
+                this.el['sidebar'].removeClass(this.config.animate);
+                this.el['sidebar'].removeClass(this.config.fadeinleft);
+                this.el['sidebar'].style.width = 0;
+                this.config.sidebar = true;
+            }else{
+                this.el['sidebar'].removeClass(this.config.left);
+                this.el['sidebar'].addClass(this.config.animate);
+                this.el['sidebar'].addClass(this.config.fadeinleft);
+                this.el['sidebar'].style.width = '100%';
+                this.config.sidebar = false;
+            }
+        });
+    }
     setProfile(){
         setTimeout(async () => {
             this.user = new User(this.auth.auth.user.email);
@@ -170,6 +188,24 @@ export default class Sidebar extends HTMLElement{
                 }
             });
         });
+    }
+    eventHideMenuOnclick(){
+        this.el['hideMenu'].onclick = e => {
+            e.preventDefault();
+            if(this.config.sidebar && !this.el['sidebar'].hasClass(this.config.animate)){
+                this.el['sidebar'].addClass(this.config.animate);
+                this.el['sidebar'].addClass(this.config.fadeinleft);
+                this.el['sidebar'].style.width = '100%';
+                this.config.sidebar = false;
+                this.el['menuSetinha'].checked = true;
+            }else{
+                this.el['sidebar'].removeClass(this.config.animate);
+                this.el['sidebar'].removeClass(this.config.fadeinleft);
+                this.el['sidebar'].style.width = 0;
+                this.config.sidebar = true;
+                this.el['menuSetinha'].checked = false;
+            }
+        }
     }
     closeAllMainPanel(){
         this.el['chat'].hide();
