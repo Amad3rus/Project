@@ -37,12 +37,16 @@ export default class User extends Model{
         if(email) this.getByEmail(email);
     }
     get name(){return this.data.name};
-    get email(){return this.data.email};
-    get photo(){return this.data.photo};
-
     set name(name){this.data.name = name};
+
+    get email(){return this.data.email};
     set email(email){this.data.email = email};
+
+    get photo(){return this.data.photo};
     set photo(photo){this.data.photo = photo};
+
+    get chatId(){return this.data.chatId};
+    set chatId(chatId){this.data.chatId = chatId};
 
     async fetchUser(user){
         const contacts = await this.contacts.fetchContacts();

@@ -48,8 +48,10 @@ export default class AppPage{
                 // this.fetchContactFromAttachment(docs);
                 const contacts = [];
                 docs.forEach(doc => { contacts.push(doc.data()); });
-                document.querySelector('app-list-contacts').dataset.contacts = JSON.stringify(contacts);
-                document.querySelector('app-list-contacts').dispatchEvent(new Event('contactIsLoaded'))
+                // document.querySelector('app-list-contacts').dataset.contacts = JSON.stringify(contacts);
+                // document.querySelector('app-list-contacts').dispatchEvent(new Event('contactIsLoaded'));
+                document.querySelector('app-list-contacts').dispatchEvent(new CustomEvent('contactIsLoaded', {detail: contacts}));
+
             });
             await this.userService.getContacts();
         }catch(e){

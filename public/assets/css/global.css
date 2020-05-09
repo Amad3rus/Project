@@ -37,6 +37,21 @@ body{
     background:var(--color-black);
     font-family: 'Baloo Tamma 2', cursive;
 }
+progress[value]{
+    width:150px;
+    height:15px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+progress[value]::-webkit-progress-bar{
+    background:var(--color-white);
+    box-shadow:0 2px 5px rgba(0,0,0,0.54) inset;
+    border-radius: 2px;
+}
+progress[value]::-webkit-progress-value{
+    background-image: -webkit-linear-gradient(left, var(--color-negao) 33%, var(--color-dark) 66%);
+}
+
 /* GLOBAL */
 .open-panel{
     left:0 !important;

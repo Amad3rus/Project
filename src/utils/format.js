@@ -22,6 +22,9 @@ export default class Format {
         };
         return new Intl.DateTimeFormat('pt-BR', options).format(hour);
     }
+    static timeStampToTime(timestamp){
+        return (timestamp && typeof timestamp.toDate === 'function') ? Format.dateToTime(timestamp.toDate()) : '';
+    }
     static toTime(duration){
         let seconds = parseInt((duration / 1000) % 60);
         let minutes = parseInt((duration / (1000 * 60)) % 60);
@@ -30,14 +33,20 @@ export default class Format {
         if(hours > 0) return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         else return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
+    static dateToTime(isoDate, locale = 'pt-BR'){
+        return isoDate.toLocaleTimeString(locale, { hours:'2-digits', minutes:'2-digits'});
+        // return new Date(isoDate).toLocaleTimeString('pt-BR', {hours:'2-digits', minutes:'2-digits'});
+    }
     static formatNameFromImage(filetype){
         return filetype.split('/')[1].toUpperCase();
     }
+    
     static abrevName(string){
         const result = (string.match(/ d./i)) ? string.match(/ d./i)[0] : ' ';
         const novaString = String.raw`${string}`.replace(result, ' ').split(/[_. ,@$^*/\\-]/).filter(char => char != '');
         return (novaString[0][0] + novaString[1][0]).toUpperCase();
     }
+    
     static formatBytes(b){
         const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB','YB'];
 
@@ -49,6 +58,7 @@ export default class Format {
         }
         return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }
+    
     static createUid(){
         let timestamp = new Date().getTime();
         let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => {

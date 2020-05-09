@@ -1,71 +1,15 @@
-import User from '../services/user';
 import Format from '../utils/format';
-import Contacts from './contacts';
 import Model from './model';
 import RenderView from './renderView';
+import Firebase from './firebase';
 
 export default class Messages extends Model{
     constructor(){
         super();
-        this.messages = [
-            {
-                name:'Kakashi',
-                message:'olá',
-                time: new Date().getTime(),
-                id: Format.createUid()
-            },
-            {
-                name:'Maria',
-                message:'já estou aqui',
-                time: new Date().getTime(),
-                id:Format.createUid()
-            },
-            {
-                name:'João',
-                message:'Não foi?',
-                time: new Date().getTime(),
-                id:Format.createUid()
-            },
-            {
-                name:'Vinícius',
-                message:'tudo bem?',
-                time: new Date().getTime(),
-                id:Format.createUid()
-            },
-            {
-                name:'Vinícius',
-                message:'tudo bem?',
-                time: new Date().getTime(),
-                id:Format.createUid()
-            },
-            {
-                name:'Vinícius',
-                message:'Hoje não?',
-                time: new Date().getTime(),
-                id:Format.createUid()
-            }
-        ]
-        this.type = 'image';
-
-        this.content = {
-            message:'oi',
-            name:'kakashi',
-            time:Date.now()
-        }
     }
+    get id(){ return this.data.id;};
+    set id(value){this.data.id = value};
 
-    fetchMessages(value){
-        return new Promise(async (resolve, reject) => {
-            try{
-                // const contacts = await this.contact.fetchContacts(value);
-                // contacts.forEach(contact => { contact.messages = this.messages; });
-                // resolve(contacts);
-            }catch(e){
-                console.error(e);
-                reject(e);
-            }
-        });
-    }
     get content(){ return this.data.content;};
     set content(value){this.data.content = value};
 
@@ -78,31 +22,34 @@ export default class Messages extends Model{
     get status(){ return this.data.status;};
     set status(value){this.data.status = value};
 
-    getViewElement(){
+    getViewElement(me = true){
         const div = document.createElement('div');
 
         switch(this.type){
             case 'contact':
-                div.innerHTML = RenderView.messageContact(this.content);
-                div.querySelectorAll('.receive').forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.content));
+                div.innerHTML = RenderView.messageContact(this.data);
+                div.querySelectorAll('.receive').forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.data));
                 break;
             case 'audio':
-                div.innerHTML = RenderView.messageAudio(this.content);
-
+                div.innerHTML = RenderView.messageAudio(this.data);
                 break;
             case 'video':
-                div.innerHTML = RenderView.messageVideo(this.content);
+                div.innerHTML = RenderView.messageVideo(this.data);
                 break;
             case 'image':
-                div.innerHTML = RenderView.messageImage(this.content);
-                div.querySelectorAll('.btn-download-image-from-contact').forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.content, btn));
+                div.innerHTML = RenderView.messageImage(this.data);
+                div.querySelectorAll('.btn-download-image-from-contact').forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
                 break;
             case 'document':
-                div.innerHTML = RenderView.messageDocument(this.content);
+                div.innerHTML = RenderView.messageDocument(this.data);
                 break;
             default:
-                div.innerHTML = RenderView.messageText(this.content);
+                div.innerHTML = RenderView.messageText(this.data);
         }
+
+        const messageOutput = (me) ? 'message-out' : 'message-in';
+        div.firstElementChild.classList.add(messageOutput);
+        
         return div;
     }
     
@@ -113,5 +60,17 @@ export default class Messages extends Model{
         console.log(element);
         element.addClass('active');
         setTimeout(() => {element.removeClass('active')}, 5000);
+    }
+    playAudioSend(audio){
+        console.log('send', audio);
+    }
+    playAudioReceive(audio){
+        console.log('receive', audio);
+    }
+    static sendMessage(message){
+        return Messages.getRef(message.chatId).add(message);
+    }
+    static getRef(chatId){
+        return Firebase.database().collection('chats').doc(chatId).collection('messages');
     }
 }

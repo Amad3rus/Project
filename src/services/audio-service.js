@@ -2,9 +2,9 @@ import Snackbar from "./snackbar-service";
 import CreateEvent from "../utils/createEvents";
 
 export default class AudioService extends CreateEvent{
-    constructor(snackbarConfig){
+    constructor(){
         super();
-        this.snackbarService = new Snackbar(snackbarConfig);
+        // this.snackbarService = new Snackbar(snackbarConfig);
         this.reader = new FileReader();
         this.isAvailable = false;
         this.mimeType = 'audio/webm';

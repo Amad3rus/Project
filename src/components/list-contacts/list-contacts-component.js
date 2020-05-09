@@ -14,10 +14,11 @@ export default class ListContacts extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
         
-        this.addEventListener('contactIsLoaded', contacts => {
-            this.contacts = JSON.parse(contacts.target.dataset.contacts);
+        this.addEventListener('contactIsLoaded', e => {
+            // this.contacts = JSON.parse(contacts.target.dataset.contacts);
+            this.contacts = e.detail;
             this.el['listContact'].innerHTML = '';
-                
+            
             this.contacts.forEach((contact, index) => {
                 let li = document.createElement('li');
                 li.innerHTML += this.render.renderListContact(contact);
@@ -28,6 +29,6 @@ export default class ListContacts extends HTMLElement{
         });
     }
     openPanelConversation(contact){
-        this.dispatchEvent(new CustomEvent('contactchange',{'detail':contact}))
+        this.dispatchEvent(new CustomEvent('contactchange',{'detail':contact}));
     }
 }

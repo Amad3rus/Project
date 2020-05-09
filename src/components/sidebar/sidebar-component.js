@@ -5,6 +5,7 @@ import { Wordlist } from '../../utils/wordlist';
 import User from '../../services/user';
 import Auth from '../auth/auth-component';
 import RenderView from '../../services/renderView';
+import ChatService from '../../services/chat';
 
 export default class Sidebar extends HTMLElement{
     constructor(){
@@ -27,10 +28,10 @@ export default class Sidebar extends HTMLElement{
         this.openAndHidePanel();
         this.eventEditName();
         this.eventProfileAddContact();
-        this.eventProfileAddContact();
         this.closeAllPanelLeft();
         this.setProfile();
         this.eventRizeWindow();
+        this.eventProfileSetPhoto();
     }
     eventRizeWindow(){
         window.addEventListener('resize', (e) => {
@@ -87,6 +88,7 @@ export default class Sidebar extends HTMLElement{
     }
     fetchContactToStorage(contacts){
         this.el['contactsProfile'].innerHTML = '';
+        
         contacts.forEach((value, index) => {
             let contact = value.data();
             let li = document.createElement('li');
@@ -160,31 +162,44 @@ export default class Sidebar extends HTMLElement{
                 this.el['editNameEnter'].disabled = false;
                 this.snackbarService.callNotification('offline', `nome ${this.el['editName'].innerHTML} inválido`, '&times;');
             }else{
-                this.userService.name = this.el['editName'].innerHTML;
-                await this.userService.save();
+                this.user.name = this.el['editName'].innerHTML;
+                await this.user.save();
                 this.el['editNameEnter'].disabled = false;
             }
         });
     }
     eventProfileSetPhoto(){
-        this.el['profileSetPhoto'].on('click', setPhoto => {
-            this.el['profileInputPhoto'].click();
-        });
+        this.el['profileImg'].on('click', setPhoto => this.el['profileInputPhoto'].click());
+        this.el['profileInputPhoto'].on('change', setPhotoProfile);
+
+        function setPhotoProfile(file){
+            console.log(file);
+        }
     }
     eventProfileAddContact(){
         this.el['profileAddContact'].on('submit', e => {
             e.preventDefault();
+            
             const formAddContact = new FormData(this.el['profileAddContact']);
             const contact = new User(formAddContact.get('email'));
 
             contact.on('datachange', async e => {
-                if(e.name){
-                    await this.userService.addContact(contact);
-                    console.info('novo contato adicionado.');
-                    this.snackbarService.callNotification('online', 'novo contato adicionado.', '&check;');
+                if(e.email){
+                    // create new chat if not exists
+                    const chat = await ChatService.createIfNotExists(this.user.email, contact.email);
+                  
+                    contact.chatId = chat.id;
+                    
+                    this.user.chatId = chat.id;
+                    
+                    contact.addContact(this.user);
+
+                    await this.user.addContact(contact);
+                    
                     this.closeAllPanelLeft();
+                    this.notification('Novo contato adicionado.');
                 }else{
-                    this.snackbarService.callNotification('offline', 'usuário não encontrado', '&times;');
+                    this.notification('Usuário não encontrado.');
                 }
             });
         });
@@ -225,5 +240,9 @@ export default class Sidebar extends HTMLElement{
             this.el['panelProfile'].hide();
             this.el['panelContacts'].hide();
         }, 300)
+    }
+    notification(text){
+        document.querySelector('app-snackbar')
+            .dispatchEvent(new CustomEvent('show', {detail:text}));
     }
 }
