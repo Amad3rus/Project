@@ -36,8 +36,9 @@
     .main .container-chat{
         width:100%;
     }
-    .main .container-chat .box .chat{
-        padding:25px;
+    .container-chat .box .chat{
+        padding:0;
+        margin: 0;
     }
 }
 @media (min-width:769px) and (max-width:1024px){

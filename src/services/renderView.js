@@ -12,8 +12,8 @@ export default class RenderView extends CreateEvent{
             <div id="${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
-                        <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
-                        <span>${msg.content}</span>
+                        <span class="name">${msg.name}</span>
+                        <span class="content">${msg.content}</span>
                         <time class="time">
                             <i style="font-size:15px" class="tiny material-icons">done_all</i>
                             <i style="font-size:15px" class="tiny material-icons">done</i>

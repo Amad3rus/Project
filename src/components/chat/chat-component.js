@@ -65,7 +65,8 @@ export default class Chat extends HTMLElement{
         this.el['chatHome'].hide();
     }
     fetchMessages(contact){
-        this.css({background: 'rgba(43,44,45,1)'});
+        // this.css({background: 'rgba(43,44,45,1)'});
+        this.css({background: '#1D1D22'});
         this.closeAllMainPanel();
         this.el['chatHome'].css({
             display:'flex',

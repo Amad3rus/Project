@@ -48,6 +48,22 @@ export default class Sidebar extends HTMLElement{
                 this.config.sidebar = false;
             }
         });
+
+        window.addEventListener('load', e => {
+            console.log(window.innerWidth);
+            if(window.innerWidth <= 1024){
+                this.removeClass(this.config.animate);
+                this.removeClass(this.config.fadeinleft);
+                this.style.width = 0;
+                this.config.sidebar = true;
+            }else{
+                this.removeClass(this.config.left);
+                this.addClass(this.config.animate);
+                this.addClass(this.config.fadeinleft);
+                this.style.width = '100%';
+                this.config.sidebar = false;
+            }
+        });
     }
     setProfile(){
         setTimeout(async () => {

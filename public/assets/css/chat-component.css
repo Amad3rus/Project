@@ -418,6 +418,8 @@
     margin-bottom: 4px;
     margin-left: 0px;
     margin-right: auto;
+    max-width:320px;
+    word-break: break-all;
 }
 .container-chat .box .chat .message-in .container-cb:before {
     content:'';
@@ -482,11 +484,25 @@
 }
 .container-chat .box .chat .message-in .container-cb .cb span,
 .container-chat .box .chat .message-out .container-cb .cb span{
-    line-height: 17px;
+    line-height:17px;
     font-size:13.5px;
     font-family: 'Ubuntu', sans-serif;
     letter-spacing: 0.08em;
 }
+.container-chat .box .chat .message-in .container-cb .cb .name,
+.container-chat .box .chat .message-out .container-cb .cb .name{
+    font-size:11.5px;
+    font-weight: bold;
+    font-style: italic;
+}
+.container-chat .box .chat .message-in .container-cb .cb .name{
+    color:var(--color-black);
+}
+.container-chat .box .chat .message-out .container-cb .cb .name{
+    color:var(--color-orange-lighter);
+
+}
+
 .container-chat .box .chat .message-in .container-cb .cb .time,
 .container-chat .box .chat .message-out .container-cb .cb .time{
     display:flex;
