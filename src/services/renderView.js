@@ -9,7 +9,7 @@ export default class RenderView extends CreateEvent{
     static messageText(msg){
         console.log(msg);
         return `
-            <div id="${msg.id}">
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span class="name">${msg.name}</span>

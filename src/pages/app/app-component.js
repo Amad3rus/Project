@@ -1,11 +1,6 @@
 import Format from '../../utils/format';
-import Messages from '../../services/messages';
-import Contacts from '../../services/contacts';
-
 import User from '../../services/user';
-import Validation from '../../services/validations';
 
-import RenderView from '../../services/renderView';
 import ProtoService from '../../services/prototype-serivce';
 import Auth from '../../components/auth/auth-component';
 
@@ -13,47 +8,40 @@ export default class AppPage{
     constructor(){
         new ProtoService();
         this.auth = new Auth();
-        this.render = new RenderView();
-        this.messagesService = new Messages();
-        this.contactsService = new Contacts();
-        this.validations = new Validation();
 
         this.el = {};
-        this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left',sidebar:false};
         
         document.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
         setTimeout(async () => {
-            this.userService = new User(this.auth.auth.user.email);
-            this.userService.name = this.auth.auth.user.displayName;
-            this.userService.email = this.auth.auth.user.email;
-            this.userService.photo = this.auth.auth.user.photoURL;
+            this.user = new User(this.auth.auth.user.email);
+            this.user.name = this.auth.auth.user.displayName;
+            this.user.email = this.auth.auth.user.email;
+            this.user.photo = this.auth.auth.user.photoURL;
             
-            await this.userService.save();
+            await this.user.save();
 
-            document.querySelector('title').innerHTML = this.userService.name + ' Random chat';
+            document.querySelector('title').innerHTML = this.user.name + ' Random chat';
 
             this.fetchContacts();
             this.el['app'].css({display:'flex'});
-            this.notification(`Bem vindo(a) ${this.userService.name}`);
+            this.notification(`Bem vindo(a) ${this.user.name}`);
         }, 300);
         this.closeBtnDialog();
+        this.searchContact();
     }
 
     async fetchContacts(){
         try{
-            this.userService.on('contactschange', docs => {
-                // this.fetchContactFromAttachment(docs);
+            this.user.on('contactschange', docs => {
                 const contacts = [];
                 docs.forEach(doc => { contacts.push(doc.data()); });
-                // document.querySelector('app-list-contacts').dataset.contacts = JSON.stringify(contacts);
-                // document.querySelector('app-list-contacts').dispatchEvent(new Event('contactIsLoaded'));
-                document.querySelector('app-list-contacts').dispatchEvent(new CustomEvent('contactIsLoaded', {detail: contacts}));
-
+                document.querySelector('app-list-contacts')
+                    .dispatchEvent(new CustomEvent('contactIsLoaded', {detail: contacts}));
             });
-            await this.userService.getContacts();
+            await this.user.getContacts();
         }catch(e){
             console.error(e)
         }
@@ -62,12 +50,10 @@ export default class AppPage{
     async fetchUser(user){
         try{
             this.auth = await this.authService.fetchUser(user);
-            this.fetchMessages();
             this.el['profileName'].innerHTML = this.auth['name'];
             this.el['profileName'].setAttribute('title', this.auth['name']);
         }catch(e){
             console.error(e);
-            this.validations.setThrowError('003', 'tentando fazer login', 'app controller');
         }
     }
 
@@ -86,6 +72,15 @@ export default class AppPage{
                 },300);
             }
         }
+    }
+    searchContact(){
+        this.el['inputSearchContact'].on('keyup',async e => {
+            try{
+                await this.user.getContacts(e.target.value);
+            }catch(e){
+                console.error(e)
+            }
+        });
     }
     notification(text){
         document.querySelector('app-snackbar')

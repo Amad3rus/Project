@@ -93,16 +93,18 @@ export default class User extends Model{
     async addContact(contact){
         return await User.getRefContacts(this.email).doc(btoa(contact.email)).set(contact.toJson());
     }
-    getContacts(){
+    getContacts(filter = ''){
         return new Promise((resolve, reject) => {
-            User.getRefContacts(this.email).onSnapshot(docs => {
-                const contacts = [];
+            User.getRefContacts(this.email)
+                .where('name', '>=', filter)
+                .onSnapshot(docs => {
+                    const contacts = [];
 
-                docs.forEach(doc => {
-                    let data = doc.data();
-                    data.id = doc.id;
-                    contacts.push(data);
-                });
+                    docs.forEach(doc => {
+                        let data = doc.data();
+                        data.id = doc.id;
+                        contacts.push(data);
+                    });
                 this.trigger('contactschange', docs);
                 resolve(contacts);
             });

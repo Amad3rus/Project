@@ -357,7 +357,8 @@ export default class Chat extends HTMLElement{
                 this.docPreviewCtrl = new DocumentService(this.response.result);
                 try{
                     const data = await this.docPreviewCtrl.fetchPreviewFile();
-                    this.css({background:'rgba(43,44,45,1)'});
+                    // this.css({background:'rgba(43,44,45,1)'});
+                    this.css({background:'#1D1D22'});
                     this.el['previewPanelFile'].show();
                     this.el['controlsChat'].hide();
                     this.el['iconFile'].hide();
@@ -480,25 +481,35 @@ export default class Chat extends HTMLElement{
         if(this.contactActive) Messages.getRef(this.contactActive.chatId).onSnapshot(() => {});
 
         this.contactActive = contact;
+        this.el['chat'].innerHTML = '';
        
         Messages.getRef(contact.chatId).orderBy('timestamp')
             .onSnapshot(docs => {
-                this.el['chat'].innerHTML = '';
                 this.el['statusContactName'].innerHTML = contact.name;
                 this.el['noStatusProfileImage'].hide();
                 this.el['statusProfileImage'].show();
                 this.el['statusProfileImage'].src = contact.photo;
                 
-                docs.forEach(doc => {
-                    let data = doc.data();
-                    data.id = `_${doc.id}`;
+                let scrollTop = this.el['chat'].scrollTop;
+                let scrollMax = (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+                let autoScroll = (scrollTop >= scrollMax);
 
-                    if(!this.el['chat'].querySelector(`#${data.id}`)){
+                docs.forEach(doc => {
+
+                    let data = doc.data();
+                    data.id = `${doc.id}`;
+
+                    if(!this.el['chat'].querySelector(`#_${data.id}`)){
                         this.ms.fromJson(data);
                         this.el['chat']
                             .appendChild(this.ms.getViewElement((data.from === this.user.user.email)));
                     }
                 });
+                if(autoScroll)
+                    this.el['chat'].scrollTop = 
+                        (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+                else
+                    this.el['chat'].scrollTop = scrollTop;
             });
         this.el['controlsChat'].show();
     }

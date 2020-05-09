@@ -12,6 +12,7 @@
 @import '../css/chat-component.css';
 @import '../css/contact-component.css';
 @import '../css/random-button-component.css';
+@import '../css/search-contacts.css';
 
 .main{
     width:100%;

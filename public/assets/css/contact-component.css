@@ -21,45 +21,7 @@
     background:var(--color-black);
     height:60px;
 }
-/* SEARCH PEOPLE */
-.container-contact .status .container-sp {
-    background: var(--color-dark);
-    border-radius: 40px;
-	border: 1px solid var(--color-orange);
-}
-.container-contact .status .container-sp .sp{
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    padding:0 10px;
-}
-.container-contact .status .container-sp .sp-btn {
-	color: black;
-	width:30px;
-	height:30px;
-	border-radius: 50%;
-	background: var(--color-orange);
-	display: flex;
-	justify-content: center;
-    align-items: center;
-    text-decoration: none;
-}
-.container-contact .status .container-sp .sp-btn .material-icons{
-    font-size:20px;
-}
-.container-contact .status .container-sp .sp-txt {
-	border: none;
-	background: none;
-	outline: none;
-	float: left;
-	padding: 0;
-	color: white;
-	font-size: 16px;
-	transition: 0.4s;
-	line-height: 40px;
-    width:40%;
-}
-/* END SEARCH PEOPLE */
+
 .container-contact ul,
 .nav .mdc-list .panel-contacts .contact ul{
     list-style: none;
