@@ -3,6 +3,9 @@
     
     <nav class="mdc-list">
         <div class="status-header">
+            <button id="back-button-from-sidebar" class="back-button" type="button">
+                <span><i class="tiny material-icons">chevron_left</i></span>
+            </button>
             <div id="sidebar-profile" class="perfil-img">
                 <span id="no-status-header-profile" class="perfil"><i class="lart material-icons">person</i></span>
                 <img style="display:none;" id="status-header-profile">
@@ -56,12 +59,10 @@
                 <ul id="contacts-profile"></ul>
             </div>
 
-            <!-- <app-list-contacts class="contact"></app-list-contacts> -->
-
          </div>
 
         
-         <div class="profile-card">
+        <div class="profile-card">
             <div class="top-section">
                 <div class="notification">
                     <span>
@@ -88,6 +89,17 @@
                 </div>
             </div>
         </div>
+
+       
+
+
     </nav>
+
+   
 </div>
-<div id="header-footer" class="footer"></div>
+<div id="header-footer" class="footer">
+
+    <div id="hide-menu">
+        <button>hide</button>
+    </div>
+</div>

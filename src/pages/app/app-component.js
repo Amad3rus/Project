@@ -2,7 +2,7 @@ import Format from '../../utils/format';
 import User from '../../services/user';
 
 import ProtoService from '../../services/prototype-serivce';
-import Auth from '../../components/auth/auth-component';
+import Auth from '../../services/auth-service';
 
 export default class AppPage{
     constructor(){

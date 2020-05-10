@@ -55,6 +55,13 @@ export default class Chat extends HTMLElement{
         this.removeAllChildElement();
         this.closeAllMainPanel();
         this.closePanelDocumentPreview();
+
+        this.el['backButton'].on('click',e =>{
+            this.dispatchEvent(new Event('hideProfile'));
+        });
+        this.el['backButtonFromStatusbarMobile'].on('click', e => {
+            this.dispatchEvent(new Event('hideProfile'));
+        });
     }
     showPanelConversation(contact){
         this.setUpdateContact(contact);

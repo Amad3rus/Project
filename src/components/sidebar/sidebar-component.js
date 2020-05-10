@@ -3,7 +3,7 @@ import SidebarComponent from './sidebar-component.html';
 import Format from '../../utils/format';
 import { Wordlist } from '../../utils/wordlist';
 import User from '../../services/user';
-import Auth from '../auth/auth-component';
+import Auth from '../../services/auth-service';
 import RenderView from '../../services/renderView';
 import ChatService from '../../services/chat';
 
@@ -19,7 +19,7 @@ export default class Sidebar extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
         
-        this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left',sidebar:false};
+        this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left', sidebar:false};
         
         this.initEvents();
     }
@@ -32,10 +32,17 @@ export default class Sidebar extends HTMLElement{
         this.setProfile();
         this.eventRizeWindow();
         this.eventProfileSetPhoto();
+
+        document.querySelector('app-chat')
+            .addEventListener('hideProfile', e => this.eventHideMenuOnclick());
+
+        this.el['backButtonFromSidebar'].on('click', e => {
+            this.eventHideMenuOnclick();
+        });
     }
     eventRizeWindow(){
         window.addEventListener('resize', (e) => {
-            if(e.target.innerWidth <= 1024){
+            if(e.target.innerWidth <= 768){
                 this.removeClass(this.config.animate);
                 this.removeClass(this.config.fadeinleft);
                 this.style.width = 0;
@@ -50,8 +57,7 @@ export default class Sidebar extends HTMLElement{
         });
 
         window.addEventListener('load', e => {
-            console.log(window.innerWidth);
-            if(window.innerWidth <= 1024){
+            if(window.innerWidth <= 768){
                 this.removeClass(this.config.animate);
                 this.removeClass(this.config.fadeinleft);
                 this.style.width = 0;
@@ -115,8 +121,12 @@ export default class Sidebar extends HTMLElement{
         });
     }
     openPanelConversation(contact){
-        this.dispatchEvent(new CustomEvent('contactchange',{'detail':contact}))
+        this.dispatchEvent(new CustomEvent('contactchange',{'detail':contact}));
+        this.closeAllPanelLeft();
+        this.eventHideMenuOnclick();
+
     }
+
     openAndHidePanel(){
         this.el['headerMessages'].on('click', e => {
             this.el['panelContacts'].show();
@@ -228,21 +238,16 @@ export default class Sidebar extends HTMLElement{
         });
     }
     eventHideMenuOnclick(){
-        this.el['hideMenu'].onclick = e => {
-            e.preventDefault();
-            if(this.config.sidebar && !this.el['sidebar'].hasClass(this.config.animate)){
-                this.el['sidebar'].addClass(this.config.animate);
-                this.el['sidebar'].addClass(this.config.fadeinleft);
-                this.el['sidebar'].style.width = '100%';
-                this.config.sidebar = false;
-                this.el['menuSetinha'].checked = true;
-            }else{
-                this.el['sidebar'].removeClass(this.config.animate);
-                this.el['sidebar'].removeClass(this.config.fadeinleft);
-                this.el['sidebar'].style.width = 0;
-                this.config.sidebar = true;
-                this.el['menuSetinha'].checked = false;
-            }
+        if(this.config.sidebar && !this.hasClass(this.config.animate)){
+            this.addClass(this.config.animate);
+            this.addClass(this.config.fadeinleft);
+            this.style.width = '100%';
+            this.config.sidebar = false;
+        }else{
+            this.removeClass(this.config.animate);
+            this.removeClass(this.config.fadeinleft);
+            this.style.width = 0;
+            this.config.sidebar = true;
         }
     }
     closeAllMainPanel(){

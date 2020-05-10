@@ -35,6 +35,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.nav .status-header .back-button{
+    border:none;
+    outline:none;
+    background:var(--color-dark);
+    color:var(--color-white);
+    cursor:pointer;
+}
 .nav .status-header .perfil-img,
 .nav .status-header .perfil-img img,
 .container-chat .box .status .container-status .perfil-img,

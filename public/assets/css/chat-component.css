@@ -21,6 +21,7 @@
     align-items: center;
     position:relative;
 }
+
 .container-chat .box .status .container-status .status-attachments{
     display:flex;
     justify-content: space-around;
@@ -69,26 +70,39 @@
     display:flex;
     cursor:pointer;
 }
-.container-chat .box .status .container-status .perfil{
+.container-chat .box .status .container-status .perfil,
+.container-chat .box .chat .status-bar-mobile .perfil{
     width:45%;
     display:flex;
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
 }
-.container-chat .box .status .container-status .perfil .perfil-img{
+.container-chat .box .status .container-status .perfil .back-button,
+.container-chat .box .chat .status-bar-mobile .perfil .back-button{
+    border:none;
+    outline:none;
+    background:var(--color-dark);
+    color:var(--color-white);
+    cursor:pointer;
+}
+.container-chat .box .status .container-status .perfil .perfil-img,
+.container-chat .box .chat .status-bar-mobile .perfil .perfil-img{
     margin:0 15px;
 }
-.container-chat .box .status .container-status .perfil .perfil-img span i{
+.container-chat .box .status .container-status .perfil .perfil-img span i,
+.container-chat .box .chat .status-bar-mobile .perfil .perfil-img span i{
     line-height: 60px;
 }
-.container-chat .box .status .container-status .perfil .info{
+.container-chat .box .status .container-status .perfil .info,
+.container-chat .box .chat .status-bar-mobile .perfil .info{
     width:65%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-.container-chat .box .status .container-status .perfil .info span{
+.container-chat .box .status .container-status .perfil .info span,
+.container-chat .box .chat .status-bar-mobile .perfil .info span{
     font-size:12px;
     line-height: 20px;
 }
@@ -101,8 +115,19 @@
     max-height: 75%;
     overflow-y: auto;
     overflow-x: hidden;
-    /* padding:0 60px 20px 60px; */
     margin: 0 32px;
+    position: relative;
+}
+.container-chat .box .chat .status-bar-mobile{
+    width:99%;
+    height:60px;
+    position:absolute;
+    top:0;
+    left:0;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height:60px;
 }
 .container-chat .box .chat .no-contact-selected{
     width:100%;
