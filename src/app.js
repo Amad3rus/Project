@@ -4,6 +4,7 @@ import Sidebar from './components/sidebar/sidebar-component';
 import ListContacts from './components/list-contacts/list-contacts-component';
 import Chat from './components/chat/chat-component';
 import Snackbar from './components/snackbar/snackbar-component';
+import LoadingPage from './components/loading-page/loading-page-component';
 
 export const ReaderDom = {
     appendComponent: function(component){
@@ -12,6 +13,7 @@ export const ReaderDom = {
 }
 
 window.customElements.define('app-root', Root);
+window.customElements.define('app-loading-page', LoadingPage);
 window.customElements.define('app-sidebar', Sidebar);
 window.customElements.define('app-chat', Chat);
 window.customElements.define('app-list-contacts', ListContacts);

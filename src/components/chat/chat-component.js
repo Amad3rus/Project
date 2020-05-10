@@ -61,6 +61,7 @@ export default class Chat extends HTMLElement{
         this.removeAllChildElement();
         this.closeAllMainPanel();
         this.showPanelDefault();
+        
         this.el['chatStatusBar'].show();
         this.el['chatHome'].hide();
     }
@@ -68,6 +69,7 @@ export default class Chat extends HTMLElement{
         // this.css({background: 'rgba(43,44,45,1)'});
         this.css({background: '#1D1D22'});
         this.closeAllMainPanel();
+        
         this.el['chatHome'].css({
             display:'flex',
             flexDirection:'column',
@@ -78,15 +80,21 @@ export default class Chat extends HTMLElement{
     }
     eventButtonSendMessage(){
         const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);
+        
         filter.forEach((value, index) => {
-            this.el['emojiPanel'].innerHTML += `<span class="emojis" data-unicode="${value}" data-emoji="${index}" id="emoji-${index}">${value}</span>`;
+            this.el['emojiPanel'].innerHTML += 
+                `<span class="emojis" data-unicode="${value}" data-emoji="${index}" id="emoji-${index}">${value}</span>`;
         });
+        
         this.el['btnSend'].hide();
         this.el['inputText'].focus();
+        
         this.el['inputText'].on('keydown', e => {
             if(e.target.value == ''){
-                if(e.key == 'Enter' || e.key == 'Alt' || e.key == 'Backspace' || e.key == 'Control' || e.key == 'CapsLock' || e.key == 'Tab'){
+                if(e.key == 'Enter' || e.key == 'Alt' || e.key == 'Backspace' || 
+                    e.key == 'Control' || e.key == 'CapsLock' || e.key == 'Tab'){
                     e.preventDefault();
+                
                 }else{
                     this.el['btnSend'].show();
                     this.el['btnMicro'].hide();
@@ -95,6 +103,7 @@ export default class Chat extends HTMLElement{
                 e.preventDefault();
             }
         });
+        
         this.el['inputText'].on('keyup', e => {
             if(e.target.value != ''){
                 if(e.key == 'Enter'){
@@ -105,6 +114,7 @@ export default class Chat extends HTMLElement{
                 this.el['btnMicro'].show();
             }
         });
+        
         this.el['inputText'].on('focusout', e => {
             if(e.target.value == ''){
                 this.el['btnSend'].hide();
@@ -116,6 +126,7 @@ export default class Chat extends HTMLElement{
         this.el['inputText'].on('focus', e => {
             // this.el['emojiClose'].click();
         });
+        
         this.el['btnMicro'].on('click', e => {
             this.el['audioRecord'].css({display:'flex'});
             this.el['btnMicro'].hide();
@@ -125,7 +136,9 @@ export default class Chat extends HTMLElement{
             this.el['formGroup'].css({width:'55%'});
             this.el['iconsContainer'].css({maxWidth:'180px', justifyContent:'center'});
             this.el['emojiOpen'].disabled = true;
+            
             this.audioCtrl = new AudioService();
+            
             this.audioCtrl.on('ready', audio => {
                 this.audioCtrl.startAudioRecorder();
                 this.notification('Gravando...');
@@ -171,12 +184,15 @@ export default class Chat extends HTMLElement{
             this.el['emojiPanel'].show();
             this.el['emojiClose'].show();
             this.el['emojiOpen'].hide();
+            
             setTimeout(() => {
                 this.el['emojiPanel'].css({height:'250px'});
             },300);
         });
+        
         this.el['emojiClose'].on('click', e => {
             this.el['emojiPanel'].css({height:0});
+            
             setTimeout(() => {
                 this.el['emojiPanel'].hide();
                 this.el['emojiClose'].hide();
@@ -195,7 +211,7 @@ export default class Chat extends HTMLElement{
                         this.el['btnSend'].hide();
                     }
 
-                    // só funciona se for input
+                    // setRangeText só funciona se for input
                     this.el['inputText'].setRangeText(value.innerHTML, this.el['inputText'].selectionStart, this.el['inputText'].selectionEnd, "end");
                     this.el['inputText'].focus();
                     this.el['inputText'].dispatchEvent(new Event('keydown'));
@@ -208,6 +224,7 @@ export default class Chat extends HTMLElement{
         this.el['statusAttachFile'].on('click', e => {
             e.stopPropagation();
             this.el['statusOpenAttachFile'].css({display:'flex'});
+            
             setTimeout(() => {
                 this.el['statusOpenAttachFile'].css({height:'230px'});
                 this.el['statusAttachFile'].addClass('active');
@@ -233,7 +250,8 @@ export default class Chat extends HTMLElement{
             this.closeAllMainPanel();
             this.el['imageCamera'].hide();
             this.el['statusPhotoTakeSend'].hide();
-            this.css({background:'rgba(43,44,45,1)'});
+            // this.css({background:'rgba(43,44,45,1)'});
+            this.css({background:'#1D1D22'});
             this.el['takePhoto'].show();
             this.el['controlsChat'].show();
             this.el['videoCamera'].css({
@@ -253,27 +271,31 @@ export default class Chat extends HTMLElement{
         });
     }
     eventStatusAttachFile(){
-        this.el['statusBtnAttachFile'].on('click', e => {
-            this.closeAllMainPanel();
-            this.el['statusInput'].click();
-        });
+        const self = this;
+
+        this.el['statusBtnAttachImage'].on('click', statusBtnAttachImage);
+        this.el['addMoreImages'].on('click', addMoreImages);
+        this.el['statusBtnAttachFile'].on('click', statusBtnAttachFile);
+
+        async function statusBtnAttachFile(e){
+            self.closeAllMainPanel();
+            self.el['statusInput'].click();
+        }
         
-        this.el['addMoreImages'].on('click', e => {
+        async function addMoreImages(e){
             e.preventDefault();
             e.stopPropagation();
-            this.el['statusInput'].click();
-        });
+            self.el['statusInput'].click();
+        }
         
-        this.el['statusBtnAttachImage'].on('click', e => {
-            this.closeAllMainPanel();
-            this.el['statusInput'].click();
-        });
-
+        async function statusBtnAttachImage(e){
+            self.closeAllMainPanel();
+            self.el['statusInput'].click();
+        }
+        
         this.loadingFiles();
-        
-        this.el['statusSendFile'].on('click', e => {
-            console.log('send file');
-        });
+
+       
     }
     eventStatusAttachContact(){
         this.el['statusBtnAttachContact'].on('click', e => {
@@ -281,10 +303,11 @@ export default class Chat extends HTMLElement{
             this.el['chat'].show();
             this.css({background:this.backgroundDoodles});
             this.el['dialog'].css({display:'flex'});
+            
             setTimeout(() => {
                 this.el['dialog'].css({transform: 'scale(1)'});
                 this.el['dialogBtnSendContact'].disabled = true;
-            }, 300)
+            }, 300);
         });
     }
     renderPreviews(data){
@@ -337,19 +360,43 @@ export default class Chat extends HTMLElement{
         }
         this.carouselCtrl = new CarouselService(config);
 
-        this.el['containerDocumentPreview'].addEventListener('imageDelete', e => {
-            if(!e.target.querySelector('.slides')){
-                this.closeAllMainPanel();
+        this.el['containerDocumentPreview']
+            .addEventListener('imageDelete', e => {
+                if(!e.target.querySelector('.slides')){
+                    this.closeAllMainPanel();
 
-                if(this.el['carousel'].querySelector('.next')) this.el['carousel'].querySelector('.next').remove();
-                if(this.el['carousel'].querySelector('.prev')) this.el['carousel'].querySelector('.prev').remove();
-                if(this.el['carousel'].querySelector('.dots')) this.el['carousel'].querySelector('.dots').remove();
+                    if(this.el['carousel'].querySelector('.next')) 
+                        this.el['carousel'].querySelector('.next').remove();
 
-                this.showPanelDefault();
+                    if(this.el['carousel'].querySelector('.prev')) 
+                        this.el['carousel'].querySelector('.prev').remove();
+                    
+                    if(this.el['carousel'].querySelector('.dots')) 
+                        this.el['carousel'].querySelector('.dots').remove();
 
-            }else{
+                    this.showPanelDefault();
+                }
+        });
+        this.uploadImages(data);
+    }
+    uploadImages(images){
+        const self = this;
+        images.forEach(file => {
+            this.el['statusSendFile'].on('click', statusSendFile);
+            async function statusSendFile(e){
+                const message = {
+                    "chatId":       self.contactActive.chatId,
+                    "content":      '',
+                    "timestamp":    new Date(),
+                    "from":         self.user.user.email,
+                    "type":         'image',
+                    "name":         self.user.user.displayName,
+                    "status":       'wait',
+                    "file":         file
+                }
+                Messages.sendMessageImage(message);
             }
-        }); 
+        });
     }
     loadingFiles(){
         this.el['statusInput'].on('change', async e => {
@@ -364,6 +411,7 @@ export default class Chat extends HTMLElement{
                     this.el['controlsChat'].hide();
                     this.el['iconFile'].hide();
                     this.el['statusAttachFile'].disabled = true;
+                    
                     setTimeout(() => {
                         this.renderPreviews(data);
                     }, 800);
@@ -373,7 +421,6 @@ export default class Chat extends HTMLElement{
                     this.showPanelDefault();
                     this.notification('Error ao carregar arquivos')
                 }
-            }else{
             }
         });
     }
@@ -497,28 +544,23 @@ export default class Chat extends HTMLElement{
 
                 docs.forEach(doc => {
                     let data = doc.data();
-
                     data.id = `${doc.id}`;
-
                     this.ms.fromJson(data);
-
                     let me = (data.from === this.user.user.email);
 
                     if(!this.el['chat'].querySelector(`#_${data.id}`)){
-                        
                         if(!me) doc.ref.set({status:'read'},{merge:true});
-                        
                         this.el['chat'].appendChild(this.ms.getViewElement(me));
-                    
                     }else if(me) this.ms.getStatusView();
-
                 });
+                
                 if(autoScroll)
                     this.el['chat'].scrollTop = 
                         (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
                 else
                     this.el['chat'].scrollTop = scrollTop;
             });
+        
         this.el['controlsChat'].show();
     }
     removeAllChildElement(){

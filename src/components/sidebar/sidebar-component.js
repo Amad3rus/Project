@@ -120,6 +120,7 @@ export default class Sidebar extends HTMLElement{
     openAndHidePanel(){
         this.el['headerMessages'].on('click', e => {
             this.el['panelContacts'].show();
+            
             setTimeout(() => {
                 this.el['panelContacts'].addClass('open-panel');
             },300);
@@ -127,6 +128,7 @@ export default class Sidebar extends HTMLElement{
         
         this.el['closePanelProfile'].on('click', e => {
             this.el['panelProfile'].removeClass('open-panel');
+            
             setTimeout(() => {
                 this.el['panelProfile'].hide();
             }, 300);
@@ -134,6 +136,7 @@ export default class Sidebar extends HTMLElement{
 
         this.el['sidebarProfile'].onclick = e =>{
             this.el['panelProfile'].show();
+            
             setTimeout(() => {
                 this.el['panelProfile'].addClass('open-panel');
             },300);
@@ -141,6 +144,7 @@ export default class Sidebar extends HTMLElement{
 
         this.el['closePanelContacts'].on('click', e => {
             this.el['panelContacts'].removeClass('open-panel');
+            
             setTimeout(() => {
                 this.el['panelContacts'].hide();
             }, 300);
@@ -153,9 +157,11 @@ export default class Sidebar extends HTMLElement{
         
         this.el['editName'].on('keypress', e => {
             if(e.target.innerHTML.length < 30){
+            
             }else{
                 this.el['editName'].setAttribute('contenteditable', false);
             }
+            
             if(e.key == 'Enter'){
                 e.preventDefault();
                 this.el['editNameEnter'].click();
@@ -177,6 +183,7 @@ export default class Sidebar extends HTMLElement{
             if(!permission){
                 this.el['editNameEnter'].disabled = false;
                 this.snackbarService.callNotification('offline', `nome ${this.el['editName'].innerHTML} inválido`, '&times;');
+            
             }else{
                 this.user.name = this.el['editName'].innerHTML;
                 await this.user.save();

@@ -30,7 +30,8 @@ export default class Messages extends Model{
         switch(this.type){
             case 'contact':
                 div.innerHTML = RenderView.messageContact(this.data);
-                div.querySelectorAll('.receive').forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.data));
+                div.querySelectorAll('.receive')
+                    .forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.data));
                 break;
             case 'audio':
                 div.innerHTML = RenderView.messageAudio(this.data);
@@ -40,7 +41,9 @@ export default class Messages extends Model{
                 break;
             case 'image':
                 div.innerHTML = RenderView.messageImage(this.data);
-                div.querySelectorAll('.btn-download-image-from-contact').forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
+                div.querySelectorAll('.btn-download-image-from-contact')
+                    .forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
+                div.querySelector('.image img').on('load', e => this.hideSpinner(e))
                 break;
             case 'document':
                 div.innerHTML = RenderView.messageDocument(this.data);
@@ -62,7 +65,10 @@ export default class Messages extends Model{
                 .forEach(i => i.hide()));
         return div;
     }
-    
+    hideSpinner(e){
+        // e.hide();
+        console.log('load image complete', e);
+    }
     extractInfoFromContact(contact){
         console.log(contact);
     }
@@ -100,5 +106,39 @@ export default class Messages extends Model{
     }
     static getRef(chatId){
         return Firebase.database().collection('chats').doc(chatId).collection('messages');
+    }
+    static getRefStorage(email){
+        // return Firebase.storage().ref(email);
+    }
+    static sendMessageImage(messageImage){
+        return new Promise(async (resolve, reject) => {
+            console.log(messageImage);
+            let uploadTask = Firebase.storage()
+                                .ref(messageImage.from)
+                                .child(`${Date.now()}_${messageImage.file.info.name}`)
+                                .put(messageImage.file.info);
+            
+            // uploadTask.on('state_changed', e => {
+            //     console.log('uploading...', e);
+            // }, err => {
+            //     console.log(err);
+            // }, async () => {
+            //     delete messageImage.file;
+            //     resolve(await Messages.sendMessage({...messageImage, "content":uploadTask.snapshot.downloadURL}));  
+            // })
+
+            uploadTask.on('state_changed', progress, error, success);
+
+            async function progress(progress){
+                console.info('uplading... make a progressbar', progress);
+            }
+            async function error(err){
+                console.error(err);
+            }
+            async function success(){
+                delete messageImage.file;
+                resolve(await Messages.sendMessage({...messageImage, "content":uploadTask.snapshot.downloadURL}));
+            }
+        });
     }
 }

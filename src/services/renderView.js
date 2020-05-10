@@ -140,7 +140,7 @@ export default class RenderView extends CreateEvent{
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <figure class="image">
-                            <img src="https://i0.wp.com/www.deviante.com.br/wp-content/uploads/2020/02/19.-Processos-de-software.jpg?fit=1800%2C850">
+                            <img src="${msg.content}">
                             <div class=refresh>
                                 <span class="btn-download-image-from-contact"><i class="small material-icons">refresh</i></span>
                             </div>

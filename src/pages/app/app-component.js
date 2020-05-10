@@ -26,8 +26,12 @@ export default class AppPage{
             document.querySelector('title').innerHTML = this.user.name + ' Random chat';
 
             this.fetchContacts();
-            this.el['app'].css({display:'flex'});
-            this.notification(`Bem vindo(a) ${this.user.name}`);
+            // this.el['app'].css({display:'flex'});
+            
+            if(this.auth.isAuth)
+                this.el['app'].dispatchEvent(new Event('isAuth'));
+            
+                this.notification(`Bem vindo(a) ${this.user.name}`);
         }, 300);
         this.closeBtnDialog();
         this.searchContact();

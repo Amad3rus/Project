@@ -13,6 +13,7 @@
 @import '../css/contact-component.css';
 @import '../css/random-button-component.css';
 @import '../css/search-contacts.css';
+@import '../css/loading-page-component.css';
 
 .main{
     width:100%;
