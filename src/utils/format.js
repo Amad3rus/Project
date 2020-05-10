@@ -34,7 +34,7 @@ export default class Format {
         else return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
     static dateToTime(isoDate, locale = 'pt-BR'){
-        return isoDate.toLocaleTimeString(locale, { hours:'2-digits', minutes:'2-digits'});
+        return isoDate.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit'});
         // return new Date(isoDate).toLocaleTimeString('pt-BR', {hours:'2-digits', minutes:'2-digits'});
     }
     static formatNameFromImage(filetype){

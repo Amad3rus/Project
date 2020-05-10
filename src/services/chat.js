@@ -15,6 +15,7 @@ export default class ChatService extends Model{
     static getRef(){
         return Firebase.database().collection('/chats');
     }
+    
     static createIfNotExists(meEmail, contactEmail){
         return new Promise(async (resolve, reject) => {
             try{
@@ -26,12 +27,14 @@ export default class ChatService extends Model{
             }
         });
     }
+    
     static find(meEmail, contactEmail){
         return ChatService.getRef()
             .where(btoa(contactEmail), '==', true)
             .where(btoa(meEmail),'==',true)
             .get()
     }
+    
     static createChat(meEmail, contactEmail){
         return new Promise(async (resolve, reject) => {
             const users = {};

@@ -1,4 +1,3 @@
-import Format from '../utils/format';
 import Model from './model';
 import RenderView from './renderView';
 import Firebase from './firebase';
@@ -21,6 +20,9 @@ export default class Messages extends Model{
 
     get status(){ return this.data.status;};
     set status(value){this.data.status = value};
+
+    get icon(){return this.data.icon;};
+    set icon(value){this.data.icon = value};
 
     getViewElement(me = true){
         const div = document.createElement('div');
@@ -47,9 +49,17 @@ export default class Messages extends Model{
                 div.innerHTML = RenderView.messageText(this.data);
         }
 
-        const messageOutput = (me) ? 'message-out' : 'message-in';
+        let messageOutput = 'message-in';
+
+        if(me){
+            messageOutput = 'message-out';
+            this.getStatusView();
+        }
+
         div.firstElementChild.classList.add(messageOutput);
-        
+        div.querySelectorAll('.message-in')
+            .forEach(icon => icon.querySelectorAll('i')
+                .forEach(i => i.hide()));
         return div;
     }
     
@@ -57,7 +67,6 @@ export default class Messages extends Model{
         console.log(contact);
     }
     downloadImageFromContact(content, element){
-        console.log(element);
         element.addClass('active');
         setTimeout(() => {element.removeClass('active')}, 5000);
     }
@@ -67,8 +76,27 @@ export default class Messages extends Model{
     playAudioReceive(audio){
         console.log('receive', audio);
     }
+    getStatusView(){
+        switch(this.status){
+            case 'wait':
+                this.icon = 'access_time';
+                break;
+            case 'sent':
+                this.icon = 'done';
+                break;
+            case 'received':
+                this.icon = 'done_all';
+                break;
+            case 'read':
+                this.icon = 'done_all';
+                break;
+        }
+    }
     static sendMessage(message){
-        return Messages.getRef(message.chatId).add(message);
+        return new Promise(async (resolve, reject) => {
+            const result = await Messages.getRef(message.chatId).add(message);
+            resolve(await result.parent.doc(result.id).set({status:'sent'}, {merge:true}));
+        });
     }
     static getRef(chatId){
         return Firebase.database().collection('chats').doc(chatId).collection('messages');

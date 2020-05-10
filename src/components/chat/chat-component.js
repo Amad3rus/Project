@@ -154,7 +154,8 @@ export default class Chat extends HTMLElement{
                 timestamp: new Date(),
                 from: this.user.user.email,
                 type: 'text',
-                name: this.user.user.displayName
+                name: this.user.user.displayName,
+                status:'wait'
             }
 
             Messages.sendMessage(message);
@@ -495,15 +496,22 @@ export default class Chat extends HTMLElement{
                 let autoScroll = (scrollTop >= scrollMax);
 
                 docs.forEach(doc => {
-
                     let data = doc.data();
+
                     data.id = `${doc.id}`;
 
+                    this.ms.fromJson(data);
+
+                    let me = (data.from === this.user.user.email);
+
                     if(!this.el['chat'].querySelector(`#_${data.id}`)){
-                        this.ms.fromJson(data);
-                        this.el['chat']
-                            .appendChild(this.ms.getViewElement((data.from === this.user.user.email)));
-                    }
+                        
+                        if(!me) doc.ref.set({status:'read'},{merge:true});
+                        
+                        this.el['chat'].appendChild(this.ms.getViewElement(me));
+                    
+                    }else if(me) this.ms.getStatusView();
+
                 });
                 if(autoScroll)
                     this.el['chat'].scrollTop = 
