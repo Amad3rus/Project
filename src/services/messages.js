@@ -1,6 +1,7 @@
 import Model from './model';
 import RenderView from './renderView';
 import Firebase from './firebase';
+import UploadFileService from './upload-file-service';
 
 export default class Messages extends Model{
     constructor(){
@@ -107,37 +108,15 @@ export default class Messages extends Model{
     static getRef(chatId){
         return Firebase.database().collection('chats').doc(chatId).collection('messages');
     }
-    static getRefStorage(email){
-        // return Firebase.storage().ref(email);
-    }
+    
     static sendMessageImage(messageImage){
         return new Promise(async (resolve, reject) => {
-            console.log(messageImage);
-            let uploadTask = Firebase.storage()
-                                .ref(messageImage.from)
-                                .child(`${Date.now()}_${messageImage.file.info.name}`)
-                                .put(messageImage.file.info);
-            
-            // uploadTask.on('state_changed', e => {
-            //     console.log('uploading...', e);
-            // }, err => {
-            //     console.log(err);
-            // }, async () => {
-            //     delete messageImage.file;
-            //     resolve(await Messages.sendMessage({...messageImage, "content":uploadTask.snapshot.downloadURL}));  
-            // })
-
-            uploadTask.on('state_changed', progress, error, success);
-
-            async function progress(progress){
-                console.info('uplading... make a progressbar', progress);
-            }
-            async function error(err){
-                console.error(err);
-            }
-            async function success(){
+            try{
+                const URLimage = await UploadFileService.sendFile(messageImage.from, messageImage.file);
                 delete messageImage.file;
-                resolve(await Messages.sendMessage({...messageImage, "content":uploadTask.snapshot.downloadURL}));
+                resolve(await Messages.sendMessage({...messageImage, "content":URLimage}));
+            }catch(e){
+                console.error(e);
             }
         });
     }

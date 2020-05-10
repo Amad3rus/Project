@@ -26,7 +26,7 @@ export default class RenderView extends CreateEvent{
     
     static messageAudio(msg){
         return `
-            <div>
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
@@ -50,26 +50,12 @@ export default class RenderView extends CreateEvent{
     
     static messageVideo(msg){
         return `
-            <div class="message-out">
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <span>${msg.message}</span>
                         <time style="color: var(--color-light); display:flex;" class="time">
-                            <i style="font-size:10px" class="tiny material-icons">${msg.icon}</i>
-                            &nbsp;
-                            ${Format.timeStampToTime(msg.timestamp)}
-                        </time>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-in">
-                <div class="container-cb">
-                    <div class="cb">
-                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
-                        <span>${msg.message}</span>
-                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
                             <i style="font-size:10px" class="tiny material-icons">${msg.icon}</i>
                             &nbsp;
                             ${Format.timeStampToTime(msg.timestamp)}
@@ -82,7 +68,7 @@ export default class RenderView extends CreateEvent{
 
     static messageDocument(msg){
         return `
-            <div class="message-out">
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
@@ -95,26 +81,12 @@ export default class RenderView extends CreateEvent{
                     </div>
                 </div>
             </div>
-
-            <div class="message-in">
-                <div class="container-cb">
-                    <div class="cb">
-                        <span style="color:var(--color-black); font-weight:bold;">${msg.name}</span>
-                        <span>${msg.message}</span>
-                        <time style="color: var(--color-white); font-weight:100; display:flex;" class="time">
-                            <i style="font-size:10px" class="tiny material-icons">${msg.icon}</i>
-                            &nbsp;
-                            ${Format.timeStampToTime(msg.timestamp)}
-                        </time>
-                    </div>
-                </div>
-            </div>
         `;
     }
 
     static messageContact(msg){
         return `
-            <div>
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
@@ -135,7 +107,7 @@ export default class RenderView extends CreateEvent{
     
     static messageImage(msg){
         return `
-            <div>
+            <div id="_${msg.id}">
                 <div class="container-cb">
                     <div class="cb">
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>

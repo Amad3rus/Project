@@ -167,7 +167,7 @@ export default class Chat extends HTMLElement{
             this.notification('Audio enviado');
         });
 
-        this.el['btnSend'].on('click', e => {
+        this.el['btnSend'].on('click', async e => {
             const message = {
                 chatId: this.contactActive.chatId,
                 content: this.el['inputText'].value,
@@ -178,7 +178,7 @@ export default class Chat extends HTMLElement{
                 status:'wait'
             }
 
-            Messages.sendMessage(message);
+            await Messages.sendMessage(message);
 
             this.el['inputText'].value = '';
             this.el['inputText'].setAttribute('placeholder','Digite uma mensagem');
@@ -241,26 +241,15 @@ export default class Chat extends HTMLElement{
             document.addEventListener('click', this.closeMenuAttach.bind(this));
         });
     }
-    // loadingContact(contact){
-    //     const arr = [];
-    //     arr.push(contact);
-        
-    //     arr.forEach((value, index) => {
-    //         let li = document.createElement('li');
-    //         li.id = 'list-' + index;
-    //         li.innerHTML += this.render.renderListContact(value);
-    //         this.el['listContact'].appendChild(li);
-    //     });
-    // }
     eventStatusAttachCamera(){
         this.el['statusBtnAttachCamera'].on('click', e => {
             this.closeAllMainPanel();
             this.el['imageCamera'].hide();
             this.el['statusPhotoTakeSend'].hide();
-            // this.css({background:'rgba(43,44,45,1)'});
             this.css({background:'#1D1D22'});
             this.el['takePhoto'].show();
             this.el['controlsChat'].show();
+            
             this.el['videoCamera'].css({
                 display:'flex',
                 justifyContent:'center',
@@ -328,7 +317,9 @@ export default class Chat extends HTMLElement{
             height:'300px'
         });
 
-        data.forEach(file => {
+        data.forEach(async file => {
+            this.el['statusSendFile'].on('click', statusSendFile);
+
             let div = document.createElement('div');
             div.addClass('slides', 'fade');
             
@@ -357,7 +348,23 @@ export default class Chat extends HTMLElement{
                 <span data-images="${file.id}">${Format.abrevName(file.info.name)}</span>
             `;
             document.querySelector('app-snackbar')
-                .dispatchEvent(new CustomEvent('show', {detail: `( ${data.length} ) total de arquivos carregados.`}))
+                .dispatchEvent(new CustomEvent('show', {detail: `( ${data.length} ) total de arquivos carregados.`}));
+            
+            async function statusSendFile(e){
+                const message = {
+                    "chatId":       self.contactActive.chatId,
+                    "content":      '',
+                    "timestamp":    new Date(),
+                    "from":         self.user.user.email,
+                    "type":         'image',
+                    "name":         self.user.user.displayName,
+                    "status":       'wait',
+                    "file":         file.info
+                }
+                await Messages.sendMessageImage(message);
+                self.closeAllMainPanel();
+                self.showPanelDefault();
+            }
         });
 
         const config = {
@@ -384,25 +391,12 @@ export default class Chat extends HTMLElement{
                     this.showPanelDefault();
                 }
         });
-        this.uploadImages(data);
+        // this.uploadImages(data);
     }
     uploadImages(images){
         const self = this;
         images.forEach(file => {
-            this.el['statusSendFile'].on('click', statusSendFile);
-            async function statusSendFile(e){
-                const message = {
-                    "chatId":       self.contactActive.chatId,
-                    "content":      '',
-                    "timestamp":    new Date(),
-                    "from":         self.user.user.email,
-                    "type":         'image',
-                    "name":         self.user.user.displayName,
-                    "status":       'wait',
-                    "file":         file
-                }
-                Messages.sendMessageImage(message);
-            }
+            
         });
     }
     loadingFiles(){
@@ -412,7 +406,6 @@ export default class Chat extends HTMLElement{
                 this.docPreviewCtrl = new DocumentService(this.response.result);
                 try{
                     const data = await this.docPreviewCtrl.fetchPreviewFile();
-                    // this.css({background:'rgba(43,44,45,1)'});
                     this.css({background:'#1D1D22'});
                     this.el['previewPanelFile'].show();
                     this.el['controlsChat'].hide();
@@ -587,10 +580,12 @@ export default class Chat extends HTMLElement{
     }
     closeMenuAttach(e){
         this.el['statusOpenAttachFile'].css({height:0});
+        
         setTimeout(() => {
             this.el['statusAttachFile'].removeClass('active');
             this.el['statusOpenAttachFile'].hide();
         },300);
+        
         document.removeEventListener('click', this.closeMenuAttach);
     }
     closeAllMainPanel(){
