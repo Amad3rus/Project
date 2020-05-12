@@ -44,7 +44,7 @@ export default class Messages extends Model{
                 div.innerHTML = RenderView.messageImage(this.data);
                 div.querySelectorAll('.btn-download-image-from-contact')
                     .forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
-                div.querySelector('.image img').on('load', e => this.hideSpinner(e))
+                div.querySelector('.image img').on('load', e => div.querySelector('.refresh').hide());
                 break;
             case 'document':
                 div.innerHTML = RenderView.messageDocument(this.data);
@@ -65,10 +65,6 @@ export default class Messages extends Model{
             .forEach(icon => icon.querySelectorAll('i')
                 .forEach(i => i.hide()));
         return div;
-    }
-    hideSpinner(e){
-        // e.hide();
-        console.log('load image complete', e);
     }
     extractInfoFromContact(contact){
         console.log(contact);

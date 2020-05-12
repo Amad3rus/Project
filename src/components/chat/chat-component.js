@@ -290,8 +290,6 @@ export default class Chat extends HTMLElement{
         }
         
         this.loadingFiles();
-
-       
     }
     eventStatusAttachContact(){
         this.el['statusBtnAttachContact'].on('click', e => {
@@ -343,14 +341,19 @@ export default class Chat extends HTMLElement{
                 case 'application/zip':
                     break;
             }
+            
             this.el['containerDocumentPreview'].prepend(div);
             this.el['previewImageSlide'].innerHTML += `
                 <span data-images="${file.id}">${Format.abrevName(file.info.name)}</span>
             `;
+            
             document.querySelector('app-snackbar')
                 .dispatchEvent(new CustomEvent('show', {detail: `( ${data.length} ) total de arquivos carregados.`}));
             
             async function statusSendFile(e){
+                self.closeAllMainPanel();
+                self.showPanelDefault();
+
                 const message = {
                     "chatId":       self.contactActive.chatId,
                     "content":      '',
@@ -361,9 +364,8 @@ export default class Chat extends HTMLElement{
                     "status":       'wait',
                     "file":         file.info
                 }
+               
                 await Messages.sendMessageImage(message);
-                self.closeAllMainPanel();
-                self.showPanelDefault();
             }
         });
 
@@ -372,6 +374,7 @@ export default class Chat extends HTMLElement{
             "control":(this.el['containerDocumentPreview'].childElementCount > 1) ? true : false,
             "dots": true
         }
+        
         this.carouselCtrl = new CarouselService(config);
 
         this.el['containerDocumentPreview']
@@ -391,14 +394,8 @@ export default class Chat extends HTMLElement{
                     this.showPanelDefault();
                 }
         });
-        // this.uploadImages(data);
     }
-    uploadImages(images){
-        const self = this;
-        images.forEach(file => {
-            
-        });
-    }
+    
     loadingFiles(){
         this.el['statusInput'].on('change', async e => {
             this.response = this.vs.validationsFiles(this.el['statusInput'].files);
@@ -415,6 +412,7 @@ export default class Chat extends HTMLElement{
                     setTimeout(() => {
                         this.renderPreviews(data);
                     }, 800);
+
                 }catch(e){
                     console.error(e);
                     this.closeAllMainPanel();
@@ -580,12 +578,10 @@ export default class Chat extends HTMLElement{
     }
     closeMenuAttach(e){
         this.el['statusOpenAttachFile'].css({height:0});
-        
         setTimeout(() => {
             this.el['statusAttachFile'].removeClass('active');
             this.el['statusOpenAttachFile'].hide();
         },300);
-        
         document.removeEventListener('click', this.closeMenuAttach);
     }
     closeAllMainPanel(){

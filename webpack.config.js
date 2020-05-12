@@ -17,24 +17,24 @@ module.exports = {
 		"path":path.join(__dirname, 'dist'), // join junta os paths
 		"publicPath":'/'
 	},
-	"module": {
-		"rules": [
+	"module":{
+		"rules":[
 			{
-				"test": /\.js$/i,
-				"exclude": /node_modules/,
-				"loader": 'babel-loader',
-				"query": {
+				"test":/\.js$/i,
+				"exclude":/node_modules/,
+				"loader":'babel-loader',
+				"query":{
 					"presets": ['es2015', 'stage-0'],
 					"plugins": ['transform-custom-element-classes', 'transform-es2015-classes']
 				}
 			},
 			{
 				"test":/\.html$/i,
-				"exclude": /node_modules/,
+				"exclude":/node_modules/,
 				"loader":'html-loader',
 			},
 			{
-				"test": /\.css$/i,
+				"test":/\.css$/i,
 				"use":['style-loader', 'css-loader']
 			}
 		]
@@ -42,13 +42,15 @@ module.exports = {
 	"devServer":{
 		"compress":true,
 		"port":9000,
-		"historyApiFallback": {
-			"rewrites": [
-			  { "from": /^\/$/, to: 'landing.html' },
-			//   { "from": /^\/subpage/, to: 'index.html' },
-			  { "from": /./, to: '404.html' }
-			]
-		},
+		"historyApiFallback": true,
+		// "historyApiFallback": {
+		// 	"rewrites": [
+		// 	  { "from": /^\/$/, to: 'index.html' },
+		// 	  { "from": /^\/subpage/, to: 'index.html' },
+		// 	  { "from": /./, to: 'index.html' }
+		// 	]
+		// },
+
 		// "before": function(app, server, compile){
 			
 		// 	app.get('/routes', function(req, res){

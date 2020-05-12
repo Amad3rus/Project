@@ -540,8 +540,8 @@
 .container-chat .box .chat .message-in .container-cb .cb .image,
 .container-chat .box .chat .message-out .container-cb .cb .image{
     position:relative;
-    height:100%;
-    width:100%;
+    height:190px;
+    width:280px;
     display:flex;
     justify-content: center;
     align-items: center;

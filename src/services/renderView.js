@@ -113,7 +113,7 @@ export default class RenderView extends CreateEvent{
                         <span style="color: var(--color-orange-lighter); font-weight:bold;">${msg.name}</span>
                         <figure class="image">
                             <img src="${msg.content}">
-                            <div class=refresh>
+                            <div class="refresh">
                                 <span class="btn-download-image-from-contact"><i class="small material-icons">refresh</i></span>
                             </div>
                         </figure>

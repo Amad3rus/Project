@@ -192,11 +192,11 @@ to{
     width:100%;
     justify-content: space-between;
     align-items: center;
-
 }
 .profile-card .container-social div{
     font-size:12px;
 }
+
 .profile-card .container-social div span{
     font-size:12.5px;
     font-weight: bold;
