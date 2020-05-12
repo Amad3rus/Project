@@ -41,6 +41,10 @@ body{
     background:var(--color-black);
     font-family: 'Baloo Tamma 2', cursive;
 }
+img, i{
+    -webkit-user-select: none;
+    user-select: none;
+}
 progress[value]{
     width:150px;
     height:15px;

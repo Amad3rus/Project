@@ -55,7 +55,6 @@ export default class Root extends HTMLElement{
     }
 
     clearIfExistsComponents(component){
-        // document.querySelector('app-loading-page').style.display = 'none';
         while(component.firstChild){
             component.removeChild(component.firstChild);
         }
