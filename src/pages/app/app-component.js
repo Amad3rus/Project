@@ -16,23 +16,25 @@ export default class AppPage{
         });
 
         setTimeout(async () => {
-            this.user = new User(this.auth.auth.user.email);
-            this.user.name = this.auth.auth.user.displayName;
-            this.user.email = this.auth.auth.user.email;
-            this.user.photo = this.auth.auth.user.photoURL;
+            this.isLogged = await this.auth.initAuth();
+
+            this.user = new User(this.isLogged.auth.user.email);
+            this.user.name = this.isLogged.auth.user.displayName;
+            this.user.email = this.isLogged.auth.user.email;
+            this.user.photo = this.isLogged.auth.user.photoURL;
             
             await this.user.save();
 
             document.querySelector('title').innerHTML = this.user.name + ' Random chat';
 
             this.fetchContacts();
-            // this.el['app'].css({display:'flex'});
-            
-            if(this.auth.isAuth)
+
+            if(this.isLogged.isAuth)
                 this.el['app'].dispatchEvent(new Event('isAuth'));
             
-                this.notification(`Bem vindo(a) ${this.user.name}`);
+            this.notification(`Bem vindo(a) ${this.user.name}`);
         }, 300);
+        
         this.closeBtnDialog();
         this.searchContact();
     }

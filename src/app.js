@@ -5,6 +5,7 @@ import ListContacts from './components/list-contacts/list-contacts-component';
 import Chat from './components/chat/chat-component';
 import Snackbar from './components/snackbar/snackbar-component';
 import LoadingPage from './components/loading-page/loading-page-component';
+import Login from './components/auth/login-component';
 
 export const ReaderDom = {
     appendComponent: function(component){

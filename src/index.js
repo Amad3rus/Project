@@ -4,6 +4,7 @@ import AppComponent from './pages/app/app-component.html';
 import AppPage from './pages/app/app-component';
 import NoPageComponent from './pages/no-page/no-page-component.html';
 import Teste from './pages/test/test-component.html';
+import Login from './components/auth/login-component';
 
 export default class Root extends HTMLElement{
     constructor(){
@@ -19,39 +20,48 @@ export default class Root extends HTMLElement{
                 }
             },
             page404: function(path){
-                console.log(`/${path} not found`);
                 document.querySelector('app-loading-page').style.display = 'none';
-
-                if(!self.querySelector('#page-not-found'))
-                    self.appendChild(ReaderDom.appendComponent(NoPageComponent));
+                self.clearIfExistsComponents(self);
+                self.appendChild(ReaderDom.appendComponent(NoPageComponent));
             }
         });
 
         this.router.add('', function(){
+            if(!localStorage.getItem('user')) self.router.redirectTo('login');
             self.showMainPage();
-            console.log('home page', this);
         });
 
         // this.router.remove('about')
         // this.router.navigateTo('hello/World', {foo: "bar"})
         // this.router.refresh();
         
-        this.router.add('search', function(){
-            console.log('search page')
-        }, {unloadCb: function(async){
-            if(async){
-                console.warn('you have unsave data, continue?');
-                return confirm('you have unsave data, continue?');
-            }
-            return false;
-        }});
+        // this.router.add('search', function(){
+        //     console.log('search page')
+        // }, {unloadCb: function(async){
+        //     if(async){
+        //         console.warn('you have unsave data, continue?');
+        //         return confirm('you have unsave data, continue?');
+        //     }
+        //     return false;
+        // }});
         
-        this.router.add('test', function(name){
-            self.showTestPage();
+        this.router.add('login', function(){
+            if(localStorage.getItem('user')) self.router.redirectTo('');
+            if(!window.customElements.get('app-login')) window.customElements.define('app-login', Login);
+
+            document.querySelector('app-loading-page').style.display = 'none';
+            self.clearIfExistsComponents(self);
+            
+            const LoginComponent = window.customElements.get('app-login');
+            self.appendChild(new LoginComponent().firstChild);
+            
+            if(self.querySelector('#login-form')) 
+                self.querySelector('#login-form')
+                    .on('isAuth', e => self.router.redirectTo(''));
         });
-     
+        
         this.router.check()
-        this.router.addUriListener();
+        this.router.addUriListener();     
     }
 
     clearIfExistsComponents(component){
@@ -78,5 +88,10 @@ export default class Root extends HTMLElement{
             .on('click', e => {
                 this.router.navigateTo('');
         });
+    }
+    showLoginPage(){
+        this.clearIfExistsComponents(this);
+        // const login = new LoginComponent();
+        // this.appendChild(this.teste.firstChild);
     }
 }

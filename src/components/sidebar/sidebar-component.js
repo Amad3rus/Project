@@ -6,6 +6,7 @@ import User from '../../services/user';
 import Auth from '../../services/auth-service';
 import RenderView from '../../services/renderView';
 import ChatService from '../../services/chat';
+import RoutesService from '../../services/routes-service';
 
 export default class Sidebar extends HTMLElement{
     constructor(){
@@ -14,6 +15,7 @@ export default class Sidebar extends HTMLElement{
         this.el = {};
         this.auth = new Auth();
         this.render = new RenderView();
+        this.router = new RoutesService();
 
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
@@ -73,10 +75,12 @@ export default class Sidebar extends HTMLElement{
     }
     setProfile(){
         setTimeout(async () => {
-            this.user = new User(this.auth.auth.user.email);
-            this.user.name = this.auth.auth.user.displayName;
-            this.user.email = this.auth.auth.user.email;
-            this.user.photo = this.auth.auth.user.photoURL;
+            this.isLogged = await this.auth.initAuth();
+
+            this.user = new User(this.isLogged.auth.user.email);
+            this.user.name = this.isLogged.auth.user.displayName;
+            this.user.email = this.isLogged.auth.user.email;
+            this.user.photo = this.isLogged.auth.user.photoURL;
             
             this.user.on('datachange', e => {
                 this.el['noPhotoUrl'].hide();
@@ -97,7 +101,10 @@ export default class Sidebar extends HTMLElement{
                 this.el['profileName'].setAttribute('title', e.name);
                 
                 this.el['logout'].show();
-                this.el['logout'].on('click', e => localStorage.removeItem('user'));
+                this.el['logout'].on('click', e => {
+                    localStorage.removeItem('user');
+                    this.router.navigateTo('login');
+                });
             });
 
             this.user.on('contactschange', contacts => {
