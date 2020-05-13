@@ -1,24 +1,37 @@
-<form class="form" id="login-form">
+
+<section class="login">
+  <form class="form" id="login-form">
     <h2>Login</h2>
-    <div class="input">
+    <div class="form-container">
       
-      <div class="inputBox">
-        <label>Email</label>
-        <input type="text" name="email" placeholder="exemplo@hotmail.com">
+      <div class="input-box">
+        <label>E-mail</label>
+          <div class="form-group">
+            <input type="text" name="email" placeholder="exemplo@hotmail.com">
+          </div>
       </div>
       
-      <div class="inputBox">
+      <div class="input-box">
         <label>Senha</label>
-        <input type="password" name="password" placeholder="•••••••••••">
+
+        <div class="form-group">
+          <input type="password" id="input-password" name="password" placeholder="•••••••••••">
+          <span class="suffix" id="show-password"><i id="icon-password" class="tiny material-icons">visibility</i></span>
+        </div>
+
       </div>
       
-      <div class="inputBox">
-        <button id="login-from-email" type="submit">E-mail</button>
-        <button id="login-from-google">Google</button>
+      <div class="buttons default">
+        <button class="btn-email" id="login-from-email" type="submit">E-mail</button>
+        <button class="btn-google" id="login-from-google">Google</button>
+      </div>
+  
+      <div class="forget">
+        <span>Esqueceu a senha?</span>
+        &nbsp;
+        <a href="#reset-password">Clique aqui</a>
       </div>
 
-      <div>
-        <p class="forget">Esqueceu a senha? <a href="#">Clique aqui</p>
-      </div>
     </div>
   </form>
+</section>

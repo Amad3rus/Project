@@ -1,81 +1,128 @@
-/*  IMPORTAR FONT */
-.form {
-  position: relative;
-  width: 350px;
-  padding: 40px 40px 60px;
+.login{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.login .form {
+  width: 320px;
+  padding: 50px 30px 50px 30px;
   background: #131419;
   border-radius: 10px;
   text-align: center;
-  box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.05), 
-                       5px 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: -2px -2px 5px rgba(255, 255, 255, 0.05), 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.form h2 {
-  color: Orange;
-  font-weight: 500px;
+.login .form h2 {
+  color: var(--color-orange-lighter);
   text-transform: uppercase;
   letter-spacing: 4px;
 }
 
-.form .input {
+.login .form .form-container {
   text-align: left;
   margin-top: 40px;
 }
 
-.form .input .inputBox {
+.login .form .form-container .input-box {
   margin-top: 20px;
+  overflow: hidden;
 }
 
-.form .input .inputBox label {
+.login .form .form-container .input-box label {
   display: block;
-  color: #868686;
+  color: var(--color-white);
   margin-bottom: 5px;
-  font-size: 18px;
+  font-size: 12.5px;
 }
-
-.form .input .inputBox input,
-.form .input .inputBox button {
-  width: 100%;
-  height: 50px;
-  background: #131419;
-  border: none;
-  outline: none;
+.login .form .form-container .input-box .form-group{
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background: var(--color-dark);
+  box-shadow: inset -2px -2px 6px rgba(255, 255, 255, 0.05), inset 2px 2px 6px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
   border-radius: 40px;
-  padding: 5px 15px;
-  color: #FFF;
-  font-size: 18px;
-  color: orange;
-  box-shadow: inset -2px -2px 6px rgba(255, 255, 255, 0.05),
-                       inset 2px 2px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
 }
-
-.form .input .inputBox input[type="submit"],
-.form .input .inputBox button[type="submit"] {
-  margin-top: 20px;
-  box-shadow: -2px -2px 6px rgba(255, 255, 255, 0.05),
-                       2px 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.form .input .inputBox input[type="submit"]:active,
-.form .input .inputBox button[type="submit"]:active {
-  margin-top: 20px;
-  box-shadow: inset -2px -2px 6px rgba(255, 255, 255, 0.05),
-                  inset -2px 2px 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.form .input .input::placeholder {
-  color: #555;
-  font-size: 18px
-}
-.form .input .inputBox button{
+.login .form .form-container .input-box .form-group span{
+  display:flex;
+  color: var(--color-orange-lighter);
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+  margin-right: 15px;
   cursor: pointer;
-  margin: 8px 0;
 }
-.forget {
-  margin-top: 30px;
-  color: #555;
+.login .form .form-container .input-box .form-group input{
+  color: var(--color-orange-lighter);
+  padding:15px;
+  width:100%;
+  background: transparent;
+  border:none;
+  outline: none;
+  letter-spacing: 0.09em;
 }
 
-.forget a {
-  color: orange;
+/* .login .form .form-container .input-box input[type="submit"]{
+  margin-top: 20px;
+  box-shadow: -2px -2px 6px rgba(255, 255, 255, 0.05), 2px 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.login .form .form-container .input-box input[type="submit"]:active{
+  margin-top: 20px;
+  box-shadow: inset -2px -2px 6px rgba(255, 255, 255, 0.05), inset -2px 2px 2px 6px rgba(0, 0, 0, 0.5);
+} */
+.login .form .form-container input::placeholder {
+  color: var(--color-light);
+  font-size:12.5px;
+  letter-spacing: 0.09em;
+}
+.login .form .form-container .buttons{
+  width:100%;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+.login .form .form-container .buttons button{
+  width:100%;
+  max-width:150px;
+  border:none;
+  outline:none;
+  font-size:12.5px;
+  display:inline-block;
+  padding:12px 0;
+  cursor:pointer;
+}
+.login .form .form-container .buttons.default button{
+  background:var(--color-dark);
+  text-transform: uppercase;
+  border-radius: 40px;
+  color: var(--color-orange-lighter);
+}
+.login .form .form-container .buttons.default .btn-google{
+  background:var(--color-orange-lighter);
+  color: var(--color-dark);
+  font-weight: bolder;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.55);
+}
+.login .form .form-container .buttons.default .btn-email{
+  box-shadow: inset -1px -1px 3px rgba(255, 255, 255, 0.05), inset 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.login .form .form-container .buttons.default .btn-google:hover,
+.login .form .form-container .buttons.default .btn-email:hover{
+  opacity: 0.8;
+}
+
+.login .form .form-container .forget {
+  margin-top: 30px;
+  color: var(--color-white);
+  font-size:12px;
+}
+.login .form .form-container .forget a {
+  color: var(--color-orange-lighter);
+  font-size:12px;
+  text-decoration: none;
 }

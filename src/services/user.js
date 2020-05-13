@@ -6,34 +6,6 @@ import Model from './model';
 export default class User extends Model{
     constructor(email){
         super();
-        this.contacts = new Contacts();
-        this.users = [
-            {
-                name:'kakashi',
-                contacts:[],
-                email:'kakashi.kisura7@gmail.com',
-                id: Format.createUid()
-            },
-            {
-                name:'maria',
-                contacts:[],
-                email:'maria.maria7@gmail.com',
-                id:Format.createUid()
-            },
-            {
-                name:'joao',
-                contacts:[],
-                email:'joao.joa7@gmail.com',
-                id:Format.createUid()
-            },
-            {
-                name:'vinicius',
-                contacts:[],
-                email:'vinicius.vinicius7@gmail.com',
-                id:Format.createUid()
-            }
-        ]
-
         if(email) this.getByEmail(email);
     }
     get name(){return this.data.name};

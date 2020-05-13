@@ -3,40 +3,29 @@ import User from '../../services/user';
 
 import ProtoService from '../../services/prototype-serivce';
 import Auth from '../../services/auth-service';
+import RoutesService from '../../services/routes-service';
 
 export default class AppPage{
     constructor(){
         new ProtoService();
-        this.auth = new Auth();
-
+        this.router = new RoutesService();
         this.el = {};
         
         document.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
-        setTimeout(async () => {
-            this.isLogged = await this.auth.initAuth();
+        if(!localStorage.getItem('user')) this.router.redirectTo('login');
 
-            this.user = new User(this.isLogged.auth.user.email);
-            this.user.name = this.isLogged.auth.user.displayName;
-            this.user.email = this.isLogged.auth.user.email;
-            this.user.photo = this.isLogged.auth.user.photoURL;
-            
-            await this.user.save();
+        this.isLogged = JSON.parse(localStorage.getItem('user'));
 
-            document.querySelector('title').innerHTML = this.user.name + ' Random chat';
+        if(this.isLogged){
+            this.auth = new Auth();
 
+            this.fetchUser();
             this.fetchContacts();
-
-            if(this.isLogged.isAuth)
-                this.el['app'].dispatchEvent(new Event('isAuth'));
-            
-            this.notification(`Bem vindo(a) ${this.user.name}`);
-        }, 300);
-        
-        this.closeBtnDialog();
-        this.searchContact();
+            // this.searchContact();
+        }
     }
 
     async fetchContacts(){
@@ -53,41 +42,51 @@ export default class AppPage{
         }
     }
 
-    async fetchUser(user){
+    async fetchUser(){
         try{
-            this.auth = await this.authService.fetchUser(user);
-            this.el['profileName'].innerHTML = this.auth['name'];
-            this.el['profileName'].setAttribute('title', this.auth['name']);
+            this.user = new User(this.isLogged.user.email);
+            this.user.name = this.isLogged.user.displayName;
+            this.user.email = this.isLogged.user.email;
+            this.user.photo = this.isLogged.user.photoURL;
+            
+            await this.user.save();
+    
+            document.querySelector('title').innerHTML = this.user.name + ' Random chat';
+            
+            this.el.app.dispatchEvent(new Event('isAuth'));
+            
+            this.notification(`Bem vindo(a) ${this.user.name}`);
+
         }catch(e){
             console.error(e);
         }
     }
 
-    closeBtnDialog(){
-        this.el['dialogClose'].on('click', e => {
-            this.el['dialog'].css({transform:'scale(0)'});
-            setTimeout(() => {
-                this.el['dialog'].hide();
-            },300);
-        });
-        window.onclick = e => {
-            if(e.target == this.el['dialog']){
-                this.el['dialog'].css({transform:'scale(0)'});
-                setTimeout(() => {
-                    this.el['dialog'].hide();
-                },300);
-            }
-        }
-    }
-    searchContact(){
-        this.el['inputSearchContact'].on('keyup',async e => {
-            try{
-                await this.user.getContacts(e.target.value);
-            }catch(e){
-                console.error(e)
-            }
-        });
-    }
+    // closeBtnDialog(){
+    //     this.el['dialogClose'].on('click', e => {
+    //         this.el['dialog'].css({transform:'scale(0)'});
+    //         setTimeout(() => {
+    //             this.el['dialog'].hide();
+    //         },300);
+    //     });
+    //     window.onclick = e => {
+    //         if(e.target == this.el['dialog']){
+    //             this.el['dialog'].css({transform:'scale(0)'});
+    //             setTimeout(() => {
+    //                 this.el['dialog'].hide();
+    //             },300);
+    //         }
+    //     }
+    // }
+    // searchContact(){
+    //     this.el['inputSearchContact'].on('keyup',async e => {
+    //         try{
+    //             await this.user.getContacts(e.target.value);
+    //         }catch(e){
+    //             console.error(e)
+    //         }
+    //     });
+    // }
     notification(text){
         document.querySelector('app-snackbar')
             .dispatchEvent(new CustomEvent('show', {detail: text}));

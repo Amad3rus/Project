@@ -10,7 +10,10 @@ export default class Login extends HTMLElement{
         super();
         this.appendChild(ReaderDom.appendComponent(LoginComponent));
         new ProtoService();
+        this.auth = new Auth();
+
         this.el = {};
+        this.showTextPassword = false;
 
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
@@ -24,25 +27,26 @@ export default class Login extends HTMLElement{
         });
 
         this.loginWidthGoogle();
+        this.showPassword();
     }
 
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
-            this.auth = new Auth();
-            
             this.isLogged = await this.auth.initAuth();
+            if(this.isLogged.isAuth) this.el.loginForm.dispatchEvent(new Event('isAuth'));
+        });
+    }
 
-            if(this.isLogged.isAuth){
-                this.user = new User(this.isLogged.auth.user.email);
-                this.user.name = this.isLogged.auth.user.displayName;
-                this.user.email = this.isLogged.auth.user.email;
-                this.user.photo = this.isLogged.auth.user.photoURL;
-                
-                await this.user.save();
-    
-                document.querySelector('title').innerHTML = this.user.name + ' Random chat';
-    
-                this.el.loginForm.dispatchEvent(new Event('isAuth'));
+    showPassword(){
+        this.el.showPassword.on('click', e => {
+            this.showTextPassword = !this.showTextPassword;
+
+            if(this.showTextPassword){
+                this.el.iconPassword.innerHTML = 'visibility_off';
+                this.el.inputPassword.setAttribute('type', 'text');
+            }else{
+                this.el.iconPassword.innerHTML = 'visibility';
+                this.el.inputPassword.setAttribute('type', 'password');
             }
         });
     }
