@@ -1,37 +1,56 @@
-
-<section class="login">
+<section class="login" id="login">
+  <!-- FORM -->
   <form class="form" id="login-form">
-    <h2>Login</h2>
-    <div class="form-container">
+    <div class="form-container active-login" id="login-form-default" tabindex="1">
+      <h2>Login</h2>
+      <div class="side-right">
+        <h1 class="random-chat-title">RANDOM CHAT</h1>
+      </div>
+      <div class="side-left">
+          <div class="input-box">
+            <label>E-mail</label>
+              <div class="form-group">
+                <input type="text" name="email" placeholder="exemplo@hotmail.com">
+              </div>
+          </div>
+          
+          <div class="input-box">
+            <label>Senha</label>
+    
+            <div class="form-group">
+              <input type="password" id="input-password" name="password" placeholder="•••••••••••">
+              <span class="suffix" id="show-password"><i id="icon-password" class="tiny material-icons">visibility_off</i></span>
+            </div>
+    
+          </div>
+          
+          <div class="buttons default">
+            <button class="btn-email" id="login-from-email" type="submit">E-mail</button>
+            <button class="btn-google" id="login-from-google">Google</button>
+          </div>
       
-      <div class="input-box">
-        <label>E-mail</label>
-          <div class="form-group">
-            <input type="text" name="email" placeholder="exemplo@hotmail.com">
+          <div class="forget">
+            <span id="forgotten-account">Esqueceu a senha?&nbsp;&nbsp;
+              <strong style="color:var(--color-orange-lighter)">Clique aqui</strong>
+            </span>
+            <span id="without-account">Não tenho conta</span>
           </div>
       </div>
-      
-      <div class="input-box">
-        <label>Senha</label>
-
-        <div class="form-group">
-          <input type="password" id="input-password" name="password" placeholder="•••••••••••">
-          <span class="suffix" id="show-password"><i id="icon-password" class="tiny material-icons">visibility</i></span>
-        </div>
-
-      </div>
-      
-      <div class="buttons default">
-        <button class="btn-email" id="login-from-email" type="submit">E-mail</button>
-        <button class="btn-google" id="login-from-google">Google</button>
-      </div>
-  
-      <div class="forget">
-        <span>Esqueceu a senha?</span>
-        &nbsp;
-        <a href="#reset-password">Clique aqui</a>
-      </div>
-
     </div>
+
+    <div id="without-account-form" class="form-container" tabindex="2">
+      <button id="back-button-from-login-without-account" class="back-button" type="button">
+        <span><i class="tiny material-icons">chevron_left</i></span>
+      </button>
+      <h2>Não tenho conta</h2>
+    </div>
+
+    <div id="forgotten-account-form" class="form-container" tabindex="3">
+      <button id="back-button-from-login-forgotten-account" class="back-button" type="button">
+        <span><i class="tiny material-icons">chevron_left</i></span>
+      </button>
+      <h2>Esqueci a senha</h2>
+    </div>
+    
   </form>
 </section>

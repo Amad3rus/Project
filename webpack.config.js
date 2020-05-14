@@ -25,7 +25,8 @@ module.exports = {
 				"loader":'babel-loader',
 				"query":{
 					"presets": ['es2015', 'stage-0'],
-					"plugins": ['transform-custom-element-classes', 'transform-es2015-classes']
+					"plugins": ['transform-custom-element-classes', 'transform-es2015-classes'],
+					"compact" : true
 				}
 			},
 			{

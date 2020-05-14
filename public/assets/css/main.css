@@ -47,6 +47,14 @@
     .container-chat .box .chat .status-bar-mobile{
         display:block;
     }
+    .login .form .form-container .side-right{
+        display:none;
+    }
+    .login .form .form-container .side-left{
+        width:100%;
+        max-width:320px;
+        margin: 0 auto;
+    }
 }
 @media (min-width:769px) and (max-width:1024px){
     .main .container-contact{

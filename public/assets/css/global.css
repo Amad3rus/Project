@@ -41,6 +41,7 @@ html, body{
 body{
     background:var(--color-black);
     font-family: 'Baloo Tamma 2', cursive;
+    overflow: hidden;
 }
 img, i{
     -webkit-user-select: none;
