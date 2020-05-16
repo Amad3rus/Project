@@ -3,6 +3,7 @@ import LoginComponent from './login-component.html';
 import Auth from '../../services/auth-service';
 import Format from '../../utils/format';
 import ProtoService from '../../services/prototype-serivce';
+import FormValidationService from '../../services/form-validation-service';
 
 export default class Login extends HTMLElement{
     constructor(){
@@ -10,26 +11,37 @@ export default class Login extends HTMLElement{
         this.appendChild(ReaderDom.appendComponent(LoginComponent));
         new ProtoService();
         this.auth = new Auth();
-
         this.el = {};
+
         this.showTextPassword = false;
 
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
+        this.fb = new FormValidationService(this.el.loginForm);
+        
+        this.el.loginFromEmail.disabled = true;
+
         this.el.loginForm.on('submit', e => {
             e.preventDefault();
             // const formLogin = new FormData(this.el.loginForm);
             // console.log(formLogin.get('email'));
             const payload = this.el.loginForm.toJSON();
-        });
 
+        });
+        this.fb.manageState.validateState();
         this.loginWidthGoogle();
         this.showPassword();
         this.forgottenPassword();
         this.withoutAccount();
         this.backToFormLogin();
+        this.loginWidthEmail();
+
+        this.el.loginForm.on('form', e => {
+            if(e.detail.size == 0) this.el.loginFromEmail.disabled = false;
+            else this.el.loginFromEmail.disabled = true;
+        });
     }
 
     loginWidthGoogle(){
@@ -39,6 +51,14 @@ export default class Login extends HTMLElement{
         });
     }
 
+    loginWidthEmail(){
+        // this.el.loginFromEmail.on('click', e => {
+        //     this.el.login.querySelector('.notification').addClass('notify-active');
+        //     setTimeout(() => {
+        //         this.el.login.querySelector('.notification').removeClass('notify-active');
+        //     }, 3000);
+        // });
+    }
     showPassword(){
         this.el.showPassword.on('click', e => {
             this.showTextPassword = !this.showTextPassword;
@@ -112,4 +132,6 @@ export default class Login extends HTMLElement{
             }
         });
     }
+
+
 }

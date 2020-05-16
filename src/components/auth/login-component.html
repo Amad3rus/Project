@@ -1,6 +1,7 @@
 <section class="login" id="login">
   <!-- FORM -->
   <form class="form" id="login-form">
+    
     <div class="form-container active-login" id="login-form-default" tabindex="1">
       <h2>Login</h2>
       <div class="side-right">
@@ -10,7 +11,8 @@
           <div class="input-box">
             <label>E-mail</label>
               <div class="form-group">
-                <input type="text" name="email" placeholder="exemplo@hotmail.com">
+                <input id="input-email-login" type="text" name="email" placeholder="exemplo@hotmail.com">
+                <!-- <small class="hide"></small> -->
               </div>
           </div>
           
@@ -19,9 +21,9 @@
     
             <div class="form-group">
               <input type="password" id="input-password" name="password" placeholder="•••••••••••">
+              <!-- <small class="hide"></small> -->
               <span class="suffix" id="show-password"><i id="icon-password" class="tiny material-icons">visibility_off</i></span>
             </div>
-    
           </div>
           
           <div class="buttons default">
@@ -38,19 +40,67 @@
       </div>
     </div>
 
-    <div id="without-account-form" class="form-container" tabindex="2">
+    
+    <div style="display:none;" id="without-account-form" class="form-container" tabindex="2">
       <button id="back-button-from-login-without-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
       </button>
       <h2>Não tenho conta</h2>
+      <div class="side-left" style="margin: 0 auto;">
+        <div class="input-box">
+          <label>E-mail</label>
+            <div class="form-group">
+              <input id="input-email-no-account" type="text" name="email" placeholder="exemplo@hotmail.com">
+              <!-- <smal class="hide">E-mail invalido.</smal> -->
+            </div>
+        </div>
+        
+        <div class="input-box">
+          <label>Senha</label>
+  
+          <div class="form-group">
+            <input type="password" id="input-password-no-account" name="password" placeholder="•••••••••••">
+            <!-- <smal class="hide">Senha invalida.</smal> -->
+            <span class="suffix" id="show-password-new"><i id="icon-password-no-account" class="tiny material-icons">visibility_off</i></span>
+          </div>
+  
+        </div>
+        
+        <div class="buttons default" style="justify-content: center;">
+          <button class="btn-email" id="login-from-email-new" type="submit">cadastrar</button>
+        </div>
+      </div>
     </div>
 
-    <div id="forgotten-account-form" class="form-container" tabindex="3">
+    
+    <div style="display:none;" id="forgotten-account-form" class="form-container" tabindex="3">
       <button id="back-button-from-login-forgotten-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
       </button>
       <h2>Esqueci a senha</h2>
+      <div class="side-left" style="margin: 0 auto;">
+        <div class="input-box">
+          <label>E-mail</label>
+            <div class="form-group">
+              <input id="input-email-forgotten" type="text" name="email" placeholder="exemplo@hotmail.com">
+              <!-- <small class="hide">The passber and one special character.</small> -->
+            </div>
+        </div>
+        
+        <div class="buttons default" style="justify-content: center;">
+          <button class="btn-email" id="login-from-email-send" type="submit">enviar e-mail</button>
+        </div>
+      </div>
+
     </div>
+
     
+      <!-- NOTIFICATION -->
+     <div class="notification">
+      <h3>Notification</h3>
+      <span id="notification-login-tooltip-content"></span>
+    </div>
   </form>
+
+ 
 </section>
