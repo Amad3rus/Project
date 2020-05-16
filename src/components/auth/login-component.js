@@ -59,6 +59,7 @@ export default class Login extends HTMLElement{
         //     }, 3000);
         // });
     }
+    
     showPassword(){
         this.el.showPassword.on('click', e => {
             this.showTextPassword = !this.showTextPassword;
