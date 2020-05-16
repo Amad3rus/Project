@@ -52,12 +52,12 @@ export default class Login extends HTMLElement{
     }
 
     loginWidthEmail(){
-        // this.el.loginFromEmail.on('click', e => {
-        //     this.el.login.querySelector('.notification').addClass('notify-active');
-        //     setTimeout(() => {
-        //         this.el.login.querySelector('.notification').removeClass('notify-active');
-        //     }, 3000);
-        // });
+        this.el.loginFromEmail.on('click', e => {
+             this.el.login.querySelector('.notification').addClass('notify-active');
+             setTimeout(() => {
+                 this.el.login.querySelector('.notification').removeClass('notify-active');
+             }, 3000);
+         });
     }
     
     showPassword(){
