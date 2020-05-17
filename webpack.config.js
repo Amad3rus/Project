@@ -1,8 +1,12 @@
 const path = require('path');
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SendEmail = require('./src/services/send-email-service');
+
 const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
-		"template": './public/index.html'
-	});
+	"template": './public/index.html'
+});
 
 module.exports = {
 	// entry: ['regenerator-runtime/runtime', './src/app.js'], // sem pdf
@@ -43,31 +47,43 @@ module.exports = {
 	"devServer":{
 		"compress":true,
 		"port":9000,
-		"historyApiFallback": true,
-		// "historyApiFallback": {
-		// 	"rewrites": [
-		// 	  { "from": /^\/$/, to: 'index.html' },
-		// 	  { "from": /^\/subpage/, to: 'index.html' },
-		// 	  { "from": /./, to: 'index.html' }
-		// 	]
-		// },
-
-		// "before": function(app, server, compile){
+		"historyApiFallback":true,
+		"before":function(app) {
+			app.use(bodyParser.json());
+			app.use(bodyParser.urlencoded({extended: true}));
 			
-		// 	app.get('/routes', function(req, res){
-		// 		res.json({"status":'está funcionando.'});
-		// 	});
+			app.post('/api/v1/teste2', function(req, res) {
+				console.log(req.body);
+				res.send({status:true});
+			});
 
-		// 	app.get('/', function(req, res){
-		// 		res.json({"status":'está funcionando.'});
-		// 	});
-
-		// 	app.use(function(req, res, next){
-		// 		res.status(404).send({"message":'404 page not found'});
-		// 	});
-		// },
+			app.get('/api/v1/teste', function(req, res) {
+				res.json({"status":'está funcionando.'});
+			});
+			
+			app.post('/api/v1/reset_password', async function(req, res){
+				const payload = { 
+					req, 
+					res, 
+					from:'kakashi.kisura7@gmail.com',
+					subject:'Teste de send e-mail',
+					text:'This is a test!'
+				};
+				const response = await SendEmail.sendEmail(payload);
+				res.send(response);
+			});
+			app.get('/mailer', function(req, res) {
+				transporter.verify(function(error, success) {
+					if (error) {
+					  console.log(error);
+					} else {
+					  console.log("Server is ready to take our messages");
+					}
+				});
+				
+				res.json({"status":'está funcionando.'});
+			});
+		},
 	},
-	"plugins": [
-		HTMLWebpackPluginConfig
-	]
+	"plugins": [HTMLWebpackPluginConfig]
 }

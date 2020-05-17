@@ -57,12 +57,13 @@ export default class FormValidationService{
                 isValid ? this.manageState.removeFromState({input, inputname}) : this.manageState.addToState({input, inputname, msg});
                 return isValid;
             },
-            empty:() => {
-                console.log('validateState')
+            empty:(tab = 1) => {
+                console.log(tab);
+
                 const fields = [...this.form.elements].filter(item => item.nodeName === 'INPUT');
                 [...fields].forEach(field => {
                     const formActive = field.parentNode.parentNode.parentNode.parentNode;
-                    if(formActive.style.display != 'none' && formActive.hasClass('active-login')){
+                    if(formActive.getAttribute('tabindex') == tab){
                         formActive.querySelectorAll('[name]').forEach(input => {
                             let value = input.value;
                             let inputname = input.name;
@@ -88,11 +89,11 @@ export default class FormValidationService{
                 this.validationsState.delete(inputname);
                 this.manipulateValidationMsg({input, action});
             },
-            validateState: () => {
+            validateState: (tab) => {
                 if(this.validationsState.size > 0) return false;
 
                 if(this.validationsState.size === 0){
-                   this.rules.empty();
+                   this.rules.empty(tab);
                 }
             }
         }
@@ -101,20 +102,8 @@ export default class FormValidationService{
         const { input, action, msg } = validationData;
         const small = input.nextElementSibling;
         const parent = input.parentNode;
-
-        // this.onFocus = false;
-        // var onBlur = false;
-
-        // input.on('focus', e => {
-        //     this.onFocus = true;
-        // });
-        // input.on('blur', e => {
-        //     onBlur = true    
-        // });
-        
-        // console.log('focus', this.onFocus, 'blur', onBlur);
         if(action == 'hide'){
-            parent.css({ background:'var(--color-dark)' });
+            parent.css({ background:'var(--color-dark-light)' });
         }else{
             parent.css({ background:'var(--color-form-invalid)' });
         }
