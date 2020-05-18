@@ -1,9 +1,9 @@
-export default class Format {
+// import { Code } from './code';
 
+export default class Format {
     static formatToCamelCase(text){
         let div = document.createElement('div');
         div.innerHTML = `<div data-${text}="id"></div>`;
-        
         return Object.keys(div.firstChild.dataset)[0];
     }
     static formatDateToBrazilian(date){
@@ -46,7 +46,6 @@ export default class Format {
         const novaString = String.raw`${string}`.replace(result, ' ').split(/[_. ,@$^*/\\-]/).filter(char => char != '');
         return (novaString[0][0] + novaString[1][0]).toUpperCase();
     }
-    
     static formatBytes(b){
         const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB','YB'];
 
@@ -58,14 +57,20 @@ export default class Format {
         }
         return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }
-    
     static createUid(){
         let timestamp = new Date().getTime();
         let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => {
-            let r = (timestamp + Math.random() * 16) %16 | 0;
+            let r = (timestamp + Math.random() * 16) % 16 | 0;
             timestamp = Math.floor(timestamp/16);
             return (char === 'x' ? r : (r&0x3|0x8)).toString(16);
         });
         return uuid;
     }
+    // static createCodeValidation(){
+    //     return Code[Math.round((Math.random() * Code.length))];
+    // }
+    // static validateCode(code){
+    //     if(Code.indexOf(code) == -1) return false;
+    //     return true;
+    // }
 }

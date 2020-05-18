@@ -41,4 +41,7 @@ export default class HttpRequestService {
     async resetPasswordl(payload){
         return Promise.resolve(await this.post(payload, this.host + '/api/v1/reset_password'));
     }
+    async validateCode(payload){
+        return Promise.resolve(await this.post(payload, this.host + '/api/v1/validate_code'));
+    }
 }

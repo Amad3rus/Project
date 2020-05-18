@@ -18,4 +18,16 @@ export default class Auth{
             }
         });
     }
+    async initAuthWidthEmailPassword(payload){
+        return new Promise(async (resolve, reject) => {
+            try{
+                this.auth = await this.fbService.initLoginWidthEmail(payload);
+                this.isAuth = true;
+                resolve(this.auth);
+            }catch(e){
+                console.error(e);
+                reject(e)
+            }
+        });
+    }
 }

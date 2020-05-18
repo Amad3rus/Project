@@ -50,4 +50,24 @@ export default class Firebase {
             }
         });
     }
+
+    initLoginWidthEmail(payload){
+        return new Promise(async (resolve, reject) => {
+            try{
+                if(localStorage.getItem('user')){
+                    resolve(JSON.parse(localStorage.getItem('user')));
+                }else{
+                    const auth = await firebase.auth()
+                        .createUserWithEmailAndPassword(payload.email, payload.password);
+                    // localStorage.setItem('user', JSON.stringify({token:auth.credential.accessToken, user:auth.user}));
+                    // resolve({token: auth.credential.accessToken, user: auth.user});
+                    resolve(auth);
+                }
+            }catch(e){
+                console.error(e);
+                reject(e)
+            }
+        });
+    }
+
 }

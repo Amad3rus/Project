@@ -1,8 +1,9 @@
 const path = require('path');
-const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SendEmail = require('./src/services/send-email-service');
+const Code = require('./src/utils/code');
+const Crypto = require('crypto-js');
 
 const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 	"template": './public/index.html'
@@ -58,30 +59,69 @@ module.exports = {
 			});
 
 			app.get('/api/v1/teste', function(req, res) {
-				res.json({"status":'está funcionando.'});
+				// const email = 'kakashi.kisura7@gmail.com';
+
+				// const cipher = Crypto.AES.encrypt(email,createCode).toString();
+				// const decipher = Crypto.AES.decrypt(cipher, createCode);
+				// const original = decipher.toString(Crypto.enc.Utf8);
+				
+				// const decipher = Crypto.AES.decrypt(hash, codes);
+				// const t = decipher.toString(Crypto.enc.Utf8);
+				
 			});
 			
 			app.post('/api/v1/reset_password', async function(req, res){
+				const createCode = Code[Math.round((Math.random() * Code.length))];
+
 				const payload = { 
 					req, 
 					res, 
-					from:'kakashi.kisura7@gmail.com',
-					subject:'Teste de send e-mail',
-					text:'This is a test!'
-				};
-				const response = await SendEmail.sendEmail(payload);
-				res.send(response);
+					from:req.body.email,
+					subject:'Reset password',
+					text:createCode
+				}
+
+				const cipher = Crypto.AES.encrypt(JSON.stringify({ email:req.body.email, code: createCode }), createCode).toString();
+				try{
+					await SendEmail.sendEmail(payload);
+					res.json({ "cipher":cipher, "email": req.body.email});
+				}catch(e){
+					res.status(404).send({error: e});
+				}
+				// 	transporter.verify(function(error, success) {
+				// 		if (error) {
+				// 		  console.log(error);
+				// 		} else {
+				// 		  console.log("Server is ready to take our messages");
+				// 		}
+				// 	});
 			});
-			app.get('/mailer', function(req, res) {
-				transporter.verify(function(error, success) {
-					if (error) {
-					  console.log(error);
-					} else {
-					  console.log("Server is ready to take our messages");
-					}
-				});
+
+			app.post('/api/v1/create_new_password', function(req, res){
 				
-				res.json({"status":'está funcionando.'});
+			});
+
+			app.post('/api/v1/validate_code', function(req, res){
+				try{
+					const { code, cipher, email } = req.body;
+
+					const decipher = Crypto.AES.decrypt(cipher, code);
+					const original = JSON.parse(decipher.toString(Crypto.enc.Utf8));
+	
+					if(original.email == email){
+						res.status(200).send({status:true});
+					}else{
+						res.status(200).send({code: 'errado'});
+					}
+				}catch(e){
+					res.status(400).send({status:false});
+				}
+
+				// const email = 'kakashi.kisura7@gmail.com';
+				// const cipher = Crypto.AES.encrypt(email,createCode).toString();
+				// const decipher = Crypto.AES.decrypt(cipher, createCode);
+				// const original = decipher.toString(Crypto.enc.Utf8);
+
 			});
 		},
 	},

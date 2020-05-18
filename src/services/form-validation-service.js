@@ -58,8 +58,6 @@ export default class FormValidationService{
                 return isValid;
             },
             empty:(tab = 1) => {
-                console.log(tab);
-
                 const fields = [...this.form.elements].filter(item => item.nodeName === 'INPUT');
                 [...fields].forEach(field => {
                     const formActive = field.parentNode.parentNode.parentNode.parentNode;
