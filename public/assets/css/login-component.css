@@ -239,6 +239,9 @@
   overflow-y: auto;
   transition: all .5s;
 }
+
+/* NOVO FORM DE CODE  */
+
 .login .notification p,
 .login .notification span{
   font-size: 12px;
