@@ -29,6 +29,7 @@ export default class Login extends HTMLElement{
 
         this.fb = new FormValidationService(this.el.loginForm);
         this.fb.manageState.validateState();
+        this.listeningEvents();
         this.loginWidthGoogle();
         this.showPassword();
         this.forgottenPassword();
@@ -168,27 +169,6 @@ export default class Login extends HTMLElement{
                 }
             });
         });
-        this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
-        this.el.loginFromEmail.on('click', e => this.createPayload('login'));
-        this.el.loginFromEmailSend.on('click', e => this.createPayload('reset'));
-        this.el.btnVerifyCode.on('click', e => this.createPayload('code'));
-
-        this.el.loginFromEmailNew.on('keyup', e => {
-            if(e.key == 'Enter' && !this.el.loginFromEmailNew.disabled) this.createPayload('create');
-        });
-        this.el.inputEmailForgotten.on('keyup', e => {
-            if(e.key == 'Enter' && !this.el.loginFromEmailSend.disabled) this.createPayload('reset');
-        });
-        this.el.inputPassword.on('keyup', e => {
-            if(e.key == 'Enter' && !this.el.loginFromEmail.disabled) this.createPayload('login');
-        });
-        
-        this.el.inputCodeFromEmail.on('paste', e => e.preventDefault());
-        
-        this.el.inputCodeFromEmail.on('keydown', e => {
-            if(e.key == "Enter" && !this.el.btnVerifyCode.disabled) this.createPayload('code');
-            this.el.inputCodeFromEmail.value = Format.inputMask(this.el.inputCodeFromEmail, 'code');
-        });
     }
     createPayload(type){
         let payload;
@@ -199,11 +179,11 @@ export default class Login extends HTMLElement{
                 break;
             case 'reset':
                 payload = { "email":this.el.inputEmailForgotten.value }
-                this.resetPassword(payload);
+                this.managerCode(payload);
                 break;
             case 'create':
                 payload = { "password":this.el.inputPasswordNoAccount.value, "email":this.el.inputEmailNoAccount.value }
-                this.createAccount(payload);
+                this.managerCode(payload);
                 break;
             case 'code':
                 payload = { "code": Format.removeMask(this.el.inputCodeFromEmail.value, 'code').toUpperCase() }
@@ -213,8 +193,9 @@ export default class Login extends HTMLElement{
         this.resetForm();
         // window.open('mailto:kakashi.kisura@gmail.com'); // open app default browser or mobile
     }
-    async resetPassword(payload){
+    async managerCode(payload){
         const payloadFromLocal = this.getLocal('resetPasswordToken');
+        
         if(payloadFromLocal.exceeded_reset && payload.email === payloadFromLocal.email){
             this.checkLockedDownTentative(payloadFromLocal);
             // exe some code
@@ -226,11 +207,6 @@ export default class Login extends HTMLElement{
             
             this.el.showEmailToGetCode.innerHTML = payload.email;
             this.format.timerRegressive(60 * 5, this.el.timerInputCode);
-            this.el.timerInputCode.on('timeout', e => {
-                this.showNotification('Time Out');
-                this.showFormDefault();
-            });
-
             this.showNotification(RenderView.messageCodeSent());
             this.hideNotification(3000);
         }
@@ -305,5 +281,33 @@ export default class Login extends HTMLElement{
         const daysTimesStamp = Math.ceil(diff / 1000);
 
        return (_24 - daysTimesStamp);
+    }
+    listeningEvents(){
+        this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
+        this.el.loginFromEmail.on('click', e => this.createPayload('login'));
+        this.el.loginFromEmailSend.on('click', e => this.createPayload('reset'));
+        this.el.btnVerifyCode.on('click', e => this.createPayload('code'));
+
+        this.el.loginFromEmailNew.on('keyup', e => {
+            if(e.key == 'Enter' && !this.el.loginFromEmailNew.disabled) this.createPayload('create');
+        });
+        this.el.inputEmailForgotten.on('keyup', e => {
+            if(e.key == 'Enter' && !this.el.loginFromEmailSend.disabled) this.createPayload('reset');
+        });
+        this.el.inputPassword.on('keyup', e => {
+            if(e.key == 'Enter' && !this.el.loginFromEmail.disabled) this.createPayload('login');
+        });
+        
+        this.el.inputCodeFromEmail.on('paste', e => e.preventDefault());
+        
+        this.el.inputCodeFromEmail.on('keydown', e => {
+            if(e.key == "Enter" && !this.el.btnVerifyCode.disabled) this.createPayload('code');
+            this.el.inputCodeFromEmail.value = Format.inputMask(this.el.inputCodeFromEmail, 'code');
+        });
+
+        this.el.timerInputCode.on('timeout', e => {
+            this.showNotification('Time Out');
+            this.showFormDefault();
+        });
     }
 }
