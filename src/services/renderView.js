@@ -204,4 +204,30 @@ export default class RenderView extends CreateEvent{
             <!-- <div class="caption">${file.info.name}</div> -->
         `;
     }
+
+    static messageTimeLeft(){
+        return `
+            <span style="color:var(--color-white)">Atingiu número máximo de tentativas - tempo restante:
+                <span id="time-left"></span>
+            </span>
+        `
+    }
+    static messageCodeInvalid(time){
+        return `
+            <span style="color:var(--color-red); font-size: 14px;">Código invalido - 
+                <span style="color:var(--color-white)">tentativas ${time}/3</span>
+            </span>
+        `
+    }
+
+    static messageCodeSending(email){
+        return `
+            Enviando... para <span style="font-size:14px; color:var(--color-white);">${email}</span>
+        `
+    }
+    static messageCodeSent(){
+        return `
+            <span style="color:var(--color-green);">Código enviado com sucesso</span>
+        `
+    }
 }

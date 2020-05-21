@@ -5,6 +5,7 @@ import Format from '../../utils/format';
 import ProtoService from '../../services/prototype-serivce';
 import FormValidationService from '../../services/form-validation-service';
 import HttpRequestService from '../../services/http-request-service';
+import RenderView from '../../services/renderView';
 
 export default class Login extends HTMLElement{
     constructor(){
@@ -20,8 +21,8 @@ export default class Login extends HTMLElement{
         this.showTextPassword = false;
         this.showTextPasswordNoAccount = false;
         this.tentative = 0;
-        this.fetchToken = (localStorage.getItem(''))
-        
+        this.timeLeft = 0;
+
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
@@ -42,15 +43,19 @@ export default class Login extends HTMLElement{
             if(this.isLogged.isAuth) this.el.loginForm.dispatchEvent(new Event('isAuth'));
         });
     }
-    showNotification(msg, time = 3000){
-        return new Promise((resolve, reject) => {
-            this.el.login.querySelector('.notification').addClass('notify-active');
-            this.el.notificationLoginTooltipContent.innerHTML = msg;
-            setTimeout(() => {
-                this.el.login.querySelector('.notification').removeClass('notify-active');
-                resolve(true);
-            }, time);
-        });
+    showNotification(msg){
+        this.el.login.querySelector('.notification').addClass('notify-active');
+        this.el.notificationLoginTooltipContent.innerHTML = msg;
+
+        if(this.el.notificationLoginTooltipContent.querySelector('#time-left'))
+            this.format
+                .timerRegressive(this.timeLeft, this.el.notificationLoginTooltipContent
+                        .querySelector('#time-left'));
+    }
+    hideNotification(time = 0){
+        setTimeout(() => {
+            this.el.login.querySelector('.notification').removeClass('notify-active');
+        }, time);
     }
     showPassword(){
         this.el.showPassword.on('click', e => {
@@ -210,19 +215,24 @@ export default class Login extends HTMLElement{
     }
     async resetPassword(payload){
         const payloadFromLocal = this.getLocal('resetPasswordToken');
-        if(payloadFromLocal.exceeded_reset){
-            await this.showNotification(`<span style="color:var(--color-white)">Atingiu número máximo de tentativas volta mais tarde...</span>`);
+        if(payloadFromLocal.exceeded_reset && payload.email === payloadFromLocal.email){
+            this.checkLockedDownTentative(payloadFromLocal);
             // exe some code
         }else{
-            await this.showNotification(`Código enviado ao E-mail: <strong style="font-size:16px; color:white;" >${payload.email}</strong>`, 3000);
+            this.showNotification(RenderView.messageCodeSending(payload.email));
+            
+            this.setLocal('resetPasswordToken', JSON.parse(await this.http.resetPasswordl(JSON.stringify(payload))));
             this.hideFormActive(4);
+            
             this.el.showEmailToGetCode.innerHTML = payload.email;
             this.format.timerRegressive(60 * 5, this.el.timerInputCode);
-            this.el.timerInputCode.on('timeout', async e => {
-                await this.showNotification('Time Out');
+            this.el.timerInputCode.on('timeout', e => {
+                this.showNotification('Time Out');
                 this.showFormDefault();
             });
-            this.setLocal('resetPasswordToken', JSON.parse(await this.http.resetPasswordl(JSON.stringify(payload))));
+
+            this.showNotification(RenderView.messageCodeSent());
+            this.hideNotification(3000);
         }
     }
     async loginWidthPass(payload){
@@ -234,17 +244,18 @@ export default class Login extends HTMLElement{
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
         if(payloadToSend.exceeded_reset){
-            await this.showNotification(`<span style="color:var(--color-white)">Atingiu número máximo de tentativas volta mais tarde...</span>`);
+            this.checkLockedDownTentative(payloadToSend);
             // exec some code here
         }else{
             try{
                 await this.http.validateCode(JSON.stringify(payloadToSend));
-                await this.showNotification('Code validado');
+                this.showNotification('Code validado');
                 this.showFormDefault();
             }catch(e){
                 this.tentative++;
-                this.blockdownTentative();
-                await this.showNotification(`<span style="color:var(--color-red); font-size: 14px;">Código invalido - <span style="color:var(--color-white)">tentativas ${this.tentative}/3</span></span>`);
+                this.lockedDownTentative();
+                this.showNotification(RenderView.messageCodeInvalid(this.tentative));
+                this.hideNotification(3000);
             }
         }
     }
@@ -260,9 +271,9 @@ export default class Login extends HTMLElement{
         const getCode = this.getLocal('resetPasswordToken');
         if(!getCode.exceeded_reset) this.removeLocal('resetPasswordToken');
     }
-    blockdownTentative(){
+    lockedDownTentative(){
         if(this.tentative >= 3){
-            const exceeded = Object.assign({"exceeded_reset":true}, this.getLocal('resetPasswordToken'));
+            const exceeded = Object.assign({"exceeded_reset":true, "time_start":new Date().getTime()}, this.getLocal('resetPasswordToken'));
             this.setLocal('resetPasswordToken', exceeded);
         }
     }
@@ -274,5 +285,25 @@ export default class Login extends HTMLElement{
     }
     removeLocal(name){
         if(localStorage.getItem(name)) localStorage.removeItem(name);
+    }
+    async checkLockedDownTentative(payload){
+        if(payload.time_start){
+            this.timeLeft = this.getLeftTimeToSendCode(payload);
+            this.showNotification(RenderView.messageTimeLeft());
+            this.hideNotification(9000);
+            setTimeout(() => {
+                this.format.clearInterval();
+            }, 9000)
+        }
+    }
+    getLeftTimeToSendCode(payload){
+        const { time_start } = payload;
+        const _24 = 24 * 60 * 60;
+        const now = new Date();
+        const past = new Date(time_start);
+        const diff = Math.abs(now.getTime() - past.getTime());
+        const daysTimesStamp = Math.ceil(diff / 1000);
+
+       return (_24 - daysTimesStamp);
     }
 }
