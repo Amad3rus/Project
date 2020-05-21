@@ -26,6 +26,8 @@ export default class FormValidationService{
             });
         });
         this.rules = {
+            code:input => {
+            },
             name:input => {
                 const name = /[A-Za-z0-9]{6,}/;
                 const value = input.value;

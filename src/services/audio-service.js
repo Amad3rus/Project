@@ -10,7 +10,6 @@ export default class AudioService extends CreateEvent{
         this.mimeType = 'audio/webm';
         this.activeAudio();
     }
-
     async activeAudio(){
         try{
             this.streaming = await navigator.mediaDevices.getUserMedia({audio:true});
@@ -25,7 +24,6 @@ export default class AudioService extends CreateEvent{
             this.snackbarService.callNotification('offline', 'Não foi possível gravar seu audio', '&times;');
         }
     }
-
     stopAudio(){
         this.streaming.getTracks()
             .forEach(track => track.stop());

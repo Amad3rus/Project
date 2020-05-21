@@ -2,17 +2,19 @@
   <!-- FORM -->
   <form class="form" id="login-form">
     
-    <div class="form-container active-login" id="login-form-default" tabindex="1">
+    <div id="login-form-default" class="form-container active-login" tabindex="1">
       <h2>Login</h2>
+      
       <div class="side-right">
         <h1 class="random-chat-title">RANDOM CHAT</h1>
       </div>
+      
       <div class="side-left">
           <div class="input-box">
             <label>E-mail</label>
               <div class="form-group">
                 <input autocomplete="off" id="input-email-login" type="text" name="email" placeholder="exemplo@hotmail.com">
-                <!-- <small class="hide"></small> -->
+                <!-- <input id="input-teste" type="text"> -->
               </div>
           </div>
           
@@ -21,7 +23,6 @@
     
             <div class="form-group">
               <input autocomplete="off" type="password" id="input-password" name="password" placeholder="•••••••••••">
-              <!-- <small class="hide"></small> -->
               <span class="suffix" id="show-password"><i id="icon-password" class="tiny material-icons">visibility_off</i></span>
             </div>
           </div>
@@ -45,8 +46,10 @@
       <button id="back-button-from-login-without-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
       </button>
-      <h2>Não tenho conta</h2>
+      
       <div class="side-left" style="margin: 0 auto;">
+        <h2>Não tenho conta</h2>
+
         <div class="input-box">
           <label>E-mail</label>
             <div class="form-group">
@@ -73,8 +76,8 @@
       <button id="back-button-from-login-forgotten-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
       </button>
-      <h2>Esqueci a senha</h2>
       <div class="side-left" style="margin: 0 auto;">
+        <h2>Esqueci a senha</h2>
         <div class="input-box">
           <label>E-mail</label>
             <div class="form-group">
@@ -91,9 +94,37 @@
     </div>
 
     <!-- NOVO FORM DE RECEBER CODE -->
-    
-      <!-- NOTIFICATION -->
-     <div class="notification">
+    <div style="display:none;" class="form-container" tabindex="4">
+      <button id="back-button-from-login-from-code" class="back-button" type="button">
+        <span><i class="tiny material-icons">chevron_left</i></span>
+      </button>
+
+      <div class="verification">
+        <div class="menssage">
+          <h2>Insira aqui - timer <span id="timer-input-code"></span></h2>
+          <span>Código enviado para e-mail: 
+            <span id="show-email-to-get-code"></span>
+        </span>
+        </div>
+        
+        <div class="v-code">
+          <div class="line"></div>
+          <div class="form-group">
+            <input autocomplete="off" id="input-code-from-email" type="text" name="code" placeholder="0-0-0-0">
+          </div>
+        </div>
+  
+        <div class="buttons default verify" style="justify-content: space-between;">
+          <button class="btn-email" id="btn-verify-code" type="button">Vefificar</button>
+          <button style="display:none" class="btn-email" id="btn-verify-code-reset" type="button">Novo código</button>
+          <button class="btn-cancel" id="btn-verify-code-cancel" type="button">Cancelar</button>
+        </div>
+      
+      </div>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div class="notification">
       <span id="notification-login-tooltip-content"></span>
     </div>
   </form>

@@ -13,6 +13,8 @@ export default class Login extends HTMLElement{
         new ProtoService();
         this.auth = new Auth();
         this.http = new HttpRequestService();
+        this.format = new Format();
+
         this.el = {};
 
         this.showTextPassword = false;
@@ -32,8 +34,6 @@ export default class Login extends HTMLElement{
         this.backToFormLogin();
         this.onSubmit();
         this.resetForm();
-        // this.validateCode({code:'31DD'});
-        // this.validateCode({code:'31D0'});
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
@@ -41,12 +41,15 @@ export default class Login extends HTMLElement{
             if(this.isLogged.isAuth) this.el.loginForm.dispatchEvent(new Event('isAuth'));
         });
     }
-    showNotification(msg){
-        this.el.login.querySelector('.notification').addClass('notify-active');
-        this.el.notificationLoginTooltipContent.innerHTML = msg;
-        setTimeout(() => {
-            this.el.login.querySelector('.notification').removeClass('notify-active');
-        }, 4000);
+    showNotification(msg, time = 3000){
+        return new Promise((resolve, reject) => {
+            this.el.login.querySelector('.notification').addClass('notify-active');
+            this.el.notificationLoginTooltipContent.innerHTML = msg;
+            setTimeout(() => {
+                this.el.login.querySelector('.notification').removeClass('notify-active');
+                resolve(true);
+            }, time);
+        });
     }
     showPassword(){
         this.el.showPassword.on('click', e => {
@@ -111,22 +114,24 @@ export default class Login extends HTMLElement{
     backToFormLogin(){
         this.el.backButtonFromLoginForgottenAccount.on('click', e => this.showFormDefault());
         this.el.backButtonFromLoginWithoutAccount.on('click', e => this.showFormDefault());
+        this.el.backButtonFromLoginFromCode.on('click', e => this.showFormDefault());
+        this.el.btnVerifyCodeCancel.on('click', e => this.showFormDefault());
     }
     showFormDefault(){
         this.resetForm();
+        this.resetLocalStorage();
+        this.format.clearInterval();
+        
         this.el.login.querySelectorAll('.form-container').forEach(form => {
             if(form.hasClass('out-login')) form.removeClass('out-login');
-
             if(form.hasClass('active-login')) {
                 form.removeClass('active-login');
                 form.addClass('out-login');
-
                 setTimeout(() => {
                     form.hide();
                     form.removeClass('out-login');
                 }, 1001);
             }
-
             if(form.getAttribute('tabindex') == '1') {
                 form.css({display: 'flex'});
                 setTimeout(() => {
@@ -150,6 +155,9 @@ export default class Login extends HTMLElement{
                             this.fb.validationsState.delete('password');
                             (e.detail.size == 0) ? this.el.loginFromEmailSend.disabled = false : this.el.loginFromEmailSend.disabled = true;
                             break;
+                        case '4':
+                            (this.el.inputCodeFromEmail.value.length == 7) ? this.el.btnVerifyCode.disabled = false : this.el.btnVerifyCode.disabled = true;
+                            break;
                     }
                 }
             });
@@ -157,6 +165,8 @@ export default class Login extends HTMLElement{
         this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
         this.el.loginFromEmail.on('click', e => this.createPayload('login'));
         this.el.loginFromEmailSend.on('click', e => this.createPayload('reset'));
+        this.el.btnVerifyCode.on('click', e => this.createPayload('code'));
+
         this.el.loginFromEmailNew.on('keyup', e => {
             if(e.key == 'Enter' && !this.el.loginFromEmailNew.disabled) this.createPayload('create');
         });
@@ -165,6 +175,13 @@ export default class Login extends HTMLElement{
         });
         this.el.inputPassword.on('keyup', e => {
             if(e.key == 'Enter' && !this.el.loginFromEmail.disabled) this.createPayload('login');
+        });
+        
+        this.el.inputCodeFromEmail.on('paste', e => e.preventDefault());
+        
+        this.el.inputCodeFromEmail.on('keydown', e => {
+            if(e.key == "Enter" && !this.el.btnVerifyCode.disabled) this.createPayload('code');
+            this.el.inputCodeFromEmail.value = Format.inputMask(this.el.inputCodeFromEmail, 'code');
         });
     }
     createPayload(type){
@@ -183,15 +200,22 @@ export default class Login extends HTMLElement{
                 this.createAccount(payload);
                 break;
             case 'code':
-                // payload = { "code": this.el.inputCode.value }
-                // this.validateCode(payload);
+                payload = { "code": Format.removeMask(this.el.inputCodeFromEmail.value, 'code').toUpperCase() }
+                this.validateCode(payload);
                 break;
         }
         this.resetForm();
         // window.open('mailto:kakashi.kisura@gmail.com'); // open app default browser or mobile
     }
     async resetPassword(payload){
-        this.showNotification(`Código enviado ao E-mail: <strong style="font-size:16px; color:white;" >${payload.email}</strong>`);
+        await this.showNotification(`Código enviado ao E-mail: <strong style="font-size:16px; color:white;" >${payload.email}</strong>`, 3000);
+        this.hideFormActive(4);
+        this.el.showEmailToGetCode.innerHTML = payload.email;
+        this.format.timerRegressive(60 * 5, this.el.timerInputCode);
+        this.el.timerInputCode.on('timeout', async e => {
+            await this.showNotification('Time Out');
+            this.showFormDefault();
+        });
         const resetPasswordToken = await this.http.resetPasswordl(JSON.stringify(payload));
         localStorage.setItem('resetPasswordToken', resetPasswordToken);
     }
@@ -204,8 +228,14 @@ export default class Login extends HTMLElement{
     async validateCode(payload){
         const localCode = JSON.parse(localStorage.getItem('resetPasswordToken'));
         const payloadToSend = Object.assign(payload, localCode);
-        await this.http.validateCode(JSON.stringify(payloadToSend));
-        localStorage.removeItem('resetPasswordToken');
+        this.resetLocalStorage();
+        try{
+            await this.http.validateCode(JSON.stringify(payloadToSend));
+            await this.showNotification('Code validado');
+            this.showFormDefault();
+        }catch(e){
+            await this.showNotification('<span style="color:var(--color-red); font-size: 14px;">Código invalido</span>')
+        }
     }
     resetForm(){
         this.el.loginForm.reset();
@@ -213,5 +243,9 @@ export default class Login extends HTMLElement{
         this.el.loginFromEmailSend.disabled = true;
         this.el.loginFromEmail.disabled = true;
         this.el.loginFromEmailNew.disabled = true;
+        this.el.btnVerifyCode.disabled = true;
+    }
+    resetLocalStorage(){
+        if(localStorage.getItem('resetPasswordToken')) localStorage.removeItem('resetPasswordToken');
     }
 }

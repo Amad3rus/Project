@@ -21,11 +21,13 @@
 .login .form .form-container {
   display:flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   transition: all .6s;
   position:absolute;
   right:-100%;
   width:90%;
+  height:inherit;
 }
 .login .form .form-container.active-login{
   right:5%;
@@ -72,7 +74,6 @@
   background-clip: text;
   color: transparent;
 }
-
 .login .form .form-container .input-box label {
   display: block;
   color: var(--color-white);
@@ -80,7 +81,8 @@
   font-size: 12.5px;
   text-align: left;
 }
-.login .form .form-container .input-box .form-group{
+.login .form .form-container .input-box .form-group,
+.login .form-container .verification .v-code .form-group{
   display:flex;
   justify-content: space-evenly;
   align-items: center;
@@ -99,7 +101,8 @@
   margin-right: 15px;
   cursor: pointer;
 }
-.login .form .form-container .input-box .form-group input{
+.login .form .form-container .input-box .form-group input,
+.login .form-container .verification .v-code .form-group input{
   color: var(--color-orange-lighter);
   padding:15px;
   width:100%;
@@ -107,6 +110,16 @@
   border:none;
   outline: none;
   letter-spacing: 0.09em;
+}
+.login .form-container .verification .v-code .form-group{
+  width:100%;
+  margin: 0 auto;
+}
+.login .form-container .verification .v-code .form-group input{
+  width:60%;
+  font-size:20px;
+  padding:10px 15px;
+  letter-spacing: 12px;
 }
 .login .form .form-container .input-box .text-danger {
   color: #a05151;
@@ -127,6 +140,11 @@
   font-size:12.5px;
   letter-spacing: 0.09em;
 }
+.login .form-container .verification .v-code .form-group input::placeholder{
+  text-align: center;
+  font-size:16px;
+  letter-spacing: 10px;
+}
 .login .form .form-container .buttons{
   width:100%;
   display:flex;
@@ -145,7 +163,6 @@
   cursor:pointer;
 }
 
-
 .login .form .form-container .buttons.default button{
   background:var(--color-dark);
   text-transform: uppercase;
@@ -160,6 +177,10 @@
 }
 .login .form .form-container .buttons.default .btn-email{
   box-shadow: inset -1px -1px 3px rgba(255, 255, 255, 0.05), inset 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.login .form .form-container .buttons.default .btn-cancel{
+  background: var(--color-form-invalid);
+  color: var(--color-white);
 }
 .login .form .form-container .buttons.default .btn-google:hover,
 .login .form .form-container .buttons.default .btn-email:hover{
@@ -241,12 +262,29 @@
 }
 
 /* NOVO FORM DE CODE  */
-
+.login .form-container .verification {
+  margin: 0 auto;
+}
+.login .form-container .verification .v-code{
+  margin: 15px 0;
+}
+.login .form-container .verification .menssage span{
+  color: var(--color-white);
+  font-weight:100;
+  font-style: normal;
+  letter-spacing: 0.03em;
+  font-size:12px;
+}
 .login .notification p,
 .login .notification span{
   font-size: 12px;
   text-align: justify;
   color: var(--color-orange-lighter);
+}
+.login .notification span{
+  display:inline-block;
+  width:100%;
+  text-align: center;
 }
 .login .notification.notify-active{
   transform: translate(-50%, 0%);

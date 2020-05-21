@@ -1,6 +1,7 @@
-// import { Code } from './code';
-
 export default class Format {
+    constructor(){
+        this.interval;
+    }
     static formatToCamelCase(text){
         let div = document.createElement('div');
         div.innerHTML = `<div data-${text}="id"></div>`;
@@ -48,7 +49,6 @@ export default class Format {
     }
     static formatBytes(b){
         const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB','YB'];
-
         let l = 0;
         let n = parseInt(b, 10) || 0;
 
@@ -66,11 +66,52 @@ export default class Format {
         });
         return uuid;
     }
-    // static createCodeValidation(){
-    //     return Code[Math.round((Math.random() * Code.length))];
-    // }
-    // static validateCode(code){
-    //     if(Code.indexOf(code) == -1) return false;
-    //     return true;
-    // }
+    timerRegressive(duration, display){
+        var timer = duration, minutes, seconds;
+
+        this.interval = setInterval(() => {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = (minutes < 10) ? '0' + minutes : minutes;
+            seconds = (seconds < 10) ? '0' + seconds : seconds;
+
+            display.innerHTML = minutes + ':' + seconds;
+
+            if(--timer < 0){
+                this.clearInterval(this.interval);
+                display.dispatchEvent(new Event('timeout'));
+                display.innerHTML = '<span style="color:var(--color-red); font-size:12px;">Time out</span>';
+            }
+        },1000);
+    }
+
+    clearInterval(){
+        clearInterval(this.interval);
+    }
+
+    static inputMask(element, mask){
+        const optionsMask = {
+            leech:value => value.replace(/o/gi,'0').replace(/i/gi,"1").replace(/z/gi,"2").replace(/e/gi,"3").replace(/a/gi,"4").replace(/s/gi,"5").replace(/t/gi,"7").replace(/o/gi,'0'),
+            cpf:value =>{
+                element.setAttribute('maxLength', '14');
+                return value.replace(/\D/g,'').replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+            },
+            code:value => {
+                element.setAttribute('maxLength', '6');
+                return value.replace(/(\w{1})(\w)$/, "$1-$2");
+            },
+            phone:value => value.replace(/\D/g,'').replace(/^(\d\d)(\d)/g,"($1) $2").replace(/(\d{4})(\d)/,"$1-$2"),
+            cep:value => value.replace(/\D/g, '').replace(/^(\d{5})(\d)/, "$1-$2"),
+            numbers:value => value.replace(/\D/g, ''),
+            date:value => value.replace(/\D/, '').replace(/(\d{2})(\d)/, "$1/$2").replace(/(\d{2})(\d)/,"$1/$2").replace(/(\d{2})(\d{2})$/, "$1$2")
+        }
+        return optionsMask[mask](element.value);
+    }
+    static removeMask(value, mask){
+        const optionsMask = {
+            code:value => value.replace(/-/g,'')
+        }
+        return optionsMask[mask](value);
+    }
 }

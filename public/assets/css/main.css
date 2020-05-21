@@ -56,7 +56,14 @@
         width:90%;
         max-width:300px;
     }
+    .login .form-container .verification .v-code .form-group{
+        width: 90%;
+    }
+    .login .form-container .verification .v-code .form-group input{
+        width:50%;
+    }
 }
+
 @media (min-width:769px) and (max-width:1024px){
     .main .container-contact{
         display:none;
@@ -69,7 +76,11 @@
     .container-chat .box .chat .status-bar-mobile{
         display:none;
     }
+    .login .form .form-container .side-left{
+        width:50%;
+    }
 }
+
 @media (min-width:1025px){
     .main{
         justify-content: space-between;
