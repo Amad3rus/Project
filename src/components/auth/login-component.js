@@ -20,6 +20,8 @@ export default class Login extends HTMLElement{
         this.showTextPassword = false;
         this.showTextPasswordNoAccount = false;
         this.tentative = 0;
+        this.fetchToken = (localStorage.getItem(''))
+        
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
@@ -123,9 +125,11 @@ export default class Login extends HTMLElement{
         
         this.el.login.querySelectorAll('.form-container').forEach(form => {
             if(form.hasClass('out-login')) form.removeClass('out-login');
+            
             if(form.hasClass('active-login')) {
                 form.removeClass('active-login');
                 form.addClass('out-login');
+                
                 setTimeout(() => {
                     form.hide();
                     form.removeClass('out-login');
@@ -213,10 +217,9 @@ export default class Login extends HTMLElement{
         this.format.timerRegressive(60 * 5, this.el.timerInputCode);
         this.el.timerInputCode.on('timeout', async e => {
             await this.showNotification('Time Out');
-            // this.showFormDefault();
+            this.showFormDefault();
         });
-        const resetPasswordToken = await this.http.resetPasswordl(JSON.stringify(payload));
-        localStorage.setItem('resetPasswordToken', resetPasswordToken);
+        this.setLocal('resetPasswordToken', await this.http.resetPasswordl(payload));
     }
     async loginWidthPass(payload){
         console.log(payload);
@@ -225,18 +228,19 @@ export default class Login extends HTMLElement{
         console.log(payload);
     }
     async validateCode(payload){
-        const localCode = JSON.parse(localStorage.getItem('resetPasswordToken'));
-        const payloadToSend = Object.assign(payload, localCode);
-        try{
-            await this.http.validateCode(JSON.stringify(payloadToSend));
-            await this.showNotification('Code validado');
-            this.showFormDefault();
-        }catch(e){
-            this.tentative++;
-            console.log(this.tentative);
-            // this.el.btnVerifyCode.hide();
-            // this.el.btnVerifyCodeReset.show();
-            await this.showNotification('<span style="color:var(--color-red); font-size: 14px;">Código invalido</span>');
+        const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
+        if(payloadToSend.exceeded_reset){
+            await this.showNotification(`<span style="color:var(--color-white)">Atingiu número máximo de tentativas volta mais tarde...</span>`);
+        }else{
+            try{
+                await this.http.validateCode(JSON.stringify(payloadToSend));
+                await this.showNotification('Code validado');
+                this.showFormDefault();
+            }catch(e){
+                this.tentative++;
+                this.blockdownTentative();
+                await this.showNotification(`<span style="color:var(--color-red); font-size: 14px;">Código invalido - <span style="color:var(--color-white)">tentativas ${this.tentative}</span></span>`);
+            }
         }
     }
     resetForm(){
@@ -248,6 +252,22 @@ export default class Login extends HTMLElement{
         this.el.btnVerifyCode.disabled = true;
     }
     resetLocalStorage(){
-        if(localStorage.getItem('resetPasswordToken')) localStorage.removeItem('resetPasswordToken');
+        const getCode = this.getLocal('resetPasswordToken');
+        if(!getCode.exceeded_reset) this.removeLocal('resetPasswordToken');
+    }
+    blockdownTentative(){
+        if(this.tentative >= 3){
+            const exceeded = Object.assign({"exceeded_reset":true}, this.getLocal('resetPasswordToken'));
+            this.setLocal('resetPasswordToken', exceeded);
+        }
+    }
+    getLocal(name){
+        return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 
+    }
+    setLocal(name, payload){
+        localStorage.setItem(name, JSON.stringify(payload));
+    }
+    removeLocal(name){
+        if(localStorage.getItem(name)) localStorage.removeItem(name);
     }
 }
