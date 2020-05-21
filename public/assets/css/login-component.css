@@ -263,6 +263,8 @@
 /* NOVO FORM DE CODE  */
 .login .form-container .verification {
   margin: 0 auto;
+  width:100%;
+  max-width:350px;
 }
 .login .form-container .verification .v-code{
   margin: 15px 0;

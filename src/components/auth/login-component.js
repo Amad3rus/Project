@@ -19,13 +19,12 @@ export default class Login extends HTMLElement{
 
         this.showTextPassword = false;
         this.showTextPasswordNoAccount = false;
-
+        this.tentative = 0;
         this.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
         this.fb = new FormValidationService(this.el.loginForm);
-       
         this.fb.manageState.validateState();
         this.loginWidthGoogle();
         this.showPassword();
@@ -214,7 +213,7 @@ export default class Login extends HTMLElement{
         this.format.timerRegressive(60 * 5, this.el.timerInputCode);
         this.el.timerInputCode.on('timeout', async e => {
             await this.showNotification('Time Out');
-            this.showFormDefault();
+            // this.showFormDefault();
         });
         const resetPasswordToken = await this.http.resetPasswordl(JSON.stringify(payload));
         localStorage.setItem('resetPasswordToken', resetPasswordToken);
@@ -228,14 +227,15 @@ export default class Login extends HTMLElement{
     async validateCode(payload){
         const localCode = JSON.parse(localStorage.getItem('resetPasswordToken'));
         const payloadToSend = Object.assign(payload, localCode);
-        this.resetLocalStorage();
         try{
             await this.http.validateCode(JSON.stringify(payloadToSend));
             await this.showNotification('Code validado');
             this.showFormDefault();
         }catch(e){
-            this.el.btnVerifyCode.hide();
-            this.el.btnVerifyCodeReset.show();
+            this.tentative++;
+            console.log(this.tentative);
+            // this.el.btnVerifyCode.hide();
+            // this.el.btnVerifyCodeReset.show();
             await this.showNotification('<span style="color:var(--color-red); font-size: 14px;">Código invalido</span>');
         }
     }
