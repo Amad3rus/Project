@@ -283,12 +283,12 @@ export default class Login extends HTMLElement{
        return (_24 - daysTimesStamp);
     }
     listeningEvents(){
-        this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
         this.el.loginFromEmail.on('click', e => this.createPayload('login'));
+        this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
         this.el.loginFromEmailSend.on('click', e => this.createPayload('reset'));
         this.el.btnVerifyCode.on('click', e => this.createPayload('code'));
 
-        this.el.loginFromEmailNew.on('keyup', e => {
+        this.el.inputPasswordNoAccount.on('keyup', e => {
             if(e.key == 'Enter' && !this.el.loginFromEmailNew.disabled) this.createPayload('create');
         });
         this.el.inputEmailForgotten.on('keyup', e => {
