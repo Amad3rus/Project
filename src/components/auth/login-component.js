@@ -234,7 +234,9 @@ export default class Login extends HTMLElement{
             await this.showNotification('Code validado');
             this.showFormDefault();
         }catch(e){
-            await this.showNotification('<span style="color:var(--color-red); font-size: 14px;">Código invalido</span>')
+            this.el.btnVerifyCode.hide();
+            this.el.btnVerifyCodeReset.show();
+            await this.showNotification('<span style="color:var(--color-red); font-size: 14px;">Código invalido</span>');
         }
     }
     resetForm(){
