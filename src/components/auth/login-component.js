@@ -125,11 +125,9 @@ export default class Login extends HTMLElement{
         
         this.el.login.querySelectorAll('.form-container').forEach(form => {
             if(form.hasClass('out-login')) form.removeClass('out-login');
-            
             if(form.hasClass('active-login')) {
                 form.removeClass('active-login');
                 form.addClass('out-login');
-                
                 setTimeout(() => {
                     form.hide();
                     form.removeClass('out-login');
@@ -219,7 +217,8 @@ export default class Login extends HTMLElement{
             await this.showNotification('Time Out');
             this.showFormDefault();
         });
-        this.setLocal('resetPasswordToken', await this.http.resetPasswordl(payload));
+        const resetPasswordToken = await this.http.resetPasswordl(JSON.stringify(payload));
+        this.setLocal('resetPasswordToken', JSON.parse(resetPasswordToken));
     }
     async loginWidthPass(payload){
         console.log(payload);
