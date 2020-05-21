@@ -209,16 +209,21 @@ export default class Login extends HTMLElement{
         // window.open('mailto:kakashi.kisura@gmail.com'); // open app default browser or mobile
     }
     async resetPassword(payload){
-        await this.showNotification(`Código enviado ao E-mail: <strong style="font-size:16px; color:white;" >${payload.email}</strong>`, 3000);
-        this.hideFormActive(4);
-        this.el.showEmailToGetCode.innerHTML = payload.email;
-        this.format.timerRegressive(60 * 5, this.el.timerInputCode);
-        this.el.timerInputCode.on('timeout', async e => {
-            await this.showNotification('Time Out');
-            this.showFormDefault();
-        });
-        const resetPasswordToken = await this.http.resetPasswordl(JSON.stringify(payload));
-        this.setLocal('resetPasswordToken', JSON.parse(resetPasswordToken));
+        const payloadFromLocal = this.getLocal('resetPasswordToken');
+        if(payloadFromLocal.exceeded_reset){
+            await this.showNotification(`<span style="color:var(--color-white)">Atingiu número máximo de tentativas volta mais tarde...</span>`);
+            // exe some code
+        }else{
+            await this.showNotification(`Código enviado ao E-mail: <strong style="font-size:16px; color:white;" >${payload.email}</strong>`, 3000);
+            this.hideFormActive(4);
+            this.el.showEmailToGetCode.innerHTML = payload.email;
+            this.format.timerRegressive(60 * 5, this.el.timerInputCode);
+            this.el.timerInputCode.on('timeout', async e => {
+                await this.showNotification('Time Out');
+                this.showFormDefault();
+            });
+            this.setLocal('resetPasswordToken', JSON.parse(await this.http.resetPasswordl(JSON.stringify(payload))));
+        }
     }
     async loginWidthPass(payload){
         console.log(payload);
@@ -230,6 +235,7 @@ export default class Login extends HTMLElement{
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
         if(payloadToSend.exceeded_reset){
             await this.showNotification(`<span style="color:var(--color-white)">Atingiu número máximo de tentativas volta mais tarde...</span>`);
+            // exec some code here
         }else{
             try{
                 await this.http.validateCode(JSON.stringify(payloadToSend));
@@ -238,7 +244,7 @@ export default class Login extends HTMLElement{
             }catch(e){
                 this.tentative++;
                 this.blockdownTentative();
-                await this.showNotification(`<span style="color:var(--color-red); font-size: 14px;">Código invalido - <span style="color:var(--color-white)">tentativas ${this.tentative}</span></span>`);
+                await this.showNotification(`<span style="color:var(--color-red); font-size: 14px;">Código invalido - <span style="color:var(--color-white)">tentativas ${this.tentative}/3</span></span>`);
             }
         }
     }
