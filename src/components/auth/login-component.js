@@ -40,7 +40,11 @@ export default class Login extends HTMLElement{
         this.onSubmit();
         this.resetForm();
 
-        console.log(this.db.select('black_list'));
+       this.db.select('black_list').then(bl => {
+            bl.forEach(ttv => {
+                if(this.calcTimeUnlocked(ttv) === 0) this.db.delete('black_list', ttv.email);
+            });
+        });
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
@@ -201,7 +205,7 @@ export default class Login extends HTMLElement{
         const response = await this.db.selectByEmail('black_list', payload.email);
         
         if(response && response.exceeded_reset && response.email === payload.email){
-            this.checkLockedDownTentative(response);
+            this.showLockedTentative(response);
         }else{
             this.showNotification(RenderView.messageCodeSending(payload.email));
             
@@ -225,8 +229,7 @@ export default class Login extends HTMLElement{
         const response = await this.db.selectByEmail('black_list', payload.email);
         
         if(response && response.exceeded_reset && response.email === payload.email){
-            this.checkLockedDownTentative(response);
-            // exec some code here
+            this.showLockedTentative(response);
         }else{
             try{
                 await this.http.validateCode(JSON.stringify(payloadToSend));
@@ -272,17 +275,14 @@ export default class Login extends HTMLElement{
     removeLocal(name){
         if(localStorage.getItem(name)) localStorage.removeItem(name);
     }
-    async checkLockedDownTentative(payload){
-        if(payload.time_start){
-            this.timeLeft = this.getLeftTimeToSendCode(payload);
-            this.showNotification(RenderView.messageTimeLeft());
-            this.hideNotification(9000);
-            setTimeout(() => {
-                this.format.clearInterval();
-            }, 9000);
-        }
+    showLockedTentative(payload){
+        this.timeLeft = this.calcTimeUnlocked(payload);
+        this.showNotification(RenderView.messageTimeLeft());
+        this.hideNotification(9000);
+
+        setTimeout(() => {this.format.clearInterval()}, 9000);
     }
-    getLeftTimeToSendCode(payload){
+    calcTimeUnlocked(payload){
         const { time_start } = payload;
         const _24 = 24 * 60 * 60;
         const now = new Date();
