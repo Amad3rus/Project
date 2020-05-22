@@ -6,6 +6,7 @@ import ProtoService from '../../services/prototype-serivce';
 import FormValidationService from '../../services/form-validation-service';
 import HttpRequestService from '../../services/http-request-service';
 import RenderView from '../../services/renderView';
+import Database from '../../services/websql-service';
 
 export default class Login extends HTMLElement{
     constructor(){
@@ -15,9 +16,9 @@ export default class Login extends HTMLElement{
         this.auth = new Auth();
         this.http = new HttpRequestService();
         this.format = new Format();
+        this.db = new Database();
 
         this.el = {};
-
         this.showTextPassword = false;
         this.showTextPasswordNoAccount = false;
         this.tentative = 0;
@@ -27,6 +28,7 @@ export default class Login extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
+        this.db.createTable('black_list');
         this.fb = new FormValidationService(this.el.loginForm);
         this.fb.manageState.validateState();
         this.listeningEvents();
@@ -37,6 +39,8 @@ export default class Login extends HTMLElement{
         this.backToFormLogin();
         this.onSubmit();
         this.resetForm();
+
+        console.log(this.db.select('black_list'));
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
@@ -194,11 +198,10 @@ export default class Login extends HTMLElement{
         // window.open('mailto:kakashi.kisura@gmail.com'); // open app default browser or mobile
     }
     async managerCode(payload){
-        const payloadFromLocal = this.getLocal('resetPasswordToken');
+        const response = await this.db.selectByEmail('black_list', payload.email);
         
-        if(payloadFromLocal.exceeded_reset && payload.email === payloadFromLocal.email){
-            this.checkLockedDownTentative(payloadFromLocal);
-            // exe some code
+        if(response && response.exceeded_reset && response.email === payload.email){
+            this.checkLockedDownTentative(response);
         }else{
             this.showNotification(RenderView.messageCodeSending(payload.email));
             
@@ -219,8 +222,10 @@ export default class Login extends HTMLElement{
     }
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
-        if(payloadToSend.exceeded_reset){
-            this.checkLockedDownTentative(payloadToSend);
+        const response = await this.db.selectByEmail('black_list', payload.email);
+        
+        if(response && response.exceeded_reset && response.email === payload.email){
+            this.checkLockedDownTentative(response);
             // exec some code here
         }else{
             try{
@@ -251,7 +256,12 @@ export default class Login extends HTMLElement{
         if(this.tentative >= 3){
             const exceeded = Object.assign({"exceeded_reset":true, "time_start":new Date().getTime()}, this.getLocal('resetPasswordToken'));
             this.setLocal('resetPasswordToken', exceeded);
+            this.createBlackList(exceeded);
         }
+    }
+    createBlackList(payload){
+        const blackList = Object.assign({id:Format.createUid()}, payload);
+        this.db.insertTable('black_list', blackList);
     }
     getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 
@@ -269,7 +279,7 @@ export default class Login extends HTMLElement{
             this.hideNotification(9000);
             setTimeout(() => {
                 this.format.clearInterval();
-            }, 9000)
+            }, 9000);
         }
     }
     getLeftTimeToSendCode(payload){
