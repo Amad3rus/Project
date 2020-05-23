@@ -222,12 +222,17 @@ export default class RenderView extends CreateEvent{
 
     static messageCodeSending(email){
         return `
-            Enviando... para <span style="font-size:14px; color:var(--color-white);">${email}</span>
+            Enviando código de acesso para <span style="font-size:14px; color:var(--color-white);">${email}...</span>
         `
     }
     static messageCodeSent(){
         return `
-            <span style="color:var(--color-green);">Código enviado com sucesso</span>
+            <span style="color:var(--color-white);">Código enviado com sucesso</span>
+        `
+    }
+    static messageCreatingAccount(){
+        return `
+            <span style="color:var(--color-white);">Criando uma nova conta...</span>
         `
     }
 }

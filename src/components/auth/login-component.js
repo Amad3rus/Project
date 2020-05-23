@@ -28,7 +28,6 @@ export default class Login extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
-        this.db.createTable('black_list');
         this.fb = new FormValidationService(this.el.loginForm);
         this.fb.manageState.validateState();
         this.listeningEvents();
@@ -42,9 +41,11 @@ export default class Login extends HTMLElement{
 
        this.db.select('black_list').then(bl => {
             bl.forEach(ttv => {
-                if(this.calcTimeUnlocked(ttv) === 0) this.db.delete('black_list', ttv.email);
+                // this.db.delete('black_list', 'roberto.rosa7@gmail.com');
+                if(this.calcTimeUnlocked(ttv) < 0) this.db.delete('black_list', ttv.email);
             });
         });
+
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
@@ -142,6 +143,7 @@ export default class Login extends HTMLElement{
             if(form.hasClass('active-login')) {
                 form.removeClass('active-login');
                 form.addClass('out-login');
+                
                 setTimeout(() => {
                     form.hide();
                     form.removeClass('out-login');
@@ -182,19 +184,33 @@ export default class Login extends HTMLElement{
         let payload;
         switch(type){
             case 'login':
-                payload = { "password":this.el.inputPassword.value, "email":this.el.inputEmailLogin.value }
+                payload = { 
+                    "password":this.el.inputPassword.value, 
+                    "email":this.el.inputEmailLogin.value, 
+                    "action":'login_account'
+                }
                 this.loginWidthPass(payload);
                 break;
             case 'reset':
-                payload = { "email":this.el.inputEmailForgotten.value }
+                payload = {
+                    "email":this.el.inputEmailForgotten.value, 
+                    "action":'reset_password'
+                }
                 this.managerCode(payload);
                 break;
             case 'create':
-                payload = { "password":this.el.inputPasswordNoAccount.value, "email":this.el.inputEmailNoAccount.value }
+                payload = {
+                    "password":this.el.inputPasswordNoAccount.value, 
+                    "email":this.el.inputEmailNoAccount.value, 
+                    "action":'create_account'
+                }
                 this.managerCode(payload);
                 break;
             case 'code':
-                payload = { "code": Format.removeMask(this.el.inputCodeFromEmail.value, 'code').toUpperCase() }
+                payload = {
+                    "code": Format.removeMask(this.el.inputCodeFromEmail.value, 'code').toUpperCase(),
+                    "action":'generate_code'
+                }
                 this.validateCode(payload);
                 break;
         }
@@ -209,7 +225,7 @@ export default class Login extends HTMLElement{
         }else{
             this.showNotification(RenderView.messageCodeSending(payload.email));
             
-            this.setLocal('resetPasswordToken', JSON.parse(await this.http.resetPasswordl(JSON.stringify(payload))));
+            this.setLocal('resetPasswordToken', Object.assign(payload, JSON.parse(await this.http.resetPasswordl(JSON.stringify(payload)))));
             this.hideFormActive(4);
             
             this.el.showEmailToGetCode.innerHTML = payload.email;
@@ -222,19 +238,36 @@ export default class Login extends HTMLElement{
         console.log(payload);
     }
     async createAccount(payload){
+        this.showFormDefault();
+        this.showNotification(RenderView.messageCreatingAccount());
+    }
+    async resetPassword(payload){
         console.log(payload);
     }
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
-        const response = await this.db.selectByEmail('black_list', payload.email);
-        
-        if(response && response.exceeded_reset && response.email === payload.email){
+        const response = await this.db.selectByEmail('black_list', payloadToSend.email);
+
+        if(response && response.exceeded_reset && response.email === payloadToSend.email){
             this.showLockedTentative(response);
+        
         }else{
             try{
-                await this.http.validateCode(JSON.stringify(payloadToSend));
-                this.showNotification('Code validado');
-                this.showFormDefault();
+                const response = JSON.parse(await this.http.validateCode(JSON.stringify(payloadToSend)))
+                if(response.code === 'validado'){
+                   
+                    switch(payloadToSend.action){
+                        case 'create_account':
+                            this.createAccount(payloadToSend);
+                            break;
+                        case 'reset_password':
+                            this.resetPassword(payloadToSend)
+                            break;
+                    }
+                }
+                // this.showNotification('Code validado');
+                // this.showFormDefault();
+            
             }catch(e){
                 this.tentative++;
                 this.lockedDownTentative();
@@ -262,9 +295,10 @@ export default class Login extends HTMLElement{
             this.createBlackList(exceeded);
         }
     }
-    createBlackList(payload){
+    async createBlackList(payload){
         const blackList = Object.assign({id:Format.createUid()}, payload);
-        this.db.insertTable('black_list', blackList);
+        const email = await this.db.selectByEmail('black_list', payload.email);
+        if(email) this.db.insertTable('black_list', blackList);
     }
     getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 

@@ -109,12 +109,12 @@ module.exports = {
 					const original = JSON.parse(decipher.toString(Crypto.enc.Utf8));
 	
 					if(original.email == email){
-						res.status(200).send({status:true});
+						res.status(200).send({code:'validado'});
 					}else{
-						res.status(200).send({code: 'errado'});
+						res.status(200).send({code:'errado'});
 					}
 				}catch(e){
-					res.status(400).send({status:false});
+					res.status(401).send({status:false});
 				}
 
 				// const email = 'kakashi.kisura7@gmail.com';
