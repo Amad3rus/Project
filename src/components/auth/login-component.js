@@ -46,6 +46,16 @@ export default class Login extends HTMLElement{
             });
         });
 
+        this.querySelectorAll('.cell').forEach(cell => {
+            TweenMax.staggerFrom(cell, 1.2, {
+                opacity:0.0, 
+                transform: "translateY(20vh) scale(0)", 
+                delay: 0.333, 
+                transformOrigin:'50% 50%', 
+                ease: Circ.easeOut, 
+                force3D: true
+            },0.06);
+        });
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
@@ -238,8 +248,9 @@ export default class Login extends HTMLElement{
         console.log(payload);
     }
     async createAccount(payload){
-        this.showFormDefault();
+        this.hideFormActive(5);
         this.showNotification(RenderView.messageCreatingAccount());
+        this.format.clearInterval();
     }
     async resetPassword(payload){
         console.log(payload);
@@ -247,8 +258,6 @@ export default class Login extends HTMLElement{
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
         const response = await this.db.selectByEmail('black_list', payloadToSend.email);
-
-        console.log(response);
 
         if(response && response.exceeded_reset && response.email === payloadToSend.email){
             this.showLockedTentative(response);

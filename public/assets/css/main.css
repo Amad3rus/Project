@@ -12,6 +12,7 @@
 @import '../css/search-contacts.css';
 @import '../css/loading-page-component.css';
 @import '../css/login-component.css';
+@import '../css/infinite-load.css';
 
 .main{
     width:100%;
@@ -57,10 +58,16 @@
         max-width:300px;
     }
     .login .form-container .verification .v-code .form-group{
-        width: 90%;
+        width: 100%;
     }
     .login .form-container .verification .v-code .form-group input{
         width:50%;
+    }
+    .login .form .form-container h2{
+        font-size:1.2em;
+    }
+    .login .form-container .verification .menssage span{
+        display:block;
     }
 }
 

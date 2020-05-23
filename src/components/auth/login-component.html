@@ -2,7 +2,8 @@
   <!-- FORM -->
   <form class="form" id="login-form">
     
-    <div id="login-form-default" class="form-container active-login" tabindex="1">
+    <!-- FORM DEFAULT -->
+    <div style="display:none;" id="login-form-default" class="form-container" tabindex="1">
       <h2>Login</h2>
       
       <div class="side-right">
@@ -40,8 +41,8 @@
           </div>
       </div>
     </div>
-
     
+    <!-- FORM NO ACCOUNT -->
     <div style="display:none;" id="without-account-form" class="form-container" tabindex="2">
       <button id="back-button-from-login-without-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
@@ -70,8 +71,8 @@
         </div>
       </div>
     </div>
-
     
+    <!-- FORM FORGET PASSWORD -->
     <div style="display:none;" id="forgotten-account-form" class="form-container" tabindex="3">
       <button id="back-button-from-login-forgotten-account" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
@@ -92,7 +93,7 @@
 
     </div>
 
-    <!-- NOVO FORM DE RECEBER CODE -->
+    <!-- FORM CODE -->
     <div style="display:none;" class="form-container" tabindex="4">
       <button id="back-button-from-login-from-code" class="back-button" type="button">
         <span><i class="tiny material-icons">chevron_left</i></span>
@@ -121,6 +122,28 @@
       
       </div>
     </div>
+
+    <!-- FORM LOADING -->
+
+    <div style="justify-content: center;" class="form-container active-login" tabindex="5">
+      <div class="infinite-load">
+        <div class="infinite-container">
+          <div class="dna">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- NOTIFICATION -->
     <div class="notification">
