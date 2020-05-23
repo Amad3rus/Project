@@ -248,6 +248,8 @@ export default class Login extends HTMLElement{
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
         const response = await this.db.selectByEmail('black_list', payloadToSend.email);
 
+        console.log(response);
+
         if(response && response.exceeded_reset && response.email === payloadToSend.email){
             this.showLockedTentative(response);
         
@@ -298,7 +300,7 @@ export default class Login extends HTMLElement{
     async createBlackList(payload){
         const blackList = Object.assign({id:Format.createUid()}, payload);
         const email = await this.db.selectByEmail('black_list', payload.email);
-        if(email) this.db.insertTable('black_list', blackList);
+        if(!email) this.db.insertTable('black_list', blackList);
     }
     getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 
@@ -351,6 +353,7 @@ export default class Login extends HTMLElement{
 
         this.el.timerInputCode.on('timeout', e => {
             this.showNotification('Time Out');
+            this.hideNotification();
             this.showFormDefault();
         });
     }
