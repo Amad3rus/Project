@@ -45,17 +45,6 @@ export default class Login extends HTMLElement{
                 if(this.calcTimeUnlocked(ttv) < 0) this.db.delete('black_list', ttv.email);
             });
         });
-
-        this.querySelectorAll('.cell').forEach(cell => {
-            TweenMax.staggerFrom(cell, 1.2, {
-                opacity:0.0, 
-                transform: "translateY(20vh) scale(0)", 
-                delay: 0.333, 
-                transformOrigin:'50% 50%', 
-                ease: Circ.easeOut, 
-                force3D: true
-            },0.06);
-        });
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
