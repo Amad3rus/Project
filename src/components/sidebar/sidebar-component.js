@@ -3,16 +3,18 @@ import SidebarComponent from './sidebar-component.html';
 import Format from '../../utils/format';
 import { Wordlist } from '../../utils/wordlist';
 import User from '../../services/user';
-import Auth from '../../services/auth-service';
 import RenderView from '../../services/renderView';
 import ChatService from '../../services/chat';
 import RoutesService from '../../services/routes-service';
+import Database from '../../services/websql-service';
 
 export default class Sidebar extends HTMLElement{
     constructor(){
         super();
         this.appendChild(ReaderDom.appendComponent(SidebarComponent));
         this.el = {};
+
+        this.db = new Database();
         this.render = new RenderView();
         this.router = new RoutesService();
 
@@ -20,18 +22,11 @@ export default class Sidebar extends HTMLElement{
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
 
-        if(!localStorage.getItem('user')) this.router.redirectTo('login');
-        
-        this.isLogged = JSON.parse(localStorage.getItem('user'));
-
+       
         this.config = { animate:'animated',fadeinleft:'fadeInLeft',left:'hide-left', sidebar:false};
-        
-        if(this.isLogged){
-            this.auth = new Auth();
-            this.setProfile();
-            this.initEvents();
-        }
 
+        this.setProfile();
+        this.initEvents();
     }
 
     initEvents(){
@@ -81,41 +76,38 @@ export default class Sidebar extends HTMLElement{
         });
     }
     async setProfile(){
-        this.user = new User(this.isLogged.user.email);
-        this.user.name = this.isLogged.user.displayName;
-        this.user.email = this.isLogged.user.email;
-        this.user.photo = this.isLogged.user.photoURL;
-            
+        const { email } = JSON.parse(localStorage.getItem('isLogged'));
+        this.user = new User(email);
+
         this.user.on('datachange', e => {
-            this.el['noPhotoUrl'].hide();
-            this.el['noStatusHeaderProfile'].hide();
-            this.el['profileSetPhoto'].hide();
+            if(e.photo){
+                this.el['noPhotoUrl'].hide();
+                this.el['noStatusHeaderProfile'].hide();
+                this.el['profileSetPhoto'].hide();
 
-            this.el['profileConfigImage'].css({display:'inline-block'});
-            this.el['profileConfigImage'].src = e.photo;
+                this.el['profileConfigImage'].css({display:'inline-block'});
+                this.el['profileConfigImage'].src = e.photo;
 
-            this.el['photoUrl'].show();
-            this.el['photoUrl'].src = e.photo;
+                this.el['photoUrl'].show();
+                this.el['photoUrl'].src = e.photo;
 
-            this.el['statusHeaderProfile'].show();
-            this.el['statusHeaderProfile'].src = e.photo;
-
-            this.el['editName'].innerHTML = e.name;
-            this.el['profileName'].innerHTML = e.name;
-            this.el['profileName'].setAttribute('title', e.name);
+                this.el['statusHeaderProfile'].show();
+                this.el['statusHeaderProfile'].src = e.photo;
+            }
+            this.el['editName'].innerHTML = (e.name) ? e.name : e.email;
+            this.el['profileName'].innerHTML = (e.name) ? e.name : e.email;
+            this.el['profileName'].setAttribute('title', (e.name) ? e.name : e.email);
             
             this.el['logout'].show();
+
             this.el['logout'].on('click', e => {
-                localStorage.removeItem('user');
+                localStorage.removeItem('isLogged');
                 this.router.navigateTo('login');
             });
         });
-
         this.user.on('contactschange', contacts => {
             this.fetchContactToStorage(contacts);
         });
-
-        await this.user.save();
         await this.user.getContacts();
     }
     fetchContactToStorage(contacts){
@@ -130,13 +122,11 @@ export default class Sidebar extends HTMLElement{
             this.el['contactsProfile'].appendChild(li);
         });
     }
-    
     openPanelConversation(contact){
         this.dispatchEvent(new CustomEvent('contactchange',{'detail':contact}));
         this.closeAllPanelLeft();
         this.eventHideMenuOnclick();
     }
-
     openAndHidePanel(){
         this.el['headerMessages'].on('click', e => {
             this.el['panelContacts'].show();
@@ -170,7 +160,6 @@ export default class Sidebar extends HTMLElement{
             }, 300);
         });
     }
-
     eventEditName(){
         this.el['editName'].on('focus', e => {
             e.target.innerHTML = '';
@@ -212,7 +201,6 @@ export default class Sidebar extends HTMLElement{
             }
         });
     }
-    
     eventProfileSetPhoto(){
         this.el['profileImg'].on('click', setPhoto => this.el['profileInputPhoto'].click());
         this.el['profileInputPhoto'].on('change', setPhotoProfile);
@@ -222,7 +210,6 @@ export default class Sidebar extends HTMLElement{
         }
     
     }
-    
     eventProfileAddContact(){
         this.el['profileAddContact'].on('submit', e => {
             e.preventDefault();
@@ -251,7 +238,6 @@ export default class Sidebar extends HTMLElement{
             });
         });
     }
-    
     eventHideMenuOnclick(){
         if(this.config.sidebar && !this.hasClass(this.config.animate)){
             this.addClass(this.config.animate);
@@ -265,7 +251,6 @@ export default class Sidebar extends HTMLElement{
             this.config.sidebar = true;
         }
     }
-    
     closeAllMainPanel(){
         this.el['chat'].hide();
         this.el['takePhoto'].hide();
@@ -276,7 +261,6 @@ export default class Sidebar extends HTMLElement{
         this.el['containerDocumentPreview'].hide();
         this.el['statusAttachFile'].disabled = false;
     }
-    
     closeAllPanelLeft(){
         this.el['panelProfile'].removeClass('open-panel');
         this.el['panelContacts'].removeClass('open-panel');
@@ -286,7 +270,6 @@ export default class Sidebar extends HTMLElement{
             this.el['panelContacts'].hide();
         }, 300)
     }
-    
     notification(text){
         document.querySelector('app-snackbar')
             .dispatchEvent(new CustomEvent('show', {detail:text}));

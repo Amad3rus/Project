@@ -1,11 +1,15 @@
-import Format from '../utils/format';
-import Contacts from './contacts';
 import Firebase from '../services/firebase';
 import Model from './model';
+import Auth from './auth-service';
+import Database from './websql-service';
 
 export default class User extends Model{
     constructor(email){
         super();
+        this.db = new Database
+        this.auth = new Auth();
+        this.email = email;
+
         if(email) this.getByEmail(email);
     }
     get name(){return this.data.name};
@@ -20,26 +24,28 @@ export default class User extends Model{
     get chatId(){return this.data.chatId};
     set chatId(chatId){this.data.chatId = chatId};
 
-    async fetchUser(user){
-        const contacts = await this.contacts.fetchContacts();
-        this.users.forEach(u => {
-            contacts.forEach(c => u.contacts.push(c));
-        });
+    // esqueci o uso deste método
+    // async fetchUser(user){
+    //     const contacts = await this.contacts.fetchContacts();
+        
+    //     console.log(this.users);
 
-       if(localStorage.getItem('users')){
-           const users = JSON.parse(localStorage.getItem('users'));
-            return Promise.resolve(users.filter(u => u.email == user.user.email)[0]);
-       }else{
-           localStorage.setItem('users', JSON.stringify(this.users));
-           const users =  this.users;
-           return Promise.resolve(users.filter(u => u.email == user.email)[0]);
-       }
-    }
+    //     this.users.forEach(u => {
+    //         contacts.forEach(c => u.contacts.push(c));
+    //     });
 
+    //     if(localStorage.getItem('users')){
+    //         const users = JSON.parse(localStorage.getItem('users'));
+    //         return Promise.resolve(users.filter(u => u.email == user.user.email)[0]);
+    //     }else{
+    //         localStorage.setItem('users', JSON.stringify(this.users));
+    //         const users =  this.users;
+    //         return Promise.resolve(users.filter(u => u.email == user.email)[0]);
+    //     }
+    // }
     static getRef(){
         return Firebase.database().collection('/users');
     }
-
     static findByEmail(email){
         return User.getRef().doc(email);
     }
@@ -47,29 +53,22 @@ export default class User extends Model{
         return User.getRef().doc(email).collection('contacts');
     }
     getByEmail(email){
-        return new Promise((resolve, reject) => {
-            User.findByEmail(email)
-                .onSnapshot(doc => {
+        return new Promise(resolve => {
+            User.findByEmail(email).onSnapshot(doc => {
                     this.fromJson(doc.data());
                     resolve(doc);
             });
         });
     }
     async save(){
-        try{
-            return await User.findByEmail(this.email).set(this.toJson());
-        }catch(e){
-            console.error(e);
-        }
+        try{ return await User.findByEmail(this.email).set(this.toJson()) }catch(e){ console.error(e) }
     }
     async addContact(contact){
         return await User.getRefContacts(this.email).doc(btoa(contact.email)).set(contact.toJson());
     }
     getContacts(filter = ''){
-        return new Promise((resolve, reject) => {
-            User.getRefContacts(this.email)
-                .where('name', '>=', filter)
-                .onSnapshot(docs => {
+        return new Promise(resolve => {
+            User.getRefContacts(this.email).where('name', '>=', filter).onSnapshot(docs => {
                     const contacts = [];
 
                     docs.forEach(doc => {

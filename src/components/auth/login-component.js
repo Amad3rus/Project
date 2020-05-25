@@ -38,18 +38,33 @@ export default class Login extends HTMLElement{
         this.backToFormLogin();
         this.onSubmit();
         this.resetForm();
+        this.deleteAllBlocked();
+        //    this.db.select('black_list').then(bl => {
+        //         bl.forEach(ttv => {
+        //             // this.db.delete('black_list', 'roberto.rosa7@gmail.com');
+        //             if(this.calcTimeUnlocked(ttv) < 0) this.db.delete('black_list', ttv.email);
+        //         });
+        //     });
+        // this.db.delete('users', 'roberto.rosa7@gmail.com');
+        // this.db.delete('users', 'kakashi.kisura7@gmail.com');
+        // this.db.dropTable('users');
+    }
+    async deleteAllBlocked(){
+        const db = await this.db.createIndexdb('black_list');
+        const data = await this.db.databaseIsReady(db);
+        const response = await this.db.getAllData(data, 'black_list');
 
-       this.db.select('black_list').then(bl => {
-            bl.forEach(ttv => {
-                // this.db.delete('black_list', 'roberto.rosa7@gmail.com');
-                if(this.calcTimeUnlocked(ttv) < 0) this.db.delete('black_list', ttv.email);
-            });
+        response.forEach(black => {
+            if(this.calcTimeUnlocked(black) < 0) this.db.deleteData(data, 'black_list', black.email);
         });
     }
     loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
-            this.isLogged = await this.auth.initAuth();
-            if(this.isLogged.isAuth) this.el.loginForm.dispatchEvent(new Event('isAuth'));
+            const response = await this.auth.initAuth();
+            if(response){
+                this.setLocal('isLogged', {"isLogged":true, "email":response.email});
+                this.el.loginForm.dispatchEvent(new Event('isAuth'));
+            }
         });
     }
     showNotification(msg){
@@ -184,7 +199,7 @@ export default class Login extends HTMLElement{
         switch(type){
             case 'login':
                 payload = { 
-                    "password":this.el.inputPassword.value, 
+                    "password":btoa(this.el.inputPassword.value),
                     "email":this.el.inputEmailLogin.value, 
                     "action":'login_account'
                 }
@@ -195,15 +210,15 @@ export default class Login extends HTMLElement{
                     "email":this.el.inputEmailForgotten.value, 
                     "action":'reset_password'
                 }
-                this.managerCode(payload);
+                this.prepareToCode(payload);
                 break;
             case 'create':
                 payload = {
-                    "password":this.el.inputPasswordNoAccount.value, 
+                    "password":btoa(this.el.inputPasswordNoAccount.value), 
                     "email":this.el.inputEmailNoAccount.value, 
                     "action":'create_account'
                 }
-                this.managerCode(payload);
+                this.prepareToCode(payload);
                 break;
             case 'code':
                 payload = {
@@ -216,9 +231,27 @@ export default class Login extends HTMLElement{
         this.resetForm();
         // window.open('mailto:kakashi.kisura@gmail.com'); // open app default browser or mobile
     }
+    async prepareToCode(payload){
+        switch(payload.action){
+            case 'create_account':
+                const user = await this.db.selectByEmail('users', payload.email);
+                if(!user) this.managerCode(payload);
+                else{
+                    this.showNotification(RenderView.messageUserExists());
+                    this.hideNotification(3000);
+                }
+                break;
+            case 'reset_password':
+                this.managerCode(payload);
+                break;
+        }
+    }
     async managerCode(payload){
-        const response = await this.db.selectByEmail('black_list', payload.email);
-        
+        // const response = await this.db.selectByEmail('black_list', payload.email);
+        const db = await this.db.createIndexdb('black_list');
+        const data = await this.db.databaseIsReady(db);
+        const response = await this.db.getData(data, 'black_list', payload.email);
+
         if(response && response.exceeded_reset && response.email === payload.email){
             this.showLockedTentative(response);
         }else{
@@ -234,19 +267,46 @@ export default class Login extends HTMLElement{
         }
     }
     async loginWidthPass(payload){
-        console.log(payload);
+        // const user = await this.db.selectByEmail('users', payload.email);
+        const db = await this.db.createIndexdb('users');
+        const data = await this.db.databaseIsReady(db);
+        const user = await this.db.getData(data, 'users', payload.email);
+        
+        if(!user){
+            this.showNotification(RenderView.messageUserNotExists());
+            this.hideNotification(3000);
+        }else if(user.email !== payload.email || user.password !== payload.password){
+            this.showNotification(RenderView.messageUserInvalid());
+            this.hideNotification(3000);
+        }else{
+            this.setLocal('isLogged', {"isLogged":true, "email":payload.email});
+            this.el.loginForm.dispatchEvent(new Event('isAuth'));
+        }
     }
     async createAccount(payload){
-        this.hideFormActive(5);
         this.showNotification(RenderView.messageCreatingAccount());
-        this.format.clearInterval();
+        this.hideFormActive(5);
+        try{
+            await this.auth.initAuthWidthEmailPassword(payload);
+            this.showNotification(RenderView.messageCreateUserSuccess());
+        }catch(e){
+            this.showNotification(RenderView.messageCreateUserError(e.message));
+        }finally{
+            this.hideNotification(3000);
+            this.showFormDefault();
+            this.format.clearInterval();
+        }
     }
     async resetPassword(payload){
         console.log(payload);
     }
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
-        const response = await this.db.selectByEmail('black_list', payloadToSend.email);
+        // const response = await this.db.selectByEmail('black_list', payloadToSend.email);
+
+        const db = await this.db.createIndexdb('black_list');
+        const data = await this.db.databaseIsReady(db);
+        const response = await this.db.getData(data, 'black_list', payloadToSend.email);
 
         if(response && response.exceeded_reset && response.email === payloadToSend.email){
             this.showLockedTentative(response);
@@ -265,9 +325,6 @@ export default class Login extends HTMLElement{
                             break;
                     }
                 }
-                // this.showNotification('Code validado');
-                // this.showFormDefault();
-            
             }catch(e){
                 this.tentative++;
                 this.lockedDownTentative();
@@ -297,8 +354,13 @@ export default class Login extends HTMLElement{
     }
     async createBlackList(payload){
         const blackList = Object.assign({id:Format.createUid()}, payload);
-        const email = await this.db.selectByEmail('black_list', payload.email);
-        if(!email) this.db.insertTable('black_list', blackList);
+        // const email = await this.db.selectByEmail('black_list', payload.email);
+        // if(!email) this.db.insertTable('black_list', blackList);
+
+        const db = await this.db.createIndexdb(name);
+        const data = await this.db.databaseIsReady(db);
+        const user = await this.db.getData(data, 'users', email);
+        if(!user.email) await this.db.addData(data, blackList, 'black_list');
     }
     getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 

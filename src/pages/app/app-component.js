@@ -2,33 +2,36 @@ import Format from '../../utils/format';
 import User from '../../services/user';
 
 import ProtoService from '../../services/prototype-serivce';
-import Auth from '../../services/auth-service';
 import RoutesService from '../../services/routes-service';
+import Database from '../../services/websql-service';
 
 export default class AppPage{
     constructor(){
         new ProtoService();
+        this.db = new Database();
         this.router = new RoutesService();
         this.el = {};
-        
         document.querySelectorAll('[id]').forEach(element => {
             this.el[Format.formatToCamelCase(element.id)] = element;
         });
-
-        if(!localStorage.getItem('user')) this.router.redirectTo('login');
-
-        this.isLogged = JSON.parse(localStorage.getItem('user'));
-
-        if(this.isLogged){
-            this.auth = new Auth();
-
-            this.fetchUser();
-            this.fetchContacts();
-            // this.searchContact();
-        }
+        this.fetchUser();
     }
 
-    async fetchContacts(){
+    async fetchUser(){
+        const { email } = JSON.parse(localStorage.getItem('isLogged'));
+        // const user = await this.db.selectByEmail('users', email);
+        const db = await this.db.createIndexdb('users');
+        const data = await this.db.databaseIsReady(db);
+        const user = await this.db.getData(data, 'users', email);
+
+        this.user = new User(email);
+
+        this.user.name = user.name;
+        this.user.email = user.email;
+        this.user.photo = user.photo;
+
+        await this.user.save();
+        
         try{
             this.user.on('contactschange', docs => {
                 const contacts = [];
@@ -36,30 +39,15 @@ export default class AppPage{
                 document.querySelector('app-list-contacts')
                     .dispatchEvent(new CustomEvent('contactIsLoaded', {detail: contacts}));
             });
+
             await this.user.getContacts();
-        }catch(e){
-            console.error(e)
-        }
-    }
 
-    async fetchUser(){
-        try{
-            this.user = new User(this.isLogged.user.email);
-            this.user.name = this.isLogged.user.displayName;
-            this.user.email = this.isLogged.user.email;
-            this.user.photo = this.isLogged.user.photoURL;
-            
-            await this.user.save();
-    
-            document.querySelector('title').innerHTML = this.user.name + ' Random chat';
-            
-            this.el.app.dispatchEvent(new Event('isAuth'));
-            
-            this.notification(`Bem vindo(a) ${this.user.name}`);
+        }catch(e){ console.error(e) }
 
-        }catch(e){
-            console.error(e);
-        }
+        document.querySelector('title').innerHTML = (this.user.name) ? this.user.name : this.user.email + ' Random chat';
+        this.el.app.dispatchEvent(new Event('isAuth'));
+        
+        this.notification(`Bem vindo(a) ${(this.user.name) ? this.user.name : this.user.email}`);
     }
 
     // closeBtnDialog(){

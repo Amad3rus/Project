@@ -10,7 +10,7 @@ export default class Root extends HTMLElement{
     constructor(){
         super();
         const self = this;
-        
+
         this.router = new RoutesService({
             mode:'hash',
             root:'/',
@@ -25,9 +25,9 @@ export default class Root extends HTMLElement{
                 self.appendChild(ReaderDom.appendComponent(NoPageComponent));
             }
         });
-
         this.router.add('', function(){
-            if(!localStorage.getItem('user')) self.router.redirectTo('login');
+            // if(!localStorage.getItem('user')) self.router.redirectTo('login');
+            if(!localStorage.getItem('isLogged')) self.router.redirectTo('login');
             self.showMainPage();
         });
 
@@ -46,7 +46,8 @@ export default class Root extends HTMLElement{
         // }});
         
         this.router.add('login', function(){
-            if(localStorage.getItem('user')) self.router.redirectTo('');
+            // if(localStorage.getItem('user')) self.router.redirectTo('');
+            if(!localStorage.getItem('isLogged')) self.router.redirectTo('login');
             if(!window.customElements.get('app-login')) window.customElements.define('app-login', Login);
 
             document.querySelector('app-loading-page').style.display = 'none';
@@ -60,16 +61,14 @@ export default class Root extends HTMLElement{
                     .on('isAuth', e => self.router.redirectTo(''));
         });
         
-        this.router.check()
+        this.router.check();
         this.router.addUriListener();     
     }
-
     clearIfExistsComponents(component){
         while(component.firstChild){
             component.removeChild(component.firstChild);
         }
     }
-
     showMainPage(){
         this.clearIfExistsComponents(this);
         this.appendChild(ReaderDom.appendComponent(AppComponent));

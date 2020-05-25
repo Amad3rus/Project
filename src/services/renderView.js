@@ -5,7 +5,6 @@ export default class RenderView extends CreateEvent{
     constructor(){
         super();
     }
-
     static messageText(msg){
         return `
             <div id="_${msg.id}">
@@ -23,7 +22,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-    
     static messageAudio(msg){
         return `
             <div id="_${msg.id}">
@@ -47,7 +45,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-    
     static messageVideo(msg){
         return `
             <div id="_${msg.id}">
@@ -65,7 +62,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-
     static messageDocument(msg){
         return `
             <div id="_${msg.id}">
@@ -83,7 +79,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-
     static messageContact(msg){
         return `
             <div id="_${msg.id}">
@@ -104,7 +99,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-    
     static messageImage(msg){
         return `
             <div id="_${msg.id}">
@@ -127,7 +121,6 @@ export default class RenderView extends CreateEvent{
             </div>
         `;
     }
-
     noContactSelected(){
         return `
             <div class="no-contact-selected">
@@ -139,7 +132,6 @@ export default class RenderView extends CreateEvent{
             </div>        
         `;
     }
-
     renderListContact(contact){
         return `
             <button type="button">
@@ -159,7 +151,6 @@ export default class RenderView extends CreateEvent{
             </button>
         `;
     }
-
     renderContactFromAttach(contact, index){
         return `
             <input id="checkbox-attach-contact-index${index}" type="checkbox">
@@ -176,7 +167,6 @@ export default class RenderView extends CreateEvent{
             </label>
         `;
     }
-    
     renderingIconDefault(file, icon){
         return `
             <span style="color:var(--color-white);">
@@ -186,7 +176,6 @@ export default class RenderView extends CreateEvent{
             </span>
         `;
     }
-    
     renderingPdf(file, self){
         return `
             <span id="show-total" class="slide-length">1/${self.el['containerDocumentPreview'].childElementCount + 1}</span>
@@ -195,7 +184,6 @@ export default class RenderView extends CreateEvent{
             <div class="caption">Arquivo em formato de ${Format.formatNameFromImage(file.info.type)} - páginas ${file.pages}</div>                
         `;
     }
-    
     renderingImages(file, self){
         return `
             <span id="show-total" class="slide-length">1/${self.el['containerDocumentPreview'].childElementCount + 1}</span>
@@ -204,35 +192,59 @@ export default class RenderView extends CreateEvent{
             <!-- <div class="caption">${file.info.name}</div> -->
         `;
     }
-
     static messageTimeLeft(){
         return `
             <span style="color:var(--color-white)">Atingiu número máximo de tentativas - tempo restante:
                 <span id="time-left"></span>
             </span>
-        `
+        `;
     }
     static messageCodeInvalid(time){
         return `
             <span style="color:var(--color-red); font-size: 14px;">Código invalido - 
                 <span style="color:var(--color-white)">tentativas ${time}/3</span>
             </span>
-        `
+        `;
     }
-
     static messageCodeSending(email){
         return `
             Enviando código de acesso para <span style="font-size:14px; color:var(--color-white);">${email}...</span>
-        `
+        `;
     }
     static messageCodeSent(){
         return `
             <span style="color:var(--color-white);">Código enviado com sucesso</span>
-        `
+        `;
     }
     static messageCreatingAccount(){
         return `
             <span style="color:var(--color-white);">Criando uma nova conta...</span>
-        `
+        `;
+    }
+    static messageUserExists(){
+        return `
+            <span style="color:var(--color-white);">E-mail já cadastrado...</span>
+        `;
+    }
+    static messageCreateUserSuccess(){
+        return `
+            <span style="color:var(--color-white);">Usuário cadastrado com sucesso.</span>
+        `;
+    }
+    static messageCreateUserError(msg){
+        (msg) ? msg : 'Não foi possível cadastrar sua conta.';
+        return `
+            <span style="color:var(--color-white);">${msg}</span>
+        `;
+    }
+    static messageUserNotExists(){
+        return `
+            <span style="color:var(--color-white);">E-mail não cadastrado.</span>
+        `;
+    }
+    static messageUserInvalid(){
+        return `
+            <span style="color:var(--color-white);">E-mail ou senha invalidos.</span>
+        `;
     }
 }

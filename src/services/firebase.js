@@ -1,8 +1,11 @@
+import Database from './websql-service';
+
 const firebase = require('firebase');
 require('firebase/firestore');
 
 export default class Firebase {
     constructor(){
+        this.db = new Database();
 
         this.firebaseConfig = {
             apiKey: "AIzaSyDXS6FX96y2UB-l4NuMztDZX-novqzerU4",
@@ -25,49 +28,77 @@ export default class Firebase {
         }
     }
     
-    static database(){
-        return firebase.firestore();
-    }
-    
-    static storage(){
-        return firebase.storage();
-    }
+    static database(){ return firebase.firestore(); }
+    static storage(){ return firebase.storage(); }
 
     initAuth(){
         return new Promise(async (resolve, reject) => {
-            const provider = new firebase.auth.GoogleAuthProvider();
             try{
-                if(localStorage.getItem('user')){
-                    resolve(JSON.parse(localStorage.getItem('user')));
-                }else{
-                    const auth = await firebase.auth().signInWithPopup(provider);
-                    localStorage.setItem('user', JSON.stringify({token:auth.credential.accessToken, user:auth.user}));
-                    resolve({token: auth.credential.accessToken, user: auth.user});
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const response = await firebase.auth().signInWithPopup(provider);
+                const payload = {
+                    "token":response.credential.accessToken,
+                    "id":response.user.uid,
+                    "name":response.user.displayName,
+                    "email":response.user.email,
+                    "photo":response.user.photoURL,
+                    "password":null
                 }
-            }catch(e){
-                console.error(e);
-                reject(e);
-            }
+                delete payload.password;
+                resolve(await this.createIndexDb('users', payload));
+
+                // if(user) resolve(user);
+                // if(localStorage.getItem('user')){
+                //     resolve(JSON.parse(localStorage.getItem('user')));
+                // }else{
+                //     const auth = await firebase.auth().signInWithPopup(provider);
+                //     localStorage.setItem('user', JSON.stringify({token:auth.credential.accessToken, user:auth.user}));
+                //     resolve({token: auth.credential.accessToken, user: auth.user});
+                // }
+            }catch(e){ reject(e) }
         });
     }
 
     initLoginWidthEmail(payload){
         return new Promise(async (resolve, reject) => {
             try{
-                if(localStorage.getItem('user')){
-                    resolve(JSON.parse(localStorage.getItem('user')));
-                }else{
-                    const auth = await firebase.auth()
-                        .createUserWithEmailAndPassword(payload.email, payload.password);
-                    // localStorage.setItem('user', JSON.stringify({token:auth.credential.accessToken, user:auth.user}));
-                    // resolve({token: auth.credential.accessToken, user: auth.user});
-                    resolve(auth);
+                const response = await firebase.auth()
+                    .createUserWithEmailAndPassword(payload.email, payload.password);
+                
+                const payloadUser = {
+                    "id":response.user.uid,
+                    "email":response.user.email,
+                    "name":response.user.displayName,
+                    "photo":response.user.photoURL,
+                    "password": payload.password,
+                    "token":''
                 }
-            }catch(e){
-                console.error(e);
-                reject(e)
+                // this.db.createUser(payloadUser);
+                resolve(await this.createIndexDb('users', payloadUser));
+                // if(localStorage.getItem('user')){
+                //     resolve(JSON.parse(localStorage.getItem('user')));
+                // }else{
+                //     const auth = await firebase.auth()
+                //         .createUserWithEmailAndPassword(payload.email, payload.password);
+                //     // localStorage.setItem('user', JSON.stringify({token:auth.credential.accessToken, user:auth.user}));
+                //     // resolve({token: auth.credential.accessToken, user: auth.user});
+                //     resolve(auth);
+                // }
+            }catch(e){ reject(e) }
+        });
+    }
+    async createIndexDb(name, payload){
+        return new Promise(async resolve => {
+            const db = await this.db.createIndexdb(name);
+            const data = await this.db.databaseIsReady(db);
+            const user = await this.db.getData(data, 'users', payload.email);
+            
+            if(user){
+                resolve(user);
+            }else{
+                const register = await this.db.addData(data, payload, name);
+                resolve(register);
             }
         });
     }
-
 }
