@@ -39,15 +39,6 @@ export default class Login extends HTMLElement{
         this.onSubmit();
         this.resetForm();
         this.deleteAllBlocked();
-        //    this.db.select('black_list').then(bl => {
-        //         bl.forEach(ttv => {
-        //             // this.db.delete('black_list', 'roberto.rosa7@gmail.com');
-        //             if(this.calcTimeUnlocked(ttv) < 0) this.db.delete('black_list', ttv.email);
-        //         });
-        //     });
-        // this.db.delete('users', 'roberto.rosa7@gmail.com');
-        // this.db.delete('users', 'kakashi.kisura7@gmail.com');
-        // this.db.dropTable('users');
     }
     async deleteAllBlocked(){
         const db = await this.db.createIndexdb('black_list');
@@ -58,7 +49,7 @@ export default class Login extends HTMLElement{
             if(this.calcTimeUnlocked(black) < 0) this.db.deleteData(data, 'black_list', black.email);
         });
     }
-    loginWidthGoogle(){
+    async loginWidthGoogle(){
         this.el.loginFromGoogle.on('click', async e => {
             const response = await this.auth.initAuth();
             if(response){
@@ -67,7 +58,7 @@ export default class Login extends HTMLElement{
             }
         });
     }
-    showNotification(msg){
+    async showNotification(msg){
         this.el.login.querySelector('.notification').addClass('notify-active');
         this.el.notificationLoginTooltipContent.innerHTML = msg;
 
@@ -76,12 +67,12 @@ export default class Login extends HTMLElement{
                 .timerRegressive(this.timeLeft, this.el.notificationLoginTooltipContent
                         .querySelector('#time-left'));
     }
-    hideNotification(time = 0){
+    async hideNotification(time = 0){
         setTimeout(() => {
             this.el.login.querySelector('.notification').removeClass('notify-active');
         }, time);
     }
-    showPassword(){
+    async showPassword(){
         this.el.showPassword.on('click', e => {
             this.showTextPassword = !this.showTextPassword;
 
@@ -105,19 +96,19 @@ export default class Login extends HTMLElement{
             }
         });
     }
-    forgottenPassword(){
+    async forgottenPassword(){
         this.el.forgottenAccount.on('click', e => {
             this.fb.rules.empty(3);
             this.hideFormActive(3);
         });
     }
-    withoutAccount(){
+    async withoutAccount(){
         this.el.withoutAccount.on('click', e => {
             this.fb.rules.empty(2);
             this.hideFormActive(2);
         });
     }
-    hideFormActive(tab){
+    async hideFormActive(tab){
         this.fb.rules.empty(1);
         this.resetForm();
         this.el.login.querySelectorAll('.form-container').forEach(form => {
@@ -141,13 +132,13 @@ export default class Login extends HTMLElement{
             }
         });
     }
-    backToFormLogin(){
+    async backToFormLogin(){
         this.el.backButtonFromLoginForgottenAccount.on('click', e => this.showFormDefault());
         this.el.backButtonFromLoginWithoutAccount.on('click', e => this.showFormDefault());
         this.el.backButtonFromLoginFromCode.on('click', e => this.showFormDefault());
         this.el.btnVerifyCodeCancel.on('click', e => this.showFormDefault());
     }
-    showFormDefault(){
+    async showFormDefault(){
         this.resetForm();
         this.resetLocalStorage();
         this.format.clearInterval();
@@ -171,7 +162,7 @@ export default class Login extends HTMLElement{
             }
         });
     }
-    onSubmit(){
+    async onSubmit(){
         this.el.loginForm.on('form', e => {
             e.target.querySelectorAll('[tabindex]').forEach(tab => {
                 if(tab.hasClass('active-login')){
@@ -194,7 +185,7 @@ export default class Login extends HTMLElement{
             });
         });
     }
-    createPayload(type){
+    async createPayload(type){
         let payload;
         switch(type){
             case 'login':
@@ -247,7 +238,6 @@ export default class Login extends HTMLElement{
         }
     }
     async managerCode(payload){
-        // const response = await this.db.selectByEmail('black_list', payload.email);
         const db = await this.db.createIndexdb('black_list');
         const data = await this.db.databaseIsReady(db);
         const response = await this.db.getData(data, 'black_list', payload.email);
@@ -267,7 +257,6 @@ export default class Login extends HTMLElement{
         }
     }
     async loginWidthPass(payload){
-        // const user = await this.db.selectByEmail('users', payload.email);
         const db = await this.db.createIndexdb('users');
         const data = await this.db.databaseIsReady(db);
         const user = await this.db.getData(data, 'users', payload.email);
@@ -302,8 +291,6 @@ export default class Login extends HTMLElement{
     }
     async validateCode(payload){
         const payloadToSend = Object.assign(payload, this.getLocal('resetPasswordToken'));
-        // const response = await this.db.selectByEmail('black_list', payloadToSend.email);
-
         const db = await this.db.createIndexdb('black_list');
         const data = await this.db.databaseIsReady(db);
         const response = await this.db.getData(data, 'black_list', payloadToSend.email);
@@ -333,7 +320,7 @@ export default class Login extends HTMLElement{
             }
         }
     }
-    resetForm(){
+    async resetForm(){
         this.el.loginForm.reset();
         this.fb.manageState.validateState();
         this.el.loginFromEmailSend.disabled = true;
@@ -341,11 +328,11 @@ export default class Login extends HTMLElement{
         this.el.loginFromEmailNew.disabled = true;
         this.el.btnVerifyCode.disabled = true;
     }
-    resetLocalStorage(){
+    async resetLocalStorage(){
         const getCode = this.getLocal('resetPasswordToken');
         if(!getCode.exceeded_reset) this.removeLocal('resetPasswordToken');
     }
-    lockedDownTentative(){
+    async lockedDownTentative(){
         if(this.tentative >= 3){
             const exceeded = Object.assign({"exceeded_reset":true, "time_start":new Date().getTime()}, this.getLocal('resetPasswordToken'));
             this.setLocal('resetPasswordToken', exceeded);
@@ -354,31 +341,28 @@ export default class Login extends HTMLElement{
     }
     async createBlackList(payload){
         const blackList = Object.assign({id:Format.createUid()}, payload);
-        // const email = await this.db.selectByEmail('black_list', payload.email);
-        // if(!email) this.db.insertTable('black_list', blackList);
-
         const db = await this.db.createIndexdb('black_list');
         const data = await this.db.databaseIsReady(db);
         const user = await this.db.getData(data, 'black_list', payload.email);
         if(!user) await this.db.addData(data, blackList, 'black_list');
     }
-    getLocal(name){
+    async getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 
     }
-    setLocal(name, payload){
+    async setLocal(name, payload){
         localStorage.setItem(name, JSON.stringify(payload));
     }
-    removeLocal(name){
+    async removeLocal(name){
         if(localStorage.getItem(name)) localStorage.removeItem(name);
     }
-    showLockedTentative(payload){
+    async showLockedTentative(payload){
         this.timeLeft = this.calcTimeUnlocked(payload);
         this.showNotification(RenderView.messageTimeLeft());
         this.hideNotification(9000);
 
         setTimeout(() => {this.format.clearInterval()}, 9000);
     }
-    calcTimeUnlocked(payload){
+    async calcTimeUnlocked(payload){
         const { time_start } = payload;
         const _24 = 24 * 60 * 60;
         const now = new Date();
@@ -388,7 +372,7 @@ export default class Login extends HTMLElement{
 
        return (_24 - daysTimesStamp);
     }
-    listeningEvents(){
+    async listeningEvents(){
         this.el.loginFromEmail.on('click', e => this.createPayload('login'));
         this.el.loginFromEmailNew.on('click', e => this.createPayload('create'));
         this.el.loginFromEmailSend.on('click', e => this.createPayload('reset'));
