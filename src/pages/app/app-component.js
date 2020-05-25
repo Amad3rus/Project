@@ -19,13 +19,11 @@ export default class AppPage{
 
     async fetchUser(){
         const { email } = JSON.parse(localStorage.getItem('isLogged'));
-        // const user = await this.db.selectByEmail('users', email);
         const db = await this.db.createIndexdb('users');
         const data = await this.db.databaseIsReady(db);
         const user = await this.db.getData(data, 'users', email);
 
         this.user = new User(email);
-
         this.user.name = user.name;
         this.user.email = user.email;
         this.user.photo = user.photo;

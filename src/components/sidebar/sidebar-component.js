@@ -101,6 +101,7 @@ export default class Sidebar extends HTMLElement{
             this.el['logout'].show();
 
             this.el['logout'].on('click', e => {
+                document.querySelector('title').innerHTML = 'Random chat';
                 localStorage.removeItem('isLogged');
                 this.router.navigateTo('login');
             });
