@@ -357,10 +357,10 @@ export default class Login extends HTMLElement{
         // const email = await this.db.selectByEmail('black_list', payload.email);
         // if(!email) this.db.insertTable('black_list', blackList);
 
-        const db = await this.db.createIndexdb(name);
+        const db = await this.db.createIndexdb('black_list');
         const data = await this.db.databaseIsReady(db);
-        const user = await this.db.getData(data, 'users', email);
-        if(!user.email) await this.db.addData(data, blackList, 'black_list');
+        const user = await this.db.getData(data, 'black_list', payload.email);
+        if(!user) await this.db.addData(data, blackList, 'black_list');
     }
     getLocal(name){
         return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {}; 
