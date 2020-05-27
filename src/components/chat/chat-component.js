@@ -96,7 +96,7 @@ export default class Chat extends HTMLElement{
         });
         this.el['noContactSelected'].innerHTML = this.rs.noContactSelected();
     }
-    eventButtonSendMessage(){
+    async eventButtonSendMessage(){
         const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);
         
         filter.forEach((value, index) => {
@@ -186,16 +186,28 @@ export default class Chat extends HTMLElement{
                 from: this.user.email,
                 type: 'text',
                 name: this.user.name,
-                status:'wait'
+                status:'wait',
+                id:Format.createUid()
             }
+            this.db.addMessage('chats', message);
 
-            await Messages.sendMessage(message);
+            // const db = await this.db.createIndexdbChat('chats');
+            // const data = await this.db.databaseIsReady(db);
+            // await this.db.addData(data, message, 'chats');
+
+            // this.db.createIndexdbChat('chats')
+            //     .then(db => this.db.databaseIsReady(db)
+            //         .then(data => this.db.addData(data, message, 'chats')));
+            // const chat = await this.db.getData(data, 'chats', message.id);
+            // await Messages.sendMessage(message);
+
 
             this.el['inputText'].value = '';
             this.el['inputText'].setAttribute('placeholder','Digite uma mensagem');
             this.el['emojiClose'].click();
             this.el['btnSend'].hide();
             this.el['btnMicro'].show();
+            this.showMessageOnPanel(this.contactActive);
         });
 
         this.el['emojiOpen'].on('click', e => {
@@ -237,6 +249,7 @@ export default class Chat extends HTMLElement{
         });
         // forçar um evento a um elemento
         // elemento.dispatchEvent(new Event(nome_do_evento));
+     
     }
     eventOpenAttachments(){
         this.el['statusAttachFile'].on('click', e => {
@@ -534,42 +547,85 @@ export default class Chat extends HTMLElement{
         this.css({background:this.backgroundDoodles});
         this.el['controlsChat'].show();
     }
+    showMessageOnPanel(contact){
+        this.db.getAllMessages('chats').then(messages => {
+            const filter = messages.filter(message => message.chatId == this.contactActive.chatId);
+            
+            filter.sort((a, b) => {
+                if(a.timestamp > b.timestamp) return 1;
+                if(a.timestamp < b.timestamp) return -1;
+                return 1;
+            });
+            
+            this.el['chat'].innerHTML = '';
+            this.el['statusContactName'].innerHTML = contact.name;
+            this.el['noStatusProfileImage'].hide();
+            this.el['statusProfileImage'].show();
+            this.el['statusProfileImage'].src = contact.photo;
+            
+            let scrollTop = this.el['chat'].scrollTop;
+            let scrollMax = (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+            let autoScroll = (scrollTop >= scrollMax);
+            
+            filter.forEach(doc => {
+                this.ms.fromJson(doc);
+                let me = (doc.from === this.user.email);
+
+                if(!this.el['chat'].querySelector(`#_${doc.id}`)){
+                    this.el['chat'].appendChild(this.ms.getViewElement(me));
+                }else if(me) this.ms.getStatusView();
+            });
+            
+            if(autoScroll) this.el['chat'].scrollTop = (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+            else this.el['chat'].scrollTop = scrollTop;
+        });
+    }
     setUpdateContact(contact){
         if(this.contactActive) Messages.getRef(this.contactActive.chatId).onSnapshot(() => {});
-
         this.contactActive = contact;
-        this.el['chat'].innerHTML = '';
-       
-        Messages.getRef(contact.chatId).orderBy('timestamp')
-            .onSnapshot(docs => {
-                this.el['statusContactName'].innerHTML = contact.name;
-                this.el['noStatusProfileImage'].hide();
-                this.el['statusProfileImage'].show();
-                this.el['statusProfileImage'].src = contact.photo;
-                
-                let scrollTop = this.el['chat'].scrollTop;
-                let scrollMax = (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
-                let autoScroll = (scrollTop >= scrollMax);
+        this.showMessageOnPanel(contact);
 
-                docs.forEach(doc => {
-                    let data = doc.data();
-                    data.id = `${doc.id}`;
-                    this.ms.fromJson(data);
-                    let me = (data.from === this.user.email);
+        // this.db.createIndexdbChat('chats')
+        //     .then(db => this.db.databaseIsReady(db)
+        //         .then(data => this.db.getAllData(data, 'chats')
+        //             .then(messages => {
+        //                 
+        //             })));
 
-                    if(!this.el['chat'].querySelector(`#_${data.id}`)){
-                        if(!me) doc.ref.set({status:'read'},{merge:true});
-                        this.el['chat'].appendChild(this.ms.getViewElement(me));
-                    }else if(me) this.ms.getStatusView();
-                });
-                
-                if(autoScroll)
-                    this.el['chat'].scrollTop = 
-                        (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
-                else
-                    this.el['chat'].scrollTop = scrollTop;
-            });
+        // const db = await this.db.createIndexdbChat('chats');
+        // const data = await this.db.databaseIsReady(db);
+
+        // Messages.getRef(contact.chatId).orderBy('timestamp').onSnapshot(docs => {
+        //     this.el['statusContactName'].innerHTML = contact.name;
+        //     this.el['noStatusProfileImage'].hide();
+        //     this.el['statusProfileImage'].show();
+        //     this.el['statusProfileImage'].src = contact.photo;
+            
+        //     let scrollTop = this.el['chat'].scrollTop;
+        //     let scrollMax = (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+        //     let autoScroll = (scrollTop >= scrollMax);
+            
+        //     docs.forEach(doc => {
+        //         let data = doc.data();
+        //         console.log(data);
+        //         data.id = `${doc.id}`;
+        //         this.ms.fromJson(data);
+        //         let me = (data.from === this.user.email);
+
+        //         if(!this.el['chat'].querySelector(`#_${data.id}`)){
+        //             if(!me) doc.ref.set({status:'read'},{merge:true});
+        //             this.el['chat'].appendChild(this.ms.getViewElement(me));
+        //         }else if(me) this.ms.getStatusView();
+        //     });
+            
+        //     if(autoScroll)
+        //         this.el['chat'].scrollTop = 
+        //             (this.el['chat'].scrollHeight - this.el['chat'].offsetHeight);
+        //     else
+        //         this.el['chat'].scrollTop = scrollTop;
+        // });
         
+       
         this.el['controlsChat'].show();
     }
     removeAllChildElement(){

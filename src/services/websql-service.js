@@ -1,3 +1,5 @@
+import Messages from "./messages";
+
 export default class Database {
     constructor(){
         this.db = openDatabase('random_chat', '1.0','web database', 2 * 1024 * 1024);
@@ -155,6 +157,7 @@ export default class Database {
             );
        });
     }
+
     databaseIsReady(db){
         return new Promise(resolve => db.onsuccess = e => resolve(e.target.result));
     }
@@ -165,45 +168,73 @@ export default class Database {
         );
     }
     addData(ref, payload, name){
-        return new Promise(resolve => {
+        return new Promise(resolve =>
             ref.transaction(name, 'readwrite').objectStore(name).add(payload)
-                .onsuccess = e => resolve(e.target.result);
+                .onsuccess = e => resolve(e.target.result)
+        );
+    }
+    insertContacts(ref, name, payloads){
+        return new Promise(resolve => {
+            const storeContacts = ref.transaction(name, 'readwrite').objectStore(name);
+            for(let i in payloads){ storeContacts.add(payloads[i]) }
+            resolve(storeContacts);
         });
     }
     deleteData(ref, name, id){
-        return new Promise(resolve => {
+        return new Promise(resolve => 
             ref.transaction(name, 'readwrite').objectStore(name).delete(id)
-                .onsuccess = e => resolve(e.target.result);
-        });
+                .onsuccess = e => resolve(e.target.result)
+        );
     }
     getAllData(ref, name){
         return new Promise(resolve => {
             ref.transaction(name, 'readonly').objectStore(name).getAll()
                 .onsuccess = e => resolve(e.target.result);
-                // .oncomplete = e => resolve(e.target.result);
         });
     }
-    // createIndexdb(name, payloads){
-    //     this.request = window.indexedDB.open(name, 2);
-    //     return new Promise(resolve => {
-    //         this.request.onupgradeneeded = e => {
-    //             const db = this.request.result;
-    //             const store = db.createObjectStore(name,{ keyPath:'email' });
-    //             store.transaction.oncomplete = e => {
-    //                 const clientesStore = db.transaction(name, 'readwrite').objectStore(name);
-    //                 for(let i in payloads){
-    //                     clientesStore.add(payloads[i]);
-    //                 }
-    //                 resolve(clientesStore);
-    //             }
-    //         }
-    //     });
-    // }
+    addMessage(ref, name, payload){
+        return new Promise(resolve => {
+            ref.transaction(name, 'readwrite').objectStore(name).add(payload)
+                .onsuccess = e => resolve(e.target.result);
+        });
+    }
     createIndexdb(name){
         return new Promise(resolve => {
             const db = window.indexedDB.open(name, 2);
             db.onupgradeneeded = e => db.result.createObjectStore(name, { keyPath: 'email' });
             resolve(db);
+        });
+    }
+    createIndexdbChat(name){
+        return new Promise(resolve => {
+            const db = window.indexedDB.open(name, 3);
+            db.onupgradeneeded = e => db.result.createObjectStore(name, { keyPath:'id', autoIncrement: true });
+            resolve(db);
+        });
+    }
+    getAllMessages(store){
+        return new Promise(resolve => {
+            this.createIndexdbChat(store)
+                .then(db => this.databaseIsReady(db)
+                    .then(ref => this.getAllData(ref, store)
+                        .then(result => resolve(result))));
+        });
+    }
+    addMessage(store, payload){
+        return new Promise(resolve => {
+            this.createIndexdbChat(store)
+                .then(db => this.databaseIsReady(db)
+                    .then(data => this.addData(data, payload, store)
+                        .then(result => Messages.sendMessage(payload)
+                            .then(succes => resolve(succes)))));
+        });
+    }
+    addAllMessages(store, payload){
+        return new Promise(resolve => {
+            this.createIndexdbChat(store)
+                .then(db => this.databaseIsReady(db)
+                    .then(data => this.insertContacts(data, store, payloads)
+                        .then(results => resolve(results))));
         });
     }
 }

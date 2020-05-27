@@ -45,8 +45,16 @@ export default class Firebase {
                     "password":null
                 }
                 delete payload.password;
-                resolve(await this.createIndexDb('users', payload));
+                const db = await this.db.createIndexdb('users');
+                const data = await this.db.databaseIsReady(db);
+                const user = await this.db.getData(data, 'users', payload.email);
 
+                if(!user){
+                    await this.db.addData(data, payload, 'users');
+                    resolve(payload);
+                }else{
+                    resolve(user);
+                }
                 // if(user) resolve(user);
                 // if(localStorage.getItem('user')){
                 //     resolve(JSON.parse(localStorage.getItem('user')));
@@ -73,8 +81,16 @@ export default class Firebase {
                     "password": payload.password,
                     "token":''
                 }
-                // this.db.createUser(payloadUser);
-                resolve(await this.createIndexDb('users', payloadUser));
+                const db = await this.db.createIndexdb('users');
+                const data = await this.db.databaseIsReady(db);
+                const user = await this.db.getData(data, 'users', payload.email);
+                
+                if(!user){
+                    await this.db.addData(data, payload, 'users');
+                    resolve(payloadUser);
+                }else{
+                    resolve(user);
+                }
                 // if(localStorage.getItem('user')){
                 //     resolve(JSON.parse(localStorage.getItem('user')));
                 // }else{
@@ -85,20 +101,6 @@ export default class Firebase {
                 //     resolve(auth);
                 // }
             }catch(e){ reject(e) }
-        });
-    }
-    async createIndexDb(name, payload){
-        return new Promise(async resolve => {
-            const db = await this.db.createIndexdb(name);
-            const data = await this.db.databaseIsReady(db);
-            const user = await this.db.getData(data, 'users', payload.email);
-            
-            if(user){
-                resolve(user);
-            }else{
-                const register = await this.db.addData(data, payload, name);
-                resolve(register);
-            }
         });
     }
 }

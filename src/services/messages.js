@@ -96,7 +96,7 @@ export default class Messages extends Model{
         }
     }
     static sendMessage(message){
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async resolve => {
             const result = await Messages.getRef(message.chatId).add(message);
             resolve(await result.parent.doc(result.id).set({status:'sent'}, {merge:true}));
         });
@@ -104,16 +104,14 @@ export default class Messages extends Model{
     static getRef(chatId){
         return Firebase.database().collection('chats').doc(chatId).collection('messages');
     }
-    
     static sendMessageImage(messageImage){
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async resolve => {
             try{
                 const URLimage = await UploadFileService.sendFile(messageImage.from, messageImage.file);
                 delete messageImage.file;
                 resolve(await Messages.sendMessage({...messageImage, "content":URLimage}));
-            }catch(e){
-                console.error(e);
-            }
+            
+            }catch(e){ console.error(e) }
         });
     }
 }

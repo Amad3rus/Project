@@ -67,17 +67,26 @@ export default class User extends Model{
         return await User.getRefContacts(this.email).doc(btoa(contact.email)).set(contact.toJson());
     }
     getContacts(filter = ''){
-        return new Promise(resolve => {
-            User.getRefContacts(this.email).where('name', '>=', filter).onSnapshot(docs => {
-                    const contacts = [];
+        return new Promise(async resolve => {
+            User.getRefContacts(this.email).where('name', '>=', filter).onSnapshot(async docs => {
+                const contacts = [];
 
-                    docs.forEach(doc => {
-                        let data = doc.data();
-                        data.id = doc.id;
-                        contacts.push(data);
-                    });
+                docs.forEach(doc => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    contacts.push(data);
+                });
                 this.trigger('contactschange', docs);
-                resolve(contacts);
+                const db = await this.db.createIndexdb('contacts');
+                const store = await this.db.databaseIsReady(db);
+                const contactsStore = await this.db.getAllData(store, 'contacts');
+
+                if(contactsStore && contactsStore.length == contacts.length){
+                    resolve(contactsStore);
+                }else{
+                    await this.db.insertContacts(store, 'contacts', contacts);
+                    resolve(contacts);
+                }
             });
         });
     }
