@@ -3,7 +3,7 @@ import Messages from "./messages";
 export default class Database {
     constructor(){
         this.db = openDatabase('random_chat', '1.0','web database', 2 * 1024 * 1024);
-        
+
         this.createTableBlackList();
         this.createTableUsers();
 
@@ -30,7 +30,7 @@ export default class Database {
         //     // var transaction = this.database.transaction(['clientes']);
         //     // var store = transaction.objectStore('clientes');
         //     // var req = store.get('444-44-4444');
-    
+
         //     // req.onsuccess = e => console.log(req.result);
         //     // console.log(transaction);
         // }
@@ -50,7 +50,7 @@ export default class Database {
         //     // que não teremos 2 clientes com o mesmo e-mail;
         //     // store.createIndex("email", "email", { unique: true });
 
-        //     // Usando transação oncomplete para afirmar que a criação do objectStore 
+        //     // Usando transação oncomplete para afirmar que a criação do objectStore
         //     // é terminada antes de adicionar algum dado nele.
         //     store.transaction.oncomplete = e => {
         //         // Armazenando valores no novo objectStore
@@ -71,7 +71,7 @@ export default class Database {
 
         //         // this.getClients(res,'kakashi@gmail.com')
         //         //     .then(client => console.log(client));
-                
+
         //         // this.deleteData(res, '11-11')
         //         //     .then(() => {});
 
@@ -151,7 +151,7 @@ export default class Database {
     }
     dropTable(table){
         this.db.transaction(exec => {
-            exec.executeSql(`DROP TABLE ${table}`, [], 
+            exec.executeSql(`DROP TABLE ${table}`, [],
                 (exec,results) => console.info("Table Dropped"),
                 (exec,error) => console.error("Error: " + error.message)
             );
@@ -162,7 +162,7 @@ export default class Database {
         return new Promise(resolve => db.onsuccess = e => resolve(e.target.result));
     }
     getData(ref, name, id){
-        return new Promise(resolve => 
+        return new Promise(resolve =>
             ref.transaction(name, 'readonly').objectStore(name).get(id)
                 .onsuccess = e => resolve(e.target.result)
         );
@@ -181,7 +181,7 @@ export default class Database {
         });
     }
     deleteData(ref, name, id){
-        return new Promise(resolve => 
+        return new Promise(resolve =>
             ref.transaction(name, 'readwrite').objectStore(name).delete(id)
                 .onsuccess = e => resolve(e.target.result)
         );
@@ -208,7 +208,7 @@ export default class Database {
     createIndexdbChat(name){
         return new Promise(resolve => {
             const db = window.indexedDB.open(name, 3);
-            db.onupgradeneeded = e => db.result.createObjectStore(name, { keyPath:'id', autoIncrement: true });
+            db.onupgradeneeded = e => db.result.createObjectStore(name, { autoIncrement: true });
             resolve(db);
         });
     }
@@ -229,12 +229,62 @@ export default class Database {
                             .then(succes => resolve(succes)))));
         });
     }
-    addAllMessages(store, payload){
+    addMessageLocal(store, payload){
         return new Promise(resolve => {
             this.createIndexdbChat(store)
                 .then(db => this.databaseIsReady(db)
-                    .then(data => this.insertContacts(data, store, payloads)
-                        .then(results => resolve(results))));
+                    .then(data => this.addData(data, payload, store)
+                        .then(result => resolve(result))));
+        });
+    }
+    addAllMessages(store, payloads){
+        return new Promise(resolve => {
+            this.createIndexdbChat(store)
+                .then(db => this.databaseIsReady(db)
+                    .then(data => {
+                        const messages = data.transaction(store, 'readwrite').objectStore(store);
+                        for(let i in payloads){ messages.add(payloads[i]) }
+                        resolve(messages);
+                    }));
+        });
+    }
+    countAllMessages(store){
+        return new Promise(resolve => {
+            this.createIndexdbChat(store)
+                .then(db => this.databaseIsReady(db)
+                    .then(ref => this.getAllData(ref, store)
+                        .then(result => resolve(result.length))))
+        });
+    }
+    filterContactActive(contact, messages){
+        return new Promise(resolve => 
+            resolve(messages.filter(message => message.chatId == contact.chatId)).sort((a, b) => {
+                if(a.timestamp > b.timestamp) return 1;
+                if(a.timestamp < b.timestamp) return -1;
+                return 1;
+            }));
+    }
+    saveMessagesOnIndexedb(contact){
+        return new Promise(async resolve => 
+            resolve(await this.addAllMessages('chats', await this.fetchContactsFromFirebase(contact))));
+    }
+    countAllMessagesComingFirebase(contact){
+        return new Promise(async resolve => {
+            const contacts = await this.fetchContactsFromFirebase(contact);
+            resolve(contacts.length);
+        });
+    }
+    fetchContactsFromFirebase(contact){
+        return new Promise(resolve => {
+            const accumated = [];
+            Messages.getRef(contact.chatId).orderBy('timestamp').onSnapshot(docs => {
+                docs.forEach(doc => {
+                    let data = doc.data();
+                    let payload = {...data, id: doc.ref.id};
+                    accumated.push(data);
+                });
+            });
+            setTimeout(async () => resolve(accumated), 700);
         });
     }
 }
