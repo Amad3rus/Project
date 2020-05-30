@@ -158,6 +158,8 @@ export default class Database {
        });
     }
 
+
+
     databaseIsReady(db){
         return new Promise(resolve => db.onsuccess = e => resolve(e.target.result));
     }
@@ -170,8 +172,7 @@ export default class Database {
     addData(ref, payload, name){
         return new Promise(resolve =>
             ref.transaction(name, 'readwrite').objectStore(name).add(payload)
-                .onsuccess = e => resolve(e.target.result)
-        );
+                .onsuccess = e => resolve(e.target.result));
     }
     insertContacts(ref, name, payloads){
         return new Promise(resolve => {
