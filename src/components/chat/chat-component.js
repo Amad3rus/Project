@@ -264,214 +264,178 @@ export default class Chat extends HTMLElement{
 		this.el.controlsChat.show();
 	}
 	eventOpenAttachments(){
-			this.el['statusAttachFile'].on('click', e => {
-					e.stopPropagation();
-					this.el['statusOpenAttachFile'].css({display:'flex'});
-					
-					setTimeout(() => {
-							this.el['statusOpenAttachFile'].css({height:'230px'});
-							this.el['statusAttachFile'].addClass('active');
-					},300);
+		this.el['statusAttachFile'].on('click',e => {
+			e.stopPropagation();
+			this.el['statusOpenAttachFile'].css({display:'flex'});
+			
+			setTimeout(() => {
+				this.el['statusOpenAttachFile'].css({height:'230px'});
+				this.el['statusAttachFile'].addClass('active');
+			},300);
 
-					// usando bind() para manter o escopo default que neste caso é o this
-					document.addEventListener('click', this.closeMenuAttach.bind(this));
-			});
+			// usando bind() para manter o escopo default que neste caso é o this
+			document.addEventListener('click', this.closeMenuAttach.bind(this));
+		});
 	}
 	eventStatusAttachCamera(){
-			this.el['statusBtnAttachCamera'].on('click', e => {
-					this.closeAllMainPanel();
-					this.el['imageCamera'].hide();
-					this.el['statusPhotoTakeSend'].hide();
-					this.css({background:'#1D1D22'});
-					this.el['takePhoto'].show();
-					this.el['controlsChat'].show();
-					
-					this.el['videoCamera'].css({
-							display:'flex',
-							justifyContent:'center',
-							alignItems:'center',
-							width:'100%',
-					});
-					this.el['statusAttachFile'].disabled = true;
-					this.cameraCtrl = new CameraService(this.el['videoCamera']);
-			});
-			
-			this.el['closePanelCamera'].on('click', e => {
-					this.closeAllMainPanel();
-					this.showPanelDefault();
-					this.cameraCtrl.stopRecording();
-			});
+		this.el['statusBtnAttachCamera'].on('click',e => {
+			this.closeAllMainPanel();
+			this.el['imageCamera'].hide();
+			this.el['statusPhotoTakeSend'].hide();
+			this.css({background:'#1D1D22'});
+			this.el['takePhoto'].show();
+			this.el['controlsChat'].show();
+			this.el['videoCamera'].css({display:'flex',justifyContent:'center',alignItems:'center',width:'100%'});
+			this.el['statusAttachFile'].disabled = true;
+			this.cameraCtrl = new CameraService(this.el['videoCamera']);
+		});
+		this.el['closePanelCamera'].on('click',e => {
+			this.closeAllMainPanel();
+			this.showPanelDefault();
+			this.cameraCtrl.stopRecording();
+		});
 	}
 	eventStatusAttachFile(){
-			const self = this;
-
-			this.el['statusBtnAttachImage'].on('click', statusBtnAttachImage);
-			this.el['addMoreImages'].on('click', addMoreImages);
-			this.el['statusBtnAttachFile'].on('click', statusBtnAttachFile);
-
-			async function statusBtnAttachFile(e){
-					self.closeAllMainPanel();
-					self.el['statusInput'].click();
-			}
-			
-			async function addMoreImages(e){
-					e.preventDefault();
-					e.stopPropagation();
-					self.el['statusInput'].click();
-			}
-			
-			async function statusBtnAttachImage(e){
-					self.closeAllMainPanel();
-					self.el['statusInput'].click();
-			}
-			
-			this.loadingFiles();
+		this.el['statusBtnAttachImage'].on('click',e => {
+			this.closeAllMainPanel();
+			this.el['statusInput'].click();
+		});
+		this.el['addMoreImages'].on('click',e => {
+			e.preventDefault();
+			e.stopPropagation();
+			this.el['statusInput'].click();
+		});
+		this.el['statusBtnAttachFile'].on('click',e => {
+			this.closeAllMainPanel();
+			this.el['statusInput'].click();
+		});
+		this.loadingFiles();
 	}
 	eventStatusAttachContact(){
-			this.el['statusBtnAttachContact'].on('click', e => {
-					this.closeAllMainPanel();
-					this.el['chat'].show();
-					this.css({background:this.backgroundDoodles});
-					this.el['dialog'].css({display:'flex'});
-					
-					setTimeout(() => {
-							this.el['dialog'].css({transform: 'scale(1)'});
-							this.el['dialogBtnSendContact'].disabled = true;
-					}, 300);
-			});
+		this.el['statusBtnAttachContact'].on('click', e => {
+			this.closeAllMainPanel();
+			this.el['chat'].show();
+			this.css({background:this.backgroundDoodles});
+			this.el['dialog'].css({display:'flex'});
+			setTimeout(() => {
+				this.el['dialog'].css({transform: 'scale(1)'});
+				this.el['dialogBtnSendContact'].disabled = true;
+			}, 300);
+		});
 	}
 	renderPreviews(data){
-			this.el['containerDocumentPreview'].css({
-					display:'flex',
-					justifyContent:'center', 
-					alignItems:'center',
-					flexDirection:'column',
-					height:'300px'
-			});
-
-			data.forEach(file => {
-					let div = document.createElement('div');
-					div.addClass('slides', 'fade');
-					
-					switch(file.info.type){
-							case 'image/png':
-							case 'image/jpg':
-							case 'image/jpeg':
-							case 'image/gif':
-									div.innerHTML += this.rs.renderingImages(file, this);
-									break;
-							case 'text/css':
-							case 'text/markdown':
-							case 'text/plain':
-							case 'text/html':
-							case 'text/plain':
-									div.innerHTML += this.rs.renderingIconDefault(file, 'insert_drive_file');
-									break;
-							case 'application/pdf':
-									div.innerHTML += this.rs.renderingPdf(file, this);
-									break;
-							case 'application/zip':
-									break;
-					}
-					this.el['containerDocumentPreview'].prepend(div);
-					this.el['previewImageSlide'].innerHTML += `<span data-images="${file.id}">${Format.abrevName(file.info.name)}</span>`;
-					
-					document.querySelector('app-snackbar')
-						.dispatchEvent(new CustomEvent('show', {detail: `( ${data.length} ) total de arquivos carregados.`}));
-					
-					this.el['statusSendFile'].on('click', async e => {
-							this.closeAllMainPanel();
-							this.showPanelDefault();
-							const message = {
-									"chatId":this.contactActive.chatId,
-									"content":'',
-									"timestamp":new Date(),
-									"from":this.user.email,
-									"type":'image',
-									"name":this.user.name,
-									"status":'wait',
-									"file":file.info
-							}
-							await Messages.sendMessageImage(message)
-					});
-			});
-			const config = {
-					"carousel":this.el['carousel'],
-					"control":(this.el['containerDocumentPreview'].childElementCount > 1) ? true : false,
-					"dots": true
+		this.el['containerDocumentPreview'].css({display:'flex',justifyContent:'center',alignItems:'center',flexDirection:'column',height:'300px'});
+		
+		data.forEach(file => {
+			let div = document.createElement('div');
+			div.addClass('slides','fade');
+			
+			switch(file.info.type){
+				case 'image/png':
+				case 'image/jpg':
+				case 'image/jpeg':
+				case 'image/gif':
+					div.innerHTML += this.rs.renderingImages(file, this);
+					break;
+				case 'text/css':
+				case 'text/markdown':
+				case 'text/plain':
+				case 'text/html':
+				case 'text/plain':
+					div.innerHTML += this.rs.renderingIconDefault(file, 'insert_drive_file');
+					break;
+				case 'application/pdf':
+					div.innerHTML += this.rs.renderingPdf(file, this);
+					break;
+				case 'application/zip':
+					break;
 			}
-			this.carouselCtrl = new CarouselService(config);
-			this.el['containerDocumentPreview']
-					.addEventListener('imageDelete', e => {
-							if(!e.target.querySelector('.slides')){
-									this.closeAllMainPanel();
-									if(this.el['carousel'].querySelector('.next')) 
-											this.el['carousel'].querySelector('.next').remove();
-									if(this.el['carousel'].querySelector('.prev')) 
-											this.el['carousel'].querySelector('.prev').remove();
-									if(this.el['carousel'].querySelector('.dots')) 
-											this.el['carousel'].querySelector('.dots').remove();
-									this.showPanelDefault();
-							}
-			});
-	}
-	loadingFiles(){
-			this.el['statusInput'].on('change', async e => {
-					this.response = this.vs.validationsFiles(this.el['statusInput'].files);
-					if(this.response.valid){
-						this.docPreviewCtrl = new DocumentService(this.response.result);
-						try{
-							const data = await this.docPreviewCtrl.fetchPreviewFile();
-							this.css({background:'#1D1D22'});
-							this.el['previewPanelFile'].show();
-							this.el['controlsChat'].hide();
-							this.el['iconFile'].hide();
-							this.el['statusAttachFile'].disabled = true;
-							
-							setTimeout(() => {
-									this.renderPreviews(data);
-							}, 800);
-
-						}catch(e){
-							this.closeAllMainPanel();
-							this.showPanelDefault();
-							this.notification('Error ao carregar arquivos');
-						}
-					}
-			});
-	}
-	eventTakePicture(){
-			this.el['statusPhotoTakePhoto'].on('click', e => {
-					this.el['imageCamera'].src = this.cameraCtrl.takePicture();
-					this.el['videoCamera'].hide();
-					this.el['imageCamera'].css({
-							display:'flex',
-							justifyContent:'center',
-							alignItems:'center',
-							width:'100%',
-					});
-					this.el['statusPhotoTakePhoto'].hide();
-					this.el['statusPhotoTakeSend'].css({display:'flex'});
-			});
-
-			this.el['statusPhotoTakeSend'].on('click', e => {
+			
+			this.el['containerDocumentPreview'].prepend(div);
+			this.el['previewImageSlide'].innerHTML += `<span data-images="${file.id}">${Format.abrevName(file.info.name)}</span>`;
+			
+			document.querySelector('app-snackbar')
+				.dispatchEvent(new CustomEvent('show', {detail: `( ${data.length} ) total de arquivos carregados.`}));
+			
+				this.el['statusSendFile'].on('click',async e => {
 					this.closeAllMainPanel();
 					this.showPanelDefault();
-					this.el['statusPhotoTakePhoto'].css({display:'flex'});
+					const message = {
+						"chatId":this.contactActive.chatId,
+						"content":'',
+						"timestamp":new Date(),
+						"from":this.user.email,
+						"type":'image',
+						"name":this.user.name,
+						"status":'wait',
+						"file":file.info
+					}
+					await Messages.sendMessageImage(message)
 			});
+		});
+		const config = {
+			"carousel":this.el['carousel'],
+			"control":(this.el['containerDocumentPreview'].childElementCount > 1) ? true : false,
+			"dots": true
+		}
+		this.carouselCtrl = new CarouselService(config);
+		this.el['containerDocumentPreview'].addEventListener('imageDelete',e => {
+			if(!e.target.querySelector('.slides')){
+				this.closeAllMainPanel();
+				if(this.el['carousel'].querySelector('.next')) 
+					this.el['carousel'].querySelector('.next').remove();
+				if(this.el['carousel'].querySelector('.prev')) 
+					this.el['carousel'].querySelector('.prev').remove();
+				if(this.el['carousel'].querySelector('.dots')) 
+					this.el['carousel'].querySelector('.dots').remove();
+				this.showPanelDefault();
+			}
+		});
+	}
+	loadingFiles(){
+		this.el['statusInput'].on('change',async e => {
+			this.response = this.vs.validationsFiles(this.el['statusInput'].files);
+			if(this.response.valid){
+				this.docPreviewCtrl = new DocumentService(this.response.result);
+				try{
+					const data = await this.docPreviewCtrl.fetchPreviewFile();
+					this.css({background:'#1D1D22'});
+					this.el['previewPanelFile'].show();
+					this.el['controlsChat'].hide();
+					this.el['iconFile'].hide();
+					this.el['statusAttachFile'].disabled = true;
+					
+					setTimeout(() => this.renderPreviews(data), 800);
+
+				}catch(e){
+					this.closeAllMainPanel();
+					this.showPanelDefault();
+					this.notification('Error ao carregar arquivos');
+				}
+			}
+		});
+	}
+	eventTakePicture(){
+		this.el['statusPhotoTakePhoto'].on('click',e => {
+			this.el['imageCamera'].src = this.cameraCtrl.takePicture();
+			this.el['videoCamera'].hide();
+			this.el['imageCamera'].css({display:'flex',justifyContent:'center',alignItems:'center',width:'100%'});
+			this.el['statusPhotoTakePhoto'].hide();
+			this.el['statusPhotoTakeSend'].css({display:'flex'});
+		});
+		this.el['statusPhotoTakeSend'].on('click',e => {
+			this.closeAllMainPanel();
+			this.showPanelDefault();
+			this.el['statusPhotoTakePhoto'].css({display:'flex'});
+		});
 	}
 	eventRetakePicture(){
-			this.el['retakePicture'].on('click', e => {
-					this.el['imageCamera'].hide();
-					this.el['videoCamera'].css({
-							display:'flex',
-							justifyContent:'center',
-							alignItems:'center',
-							width:'100%'
-					});
-					this.el['statusPhotoTakePhoto'].css({display:'flex'});
-					this.el['statusPhotoTakeSend'].hide();
-			});
+		this.el['retakePicture'].on('click',e => {
+			this.el['imageCamera'].hide();
+			this.el['videoCamera'].css({display:'flex',justifyContent:'center',alignItems:'center',width:'100%'});
+			this.el['statusPhotoTakePhoto'].css({display:'flex'});
+			this.el['statusPhotoTakeSend'].hide();
+		});
 	}
 	fetchContactFromAttachment(contacts){
 			// this.el['dialogContentContact'].innerHTML = '';
