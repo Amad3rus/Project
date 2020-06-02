@@ -519,13 +519,15 @@
     font-size:11.5px;
     font-weight: bold;
     font-style: italic;
+    display:flex;
+    align-items: center;
 }
 .container-chat .box .chat .message-in .container-cb .cb .name{
     color:var(--color-black);
 }
 .container-chat .box .chat .message-out .container-cb .cb .name{
     color:var(--color-orange-lighter);
-
+    justify-content: flex-end;
 }
 
 .container-chat .box .chat .message-in .container-cb .cb .time,
@@ -545,6 +547,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 .container-chat .box .chat .message-in .container-cb .cb .image img,
 .container-chat .box .chat .message-out .container-cb .cb .image img{

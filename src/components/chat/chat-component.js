@@ -71,26 +71,18 @@ export default class Chat extends HTMLElement{
 		});
 	}
 	showPanelConversation(contact){
-			this.setUpdateContact(contact);
-			this.removeAllChildElement();
-			this.closeAllMainPanel();
-			this.showPanelDefault();
-			
-			this.el['chatStatusBar'].show();
-			this.el['chatHome'].hide();
+		this.setUpdateContact(contact);
+		this.removeAllChildElement();
+		this.closeAllMainPanel();
+		this.showPanelDefault();
+		this.el['chatStatusBar'].show();
+		this.el['chatHome'].hide();
 	}
 	fetchMessages(contact){
-			// this.css({background: 'rgba(43,44,45,1)'});
-			this.css({background: '#1D1D22'});
-			this.closeAllMainPanel();
-			
-			this.el['chatHome'].css({
-					display:'flex',
-					flexDirection:'column',
-					justifyContent:'center',
-					alignItems:'center'
-			});
-			this.el['noContactSelected'].innerHTML = this.rs.noContactSelected();
+		this.css({background: '#1D1D22'});
+		this.closeAllMainPanel();
+		this.el['chatHome'].css({display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'});
+		this.el['noContactSelected'].innerHTML = this.rs.noContactSelected();
 	}
 	async eventButtonSendMessage(){
 		const filter = Emojis.filter((a,b,c) => c.indexOf(a) === b).splice(400, 80);
@@ -176,13 +168,13 @@ export default class Chat extends HTMLElement{
 
 		this.el['btnSend'].on('click',e => {
 			const message = {
-				chatId: this.contactActive.chatId,
-				content: this.el['inputText'].value,
-				timestamp: new Date(),
-				from: this.user.email,
-				type: 'text',
-				name: this.user.name,
-				status:'wait',
+				"chatId":this.contactActive.chatId,
+				"content":this.el['inputText'].value,
+				"timestamp":new Date(),
+				"from":this.user.email,
+				"type":'text',
+				"name":this.user.name,
+				"status":'wait',
 			}
 			Messages.sendMessage(message).then(); // send right away on firebase
 
@@ -370,7 +362,7 @@ export default class Chat extends HTMLElement{
 						"status":'wait',
 						"file":file.info
 					}
-					await Messages.sendMessageImage(message)
+					await Messages.sendMessageImage(message);
 			});
 		});
 		const config = {
@@ -406,7 +398,6 @@ export default class Chat extends HTMLElement{
 					this.el['statusAttachFile'].disabled = true;
 					
 					setTimeout(() => this.renderPreviews(data), 800);
-
 				}catch(e){
 					this.closeAllMainPanel();
 					this.showPanelDefault();
@@ -424,9 +415,42 @@ export default class Chat extends HTMLElement{
 			this.el['statusPhotoTakeSend'].css({display:'flex'});
 		});
 		this.el['statusPhotoTakeSend'].on('click',e => {
+			this.cameraCtrl.stopRecording();
 			this.closeAllMainPanel();
 			this.showPanelDefault();
 			this.el['statusPhotoTakePhoto'].css({display:'flex'});
+			
+			let regex = /^data:(.+);base64,(.*)$/;
+			let result = this.cameraCtrl.takePicture().match(regex);
+			let mimeType = result[1];
+			let ext = mimeType.split('/')[1];
+			let filename = `camera-${Date.now()}.${ext}`;
+
+			console.log('mimetype: ', mimeType, 'ext: ', ext);
+
+			// fetch(this.cameraCtrl.takePicture())
+			// 	.then(res => res.arrayBuffer()
+			// 		.then(buffer => new File([buffer], filename, {type:mimeType}))
+			// 			.then(file => Messages.sendMessageImage({"chatId":this.contactActive.chatId,"content":'',
+			// 					"timestamp":new Date(),"from":this.user.email,"type":'image',"name":this.user.name,
+			// 					"status":'wait',"file":file})))
+
+			fetch(this.cameraCtrl.takePicture())
+				.then(res => {return res.arrayBuffer();})
+				.then(buffer => { return new File([buffer], filename, { type: mimeType})})
+				.then(file => {
+					const message = {
+						"chatId":this.contactActive.chatId,
+						"content":'',
+						"timestamp":new Date(),
+						"from":this.user.email,
+						"type":'image',
+						"name":this.user.name,
+						"status":'wait',
+						"file":file
+					}
+					Messages.sendMessageImage(message)
+				})
 		});
 	}
 	eventRetakePicture(){

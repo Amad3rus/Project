@@ -27,45 +27,45 @@ export default class Messages extends Model{
 
 
 	getViewElement(me = true){
-			const div = document.createElement('div');
+		const div = document.createElement('div');
 
-			switch(this.type){
-					case 'contact':
-							div.innerHTML = RenderView.messageContact(this.data);
-							div.querySelectorAll('.receive')
-									.forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.data));
-							break;
-					case 'audio':
-							div.innerHTML = RenderView.messageAudio(this.data);
-							break;
-					case 'video':
-							div.innerHTML = RenderView.messageVideo(this.data);
-							break;
-					case 'image':
-							div.innerHTML = RenderView.messageImage(this.data);
-							div.querySelectorAll('.btn-download-image-from-contact')
-									.forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
-							div.querySelector('.image img').on('load', e => div.querySelector('.refresh').hide());
-							break;
-					case 'document':
-							div.innerHTML = RenderView.messageDocument(this.data);
-							break;
-					default:
-							div.innerHTML = RenderView.messageText(this.data);
-			}
+		switch(this.type){
+			case 'contact':
+				div.innerHTML = RenderView.messageContact(this.data);
+				div.querySelectorAll('.receive')
+					.forEach(contact => contact.onclick = e => this.extractInfoFromContact(this.data));
+				break;
+			case 'audio':
+				div.innerHTML = RenderView.messageAudio(this.data);
+				break;
+			case 'video':
+				div.innerHTML = RenderView.messageVideo(this.data);
+				break;
+			case 'image':
+				div.innerHTML = RenderView.messageImage(this.data);
+				div.querySelectorAll('.btn-download-image-from-contact')
+					.forEach(btn => btn.onclick = e => this.downloadImageFromContact(this.data, btn));
+				div.querySelector('.image img').on('load', e => div.querySelector('.refresh').hide());
+				break;
+			case 'document':
+				div.innerHTML = RenderView.messageDocument(this.data);
+				break;
+			default:
+				div.innerHTML = RenderView.messageText(this.data);
+		}
 
-			let messageOutput = 'message-in';
+		let messageOutput = 'message-in';
 
-			if(me){
-					messageOutput = 'message-out';
-					this.getStatusView();
-			}
+		if(me){
+				messageOutput = 'message-out';
+				this.getStatusView();
+		}
 
-			div.firstElementChild.classList.add(messageOutput);
-			div.querySelectorAll('.message-in')
-					.forEach(icon => icon.querySelectorAll('i')
-							.forEach(i => i.hide()));
-			return div;
+		div.firstElementChild.classList.add(messageOutput);
+		div.querySelectorAll('.message-in')
+			.forEach(icon => icon.querySelectorAll('.double-checked')
+					.forEach(i => i.hide()));
+		return div;
 	}
 	extractInfoFromContact(contact){
 			console.log(contact);
